@@ -11,17 +11,17 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/liqs',
+    path: '/top-liqs',
     name: 'liquids-list',
     component: LiquidsView
   },
   {
-    path: '/liqs/brand',
+    path: '/brand',
     name: 'brand-list',
     component: BrandView
   },
   {
-    path: '/liqs/brand/liq_id',
+    path: '/brand/liq_id',
     name: 'liquid-detail',
     component: ProductView
   },

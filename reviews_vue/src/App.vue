@@ -13,7 +13,7 @@
 
       <div class="navbar-menu" id="navbar-menu" :class="{ 'is-active': showMobileMenu }">
         <div class="navbar-start">
-          <router-link class="navbar-item" to="/liqs">Жидкости</router-link>
+          <router-link class="navbar-item" :to="{name: 'liquids-list'}">Жидкости</router-link>
           <router-link class="navbar-item" to="/">Одноразки</router-link>
         </div>
         <div class="navbar-end">
@@ -53,4 +53,6 @@ export default {
 <style lang="scss">
   @import '../node_modules/bulma';
   @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
+
+
 </style>
