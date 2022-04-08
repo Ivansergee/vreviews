@@ -32,7 +32,7 @@
           <p class="title is-4">Средняя оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">7.4</span>
+            <span class="tag is-primary">8.2</span>
           </div>
           <p><strong>Отзывов:</strong> 15</p>
           <p><strong>Оценок:</strong> 25</p>
