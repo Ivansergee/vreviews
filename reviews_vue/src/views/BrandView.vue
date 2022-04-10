@@ -81,9 +81,7 @@ img {
   max-width: 300px;
   max-height: 300px;
 }
-/* .column {
-    border: 1px solid black;
-} */
+
 .head {
   max-width: 80%;
   margin: auto;
@@ -94,3 +92,13 @@ img {
   height: 100%;
 }
 </style>
+
+<script>
+export default {
+  data() {
+    return {
+      
+    }
+  },
+}
+</script>

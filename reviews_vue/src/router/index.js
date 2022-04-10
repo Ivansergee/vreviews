@@ -16,12 +16,12 @@ const routes = [
     component: LiquidsView
   },
   {
-    path: '/brand',
+    path: '/:brand_slug',
     name: 'brand-list',
     component: BrandView
   },
   {
-    path: '/brand/liq_id',
+    path: '/:brand_slug/:product_slug',
     name: 'liquid-detail',
     component: ProductView
   },
