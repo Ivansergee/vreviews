@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class Reaction(models.Model):
@@ -41,7 +42,7 @@ class Brand(models.Model):
     
     def get_image(self):
         if self.image:
-            return self.image.url
+            return settings.HOST_URL + self.image.url
         else:
             return ''
 
@@ -79,6 +80,6 @@ class Product(models.Model):
     
     def get_image(self):
         if self.image:
-            return self.image.url
+            return settings.HOST_URL + self.image.url
         else:
             return ''

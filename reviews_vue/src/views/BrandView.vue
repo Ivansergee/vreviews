@@ -2,29 +2,23 @@
   <div class="container">
     <div class="level">
       <div class="level-left">
-        <h1 class="title level-item">Maxwell's Salt</h1>
+        <h1 class="title level-item">{{ brand.name }}</h1>
       </div>
     </div>
     <div class="columns head">
       <div class="column is-4">
         <figure class="image is-1by1">
           <img
-            src="https://xn--80azbeklgbg.xn--p1ai/images/news/obzor-zhidkosti-maxwells/image.jpg"
+            :src=brand.get_image
           />
         </figure>
       </div>
       <div class="column is-4">
         <div class="content">
-          <p><strong>Страна:</strong> Россия</p>
-          <p><strong>Производитель:</strong> Maxwell's</p>
+          <p><strong>Страна:</strong> {{brand?.producer?.country}} </p>
+          <p><strong>Производитель:</strong> {{brand?.producer?.name}}  </p>
 
-          <p>
-            Maxwell's — это премиальная жидкость для электронных
-            парогенераторов, сделанная в Сибири по индивидуальным рецептам, из
-            ингредиентов, произведённых в США, Германии, Польши, Италии,
-            Малайзии, Австралии и КНР. Мы выбираем только лучшие ароматизаторы
-            со всего мира.
-          </p>
+          <p>{{ brand.description }}</p>
         </div>
       </div>
       <div class="column is-4">
@@ -41,7 +35,7 @@
     </div>
 
     <section class="section products">
-      <p class="title">Все вкусы Maxwell's Salt</p>
+      <p class="title">Все вкусы {{ brand.name }}</p>
           <div class="columns is-vcentered">
             <div class="column is-1">
               <p class="title is-5">1</p>
@@ -94,10 +88,30 @@ img {
 </style>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
-      
+      brand: {},
+      products: {}
+    }
+  },
+  mounted() {
+    this.getBrandData()
+  },
+  methods: {
+    getBrandData(){
+      const brand_slug = this.$route.params.brand_slug
+
+      axios
+        .get(`/brand/${brand_slug}`)
+        .then(response => {
+          this.brand = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   },
 }

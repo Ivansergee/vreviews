@@ -11,6 +11,13 @@ class ProductDetail(RetrieveAPIView):
     lookup_url_kwarg = 'product_slug'
 
 
+class BrandDetail(RetrieveAPIView):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'brand_slug'
+
+
 # class ProductList(ListAPIView):
 #     queryset = Product.published_objects.all()
 #     serializer_class = ProductSerializer
