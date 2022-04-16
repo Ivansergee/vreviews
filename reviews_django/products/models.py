@@ -71,6 +71,7 @@ class Product(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+        default_manager_name = 'published_objects'
     
     def __str__(self):
         return f'{self.brand} {self.name}'

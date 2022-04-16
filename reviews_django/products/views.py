@@ -21,11 +21,3 @@ class BrandDetail(RetrieveAPIView):
 # class ProductList(ListAPIView):
 #     queryset = Product.published_objects.all()
 #     serializer_class = ProductSerializer
-
-
-class BrandProducts(ListAPIView):
-    serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        brand_slug = self.kwargs['brand_slug']
-        return Product.published_objects.filter(brand__slug=brand_slug)

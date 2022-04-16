@@ -13,12 +13,22 @@ class ProductProducerSerializer(serializers.ModelSerializer):
         model = Producer
         fields = ['name', 'country']
 
+
+class BrandProductSerializer(serializers.ModelSerializer):
+    flavors = FlavorSerializer(many=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'slug', 'get_absolute_url', 'get_image', 'flavors']
+
+
 class BrandSerializer(serializers.ModelSerializer):
     producer = ProductProducerSerializer()
+    products = BrandProductSerializer(many=True)
 
     class Meta:
         model = Brand
-        fields = ['id', 'name', 'description', 'get_image', 'producer']
+        fields = ['id', 'name', 'description', 'slug', 'get_image', 'producer', 'products']
 
 class ProductBrandSerializer(serializers.ModelSerializer):
     producer = ProductProducerSerializer()
@@ -33,4 +43,4 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'get_absolute_url', 'get_image', 'brand', 'flavors']
+        fields = ['id', 'name', 'description', 'slug', 'get_absolute_url', 'get_image', 'brand', 'flavors']

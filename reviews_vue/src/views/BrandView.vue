@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="brand">
     <div class="level">
       <div class="level-left">
         <h1 class="title level-item">{{ brand.name }}</h1>
@@ -15,8 +15,8 @@
       </div>
       <div class="column is-4">
         <div class="content">
-          <p><strong>Страна:</strong> {{brand?.producer?.country}} </p>
-          <p><strong>Производитель:</strong> {{brand?.producer?.name}}  </p>
+          <p><strong>Страна:</strong> {{brand.producer.country}} </p>
+          <p><strong>Производитель:</strong> {{brand.producer.name}}  </p>
 
           <p>{{ brand.description }}</p>
         </div>
@@ -36,16 +36,17 @@
 
     <div class="products">
       <p class="title">Все вкусы {{ brand.name }}</p>
-          <div class="columns is-vcentered">
+          
+          <div class="columns is-vcentered" v-for="product in brand.products" :key="product.id">
             <div class="column is-2">
               <figure class="image is-1by1">
                 <img
-                  src="https://www.parzo.ru/media/catalog/product/cache/1/image/363x/040ec09b1e35df139433887a97daa66f/m/a/maxwells_salt_red.jpg"
+                  :src=product.get_image
                 />
               </figure>
             </div>
             <div class="column is-3">
-                <p class="title is-5">Red</p>
+                <p class="title is-5"><a :href="product.get_absolute_url">{{ product.name }}</a></p>
                 <p class="is-italic is-size-6">Клубничный лимонад</p>
             </div>
             <div class="column is-2">
@@ -54,8 +55,7 @@
             </div>
             <div class="column">
                 <p class="tags">
-                    <a class="tag is-info">Клубника</a>
-                    <a class="tag is-info">Лимонад</a>
+                    <span class="tag is-info" v-for="flavor in product.flavors" :key="flavor.id">{{ flavor.name }}</span>
                 </p>
             </div>
             <div class="column">
@@ -63,34 +63,7 @@
             </div>
           </div>
 
-          <div class="columns is-vcentered">
-            <div class="column is-2">
-              <figure class="image is-1by1">
-                <img
-                  src="https://www.parzo.ru/media/catalog/product/cache/1/image/363x/040ec09b1e35df139433887a97daa66f/m/a/maxwells_salt_red.jpg"
-                />
-              </figure>
-            </div>
-            <div class="column is-3">
-                <p class="title is-5">Red</p>
-                <p class="is-italic is-size-6">Клубничный лимонад</p>
-            </div>
-            <div class="column is-2">
-                <span><i class="bi bi-chat-left-text"></i> 10   </span>
-                <span><i class="bi bi-star-fill"></i> 15</span>
-            </div>
-            <div class="column">
-                <p class="tags">
-                    <a class="tag is-info">Клубника</a>
-                    <a class="tag is-info">Лимонад</a>
-                </p>
-            </div>
-            <div class="column">
-                <span class="tag is-primary is-large"><i class="bi bi-star-fill"></i> 7.4</span>
-            </div>
-          </div>
     </div>
-
   </div>
 </template>
 
@@ -119,25 +92,28 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      brand: {},
-      products: {}
+      brand: null,
     }
   },
   mounted() {
     this.getBrandData()
   },
   methods: {
-    getBrandData(){
+    async getBrandData(){
+      this.$store.commit('setIsLoading', true)
+
       const brand_slug = this.$route.params.brand_slug
 
-      axios
-        .get(`/brand/${brand_slug}`)
+      await axios
+        .get(`/products/${brand_slug}`)
         .then(response => {
           this.brand = response.data
         })
         .catch(error => {
           console.log(error)
         })
+
+      this.$store.commit('setIsLoading', false)
     }
   },
 }

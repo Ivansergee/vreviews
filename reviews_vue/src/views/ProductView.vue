@@ -1,28 +1,27 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="product">
     <div class="level">
       <div class="level-left">
-        <h1 class="title level-item">Maxwell's Red</h1>
+        <h1 class="title level-item">{{ product.brand.name}} {{ product.name }}</h1>
       </div>
     </div>
     <div class="columns">
       <div class="column is-4">
         <figure class="image is-1by1">
           <img
-            src="https://www.parzo.ru/media/catalog/product/cache/1/image/363x/040ec09b1e35df139433887a97daa66f/m/a/maxwells_salt_red.jpg"
+            :src=product.get_image
           />
         </figure>
       </div>
       <div class="column is-4">
         <div class="content">
-          <p><strong>Бренд:</strong> <router-link :to="{name: 'brand-list'}">Maxwell's Salt</router-link></p>
-          <p><strong>Название:</strong> Red</p>
-          <p><strong>Страна:</strong> Россия</p>
-          <p><strong>Производитель:</strong> Maxwell's</p>
+          <p><strong>Бренд:</strong> <router-link :to="{name: 'brand-list'}">{{ product.brand.name }}</router-link></p>
+          <p><strong>Название:</strong> {{ product.name }}</p>
+          <p><strong>Страна:</strong> {{ product.brand.producer.country }}</p>
+          <p><strong>Производитель:</strong> {{ product.brand.producer.name }}</p>
           <p><strong>Вкусы:</strong></p>
           <p class="tags">
-            <a class="tag is-info">Клубника</a>
-            <a class="tag is-info">Лимонад</a>
+            <a class="tag is-info" v-for="flavor in product.flavors" :key="flavor.id">{{ flavor.name }}</a>
           </p>
           <p><strong>Содержание никотина:</strong></p>
           <p class="tags">
@@ -30,10 +29,7 @@
             <span class="tag is-warning">20</span>
             <span class="tag is-warning">20 HYBRID</span>
           </p>
-          <p>
-            Спелая термоядерная клубника с легкой лимонадной кислинкой. Яркий
-            ягодный взрыв!
-          </p>
+          <p>{{ product.description }}</p>
         </div>
       </div>
       <div class="column is-4">
@@ -164,3 +160,37 @@ img {
   margin: auto;
 }
 </style>
+
+<script>
+import axios from 'axios'
+
+export default {
+  data() {
+    return {
+      product: null,
+    }
+  },
+  mounted() {
+    this.getProductData()
+  },
+  methods: {
+    async getProductData(){
+      this.$store.commit('setIsLoading', true)
+
+      const brand_slug = this.$route.params.brand_slug
+      const product_slug = this.$route.params.product_slug
+
+      await axios
+        .get(`/products/${brand_slug}/${product_slug}`)
+        .then(response => {
+          this.product = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      this.$store.commit('setIsLoading', false)
+    }
+  },
+}
+</script>
