@@ -5,6 +5,7 @@ export default createStore({
     isAuthenticated: false,
     token: null,
     isLoading: false,
+    username: null
   },
   getters: {
   },
@@ -12,19 +13,22 @@ export default createStore({
     initializeStore(state) {
       if (localStorage.getItem('token')) {
         state.token = localStorage.getItem('token')
+        state.username = localStorage.getItem('username')
         state.isAuthenticated = true
       } else {
         state.token = null
         state.isAuthenticated = false
       }
     },
-    setToken(state, token) {
+    setToken(state, token, username) {
       state.token = token
       state.isAuthenticated = true
+      state.username = username
     },
     removeToken(state) {
       state.token = null
-      state.isAuthenticated = true
+      state.isAuthenticated = false
+      state.username = null
     },
     setIsLoading(state, status) {
       state.isLoading = status

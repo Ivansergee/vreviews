@@ -12,18 +12,35 @@
       </div>
 
       <div class="navbar-menu" id="navbar-menu" :class="{ 'is-active': showMobileMenu }">
+        
         <div class="navbar-start">
           <router-link class="navbar-item" :to="{name: 'liquids-list'}">Жидкости</router-link>
           <router-link class="navbar-item" to="/">Одноразки</router-link>
         </div>
-        <div class="navbar-end">
+
+        <div class="navbar-end" v-if="$store.state.isAuthenticated">
+          <a class="navbar-item">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fa-solid fa-user-large fa-lg"></i>
+                </span>
+                <span>{{this.$store.state.username}}</span>
+              </span>
+          </a>
+          <a class="navbar-item" @click="logout()">
+              <span class="logout">Выход</span>
+          </a>
+        </div>
+
+        <div class="navbar-end" v-else>
           <div class="navbar-item">
             <div class="buttons">
-              <router-link class="button is-blue" to="/">Вход</router-link>
-              <router-link class="button is-success" to="/">Регистрация</router-link>
+              <router-link class="button is-blue" :to="{name: 'login'}">Вход</router-link>
+              <router-link class="button is-success" :to="{name: 'signup'}">Регистрация</router-link>
             </div>
           </div>
         </div>
+
       </div>
     </nav>
 
@@ -62,6 +79,22 @@ export default {
     } else {
         axios.defaults.headers.common['Authorization'] = ''
     }
+  },
+  methods: {
+    logout() {
+      axios.defaults.headers.common['Authorization'] = ''
+
+      localStorage.removeItem('token')
+      localStorage.removeItem('username')
+      localStorage.removeItem('userid')
+
+      this.$store.commit('removeToken')
+
+      this.$router.push('/')
+    }
+  },
+  mounted() {
+    console.log(this.$store.state)
   }
 }
 </script>
@@ -78,6 +111,18 @@ export default {
   html, body, #app {
     height: 100%;
     margin: 0;
+  }
+  
+  .logout {
+    text-decoration: underline;
+  }
+  
+  .icon .logout {
+    margin: auto 1.5em;
+  }
+
+  .icon-text {
+    text-decoration: underline;
   }
 
   .lds-dual-ring {

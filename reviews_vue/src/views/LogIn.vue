@@ -67,13 +67,14 @@ export default {
                 await axios
                 .post('token/login/', formData)
                 .then(response => {
-                    const token = this.response.data.auth_token
+                    const token = response.data.auth_token
 
-                    this.$store.commit('setToken', token)
+                    this.$store.commit('setToken', token, this.username)
 
                     axios.defaults.headers.common['Authorization'] = 'Token ' + token
 
                     localStorage.setItem('token', token)
+                    localStorage.setItem('username', this.username)
 
                     const toPath = this.$route.query.to || '/'
 
