@@ -46,20 +46,13 @@
       </div>
     </div>
 
-    <section class="section user-review">
+    <section class="section user-review" v-if="$store.state.isAuthenticated">
         <p class="title is-4">Ваша оценка</p>
-        <div class="tags has-addons">
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star-fill"></i></a>
-            <a class="tag"><i class="bi bi-star"></i></a>
-            <a class="tag"><i class="bi bi-star"></i></a>
-            <span class="tag is-primary">8</span>
+        <div class="tags has-addons" @mouseleave="score=0" @click="setScore()">
+            <a class="tag" v-for="i in 10" :key="i" @mouseover="score=i">
+              <i class="bi" :class="[score >= i ? 'bi-star-fill' : 'bi-star']"></i>
+            </a>
+            <span class="tag is-primary">{{ score }}</span>
         </div>
         <article class="media">
         <div class="media-content">
@@ -77,7 +70,7 @@
         </article>
     </section>
     <section class="section reviews">
-        <p class="title is-3">Все отзывы</p>
+        <p class="title is-3">Отзывы</p>
         <article class="media">
         <figure class="media-left">
             <p class="image is-64x64">
@@ -168,6 +161,7 @@ export default {
   data() {
     return {
       product: null,
+      score: 2,
     }
   },
   mounted() {
@@ -190,6 +184,18 @@ export default {
         })
 
       this.$store.commit('setIsLoading', false)
+    },
+    setScore(score) {
+      const product_slug = this.$route.params.product_slug
+
+      axios
+      .get(`/products/${brand_slug}/${product_slug}`)
+      .then(response => {
+        this.product = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
     }
   },
 }

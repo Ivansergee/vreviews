@@ -20,9 +20,11 @@ export default createStore({
         state.isAuthenticated = false
       }
     },
-    setToken(state, token, username) {
+    setToken(state, token) {
       state.token = token
       state.isAuthenticated = true
+    },
+    setUsername(state, username) {
       state.username = username
     },
     removeToken(state) {

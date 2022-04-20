@@ -24,7 +24,7 @@
                 <span class="icon">
                   <i class="fa-solid fa-user-large fa-lg"></i>
                 </span>
-                <span>{{this.$store.state.username}}</span>
+                <span>{{ $store.state.username }}</span>
               </span>
           </a>
           <a class="navbar-item" @click="logout()">
@@ -94,7 +94,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$store.state)
   }
 }
 </script>

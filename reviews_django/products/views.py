@@ -21,3 +21,6 @@ class BrandDetail(RetrieveAPIView):
 # class ProductList(ListAPIView):
 #     queryset = Product.published_objects.all()
 #     serializer_class = ProductSerializer
+
+
+class MakeReview():

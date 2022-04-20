@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -14,7 +15,8 @@ class Comment(models.Model):
 
 class Review(models.Model):
     author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
-    text = models.TextField()
+    score = models.IntegerField(max_length=2, validators=[MinValueValidator(1), MaxValueValidator(10)])
+    text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     comments = models.ManyToManyField(Comment, related_name='reviews')
 

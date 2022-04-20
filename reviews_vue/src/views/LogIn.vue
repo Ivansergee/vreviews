@@ -49,11 +49,9 @@ export default {
     methods: {
         async submitForm() {
             this.errors = []
-
             if (this.username === ''){
                 this.errors.push('Заполните имя пользователя')
             }
-
             if (this.password === ''){
                 this.errors.push('Введите пароль')
             }
@@ -69,7 +67,8 @@ export default {
                 .then(response => {
                     const token = response.data.auth_token
 
-                    this.$store.commit('setToken', token, this.username)
+                    this.$store.commit('setToken', token)
+                    this.$store.commit('setUsername', this.username)
 
                     axios.defaults.headers.common['Authorization'] = 'Token ' + token
 
