@@ -1,14 +1,17 @@
 from rest_framework import serializers
 
-from .models import Product, Brand, Producer, Flavor
+from .models import Product, Brand, Producer, Flavor, Review
 
 
 class FlavorSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Flavor
         fields = ['id', 'name']
 
+
 class ProductProducerSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Producer
         fields = ['name', 'country']
@@ -30,6 +33,7 @@ class BrandSerializer(serializers.ModelSerializer):
         model = Brand
         fields = ['id', 'name', 'description', 'slug', 'get_image', 'producer', 'products']
 
+
 class ProductBrandSerializer(serializers.ModelSerializer):
     producer = ProductProducerSerializer()
 
@@ -37,10 +41,18 @@ class ProductBrandSerializer(serializers.ModelSerializer):
         model = Brand
         fields = ['name', 'producer']
 
+
 class ProductSerializer(serializers.ModelSerializer):
     brand = ProductBrandSerializer()
     flavors = FlavorSerializer(many=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'slug', 'get_absolute_url', 'get_image', 'brand', 'flavors']
+        fields = ['id', 'name', 'description', 'slug', 'get_image', 'brand', 'flavors']
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = ['id', 'product', 'score', 'text']

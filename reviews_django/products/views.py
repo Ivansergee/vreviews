@@ -1,26 +1,46 @@
-from rest_framework.generics import RetrieveAPIView, ListAPIView
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
-from .serializers import ProductSerializer, BrandSerializer
-from .models import Product, Brand
+from .serializers import ProductSerializer, BrandSerializer, ReviewSerializer
+from .models import Product, Brand, Review
 
 
-class ProductDetail(RetrieveAPIView):
+class ProductDetail(generics.RetrieveAPIView):
     queryset = Product.published_objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'product_slug'
 
 
-class BrandDetail(RetrieveAPIView):
+class BrandDetail(generics.RetrieveAPIView):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'brand_slug'
 
 
-# class ProductList(ListAPIView):
+# class ProductsList(generics.ListAPIView):
 #     queryset = Product.published_objects.all()
 #     serializer_class = ProductSerializer
 
 
-class MakeReview():
+class CreateReview(generics.CreateAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        return serializer.save(author=self.request.user)
+
+
+class UpdateReview(generics.UpdateAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Review.objects.all()
+    lookup_url_kwarg = 'id'
+
+
+class DeleteReview(generics.DestroyAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Review.objects.all()
+    lookup_url_kwarg = 'id'

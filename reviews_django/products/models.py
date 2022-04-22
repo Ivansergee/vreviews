@@ -4,22 +4,6 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 
-class Reaction(models.Model):
-    author = models.ForeignKey(User, related_name='reactions', on_delete=models.CASCADE)
-    like = models.BooleanField()  # True = like, False = dislike
-
-class Comment(models.Model):
-    author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-class Review(models.Model):
-    author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
-    score = models.IntegerField(max_length=2, validators=[MinValueValidator(1), MaxValueValidator(10)])
-    text = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    comments = models.ManyToManyField(Comment, related_name='reviews')
-
 class Producer(models.Model):
     name = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
@@ -86,3 +70,26 @@ class Product(models.Model):
             return settings.HOST_URL + self.image.url
         else:
             return ''
+
+
+class Review(models.Model):
+    author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
+    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    text = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, related_name='comments', on_delete=models.CASCADE)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Reaction(models.Model):
+    author = models.ForeignKey(User, related_name='reactions', on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, related_name='reactions', blank=True, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, related_name='reactions', blank=True, on_delete=models.CASCADE)
+    like = models.BooleanField()  # True = like, False = dislike
+
