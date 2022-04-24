@@ -48,7 +48,7 @@
 
     <section class="section user-review" v-if="$store.state.isAuthenticated">
         <p class="title is-4">Ваша оценка</p>
-        <div class="tags has-addons" @mouseleave="score=0" @click="setScore()">
+        <div class="tags has-addons" @mouseleave="score=user_score" @click="createReview()">
             <a class="tag" v-for="i in 10" :key="i" @mouseover="score=i">
               <i class="bi" :class="[score >= i ? 'bi-star-fill' : 'bi-star']"></i>
             </a>
@@ -58,80 +58,82 @@
         <div class="media-content">
             <div class="field">
                 <p class="control">
-                    <textarea class="textarea" placeholder="Ваш отзыв..."></textarea>
+                    <textarea class="textarea" placeholder="Ваш отзыв..." v-model="user_review"></textarea>
                 </p>
             </div>
             <div class="field">
                 <p class="control">
-                    <button class="button">Отправить</button>
+                    <button class="button" @click="createReview()">Отправить</button>
                 </p>
             </div>
         </div>
         </article>
     </section>
+
     <section class="section reviews">
         <p class="title is-3">Отзывы</p>
-        <article class="media">
-        <figure class="media-left">
-            <p class="image is-64x64">
-            <img src="https://bulma.io/images/placeholders/128x128.png" />
-            </p>
-        </figure>
-        <div class="media-content">
-            <div class="content">
-            <p>
-                <strong>Barbara Middleton</strong>
-                <br />
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta
-                eros lacus, nec ultricies elit blandit non. Suspendisse pellentesque
-                mauris sit amet dolor blandit rutrum. Nunc in tempus turpis.
-                <br />
-                <small><a>Like</a> · <a>Dislike</a> · <a>Reply</a> · 04.04.22 11:45</small>
-            </p>
-            </div>
 
-            <article class="media">
-            <figure class="media-left">
-                <p class="image is-64x64">
-                <img src="https://bulma.io/images/placeholders/96x96.png" />
-                </p>
-            </figure>
-            <div class="media-content">
-                <div class="content">
-                <p>
-                    <strong>Kayli Eunice </strong> <small>05.04.22 15:32</small>
-                    <br />
-                    Sed convallis scelerisque mauris, non pulvinar nunc mattis vel.
-                    Maecenas varius felis sit amet magna vestibulum euismod
-                    malesuada cursus libero. Vestibulum ante ipsum primis in
-                    faucibus orci luctus et ultrices posuere cubilia Curae;
-                    Phasellus lacinia non nisl id feugiat.
-                    <br />
-                    
-                </p>
-                </div>
-            </div>
-            </article>
-        </div>
-        </article>
+        <div class="review" v-for="review in reviews" :key="review.id">
+          <article class="media">
+          <figure class="media-left">
+              <p class="image is-64x64">
+              <img src="http://localhost:8000/media/placeholder.jpg" />
+              </p>
+          </figure>
+          <div class="media-content">
+              <div class="content">
+              <p>
+                  <strong>{{ review.author }}</strong> <small>{{ review.created_at }}</small>
+                  <br />
+                  {{ review.text }}
+                  <br />
+                  <small><a>Like</a> · <a>Dislike</a> · <a>Reply</a> </small>
+              </p>
+              </div>
 
-        <article class="media">
-        <div class="media-content">
-            <div class="field">
-            <p class="control">
-                <textarea
-                class="textarea"
-                placeholder="Add a comment..."
-                ></textarea>
-            </p>
-            </div>
-            <div class="field">
-            <p class="control">
-                <button class="button">Post comment</button>
-            </p>
-            </div>
+              <article class="media">
+              <figure class="media-left">
+                  <p class="image is-64x64">
+                  <img src="http://localhost:8000/media/placeholder.jpg" />
+                  </p>
+              </figure>
+              <div class="media-content">
+                  <div class="content">
+                  <p>
+                      <strong>Kayli Eunice </strong> <small>05.04.22 15:32</small>
+                      <br />
+                      Sed convallis scelerisque mauris, non pulvinar nunc mattis vel.
+                      Maecenas varius felis sit amet magna vestibulum euismod
+                      malesuada cursus libero. Vestibulum ante ipsum primis in
+                      faucibus orci luctus et ultrices posuere cubilia Curae;
+                      Phasellus lacinia non nisl id feugiat.
+                      <br />
+                      
+                  </p>
+                  </div>
+              </div>
+              </article>
+          </div>
+          </article>
+
+          <article class="media">
+          <div class="media-content">
+              <div class="field">
+              <p class="control">
+                  <textarea
+                  class="textarea"
+                  placeholder="Add a comment..."
+                  ></textarea>
+              </p>
+              </div>
+              <div class="field">
+              <p class="control">
+                  <button class="button">Post comment</button>
+              </p>
+              </div>
+          </div>
+          </article>
         </div>
-        </article>
     </section>
   </div>
 </template>
@@ -161,11 +163,16 @@ export default {
   data() {
     return {
       product: null,
-      score: 2,
+      reviews: null,
+      score: 0,
+      user_score: 0,
+      user_review: '',
+      user_review_id: null,
     }
   },
   mounted() {
     this.getProductData()
+    this.getReviews()
   },
   methods: {
     async getProductData(){
@@ -185,17 +192,58 @@ export default {
 
       this.$store.commit('setIsLoading', false)
     },
-    setScore(score) {
+    async getReviews() {
       const product_slug = this.$route.params.product_slug
 
-      axios
-      .get(`/products/${brand_slug}/${product_slug}`)
-      .then(response => {
-        this.product = response.data
-      })
-      .catch(error => {
-        console.log(error)
-      })
+      await axios
+        .get(`/reviews/${product_slug}/`)
+        .then(response => {
+          this.reviews = response.data
+          
+          for (var i in response.data){
+            if (response.data[i].author == this.$store.state.username) {
+              this.user_review_id = response.data[i].id
+              this.user_score = response.data[i].score
+              this.score = response.data[i].score
+              this.user_review = response.data[i].text
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async createReview() {
+      const formData = {
+        product: this.product.id,
+        score: this.review_id ? this.user_score : this.score,
+        text: this.user_review
+      }
+
+      if (!this.user_review_id) {
+        await axios
+        .post('reviews/create/', formData)
+        .then(response => {
+          this.user_score = response.data.score
+          this.user_review = response.data.review
+          this.user_review_id = response.data.id
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      } else {
+        await axios
+        .patch(`reviews/${this.user_review_id}/edit/`, formData)
+        .then(response => {
+          this.user_score = response.data.score
+          this.user_review = response.data.review
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      }
+
+      this.getReviews()
     }
   },
 }

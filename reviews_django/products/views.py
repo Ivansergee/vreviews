@@ -1,7 +1,8 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
-from .serializers import ProductSerializer, BrandSerializer, ReviewSerializer
+from .serializers import ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer
 from .models import Product, Brand, Review
 
 
@@ -26,21 +27,32 @@ class BrandDetail(generics.RetrieveAPIView):
 
 class CreateReview(generics.CreateAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def perform_create(self, serializer):
+        print(self.request.user)
         return serializer.save(author=self.request.user)
 
 
 class UpdateReview(generics.UpdateAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Review.objects.all()
     lookup_url_kwarg = 'id'
 
 
 class DeleteReview(generics.DestroyAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Review.objects.all()
     lookup_url_kwarg = 'id'
+
+
+class ListReviews(generics.ListAPIView):
+    serializer_class = ProductReviewSerializer
+
+    def get_queryset(self):
+        product_slug = self.kwargs['product_slug']
+        queryset = Review.objects.filter(product__slug=product_slug)
+        return queryset

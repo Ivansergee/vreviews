@@ -56,3 +56,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'product', 'score', 'text']
+
+
+class ProductReviewSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+
+    class Meta:
+        model = Review
+        fields = ['id', 'author', 'score', 'text', 'created_at']
