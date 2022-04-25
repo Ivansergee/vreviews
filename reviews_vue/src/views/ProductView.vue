@@ -192,14 +192,16 @@ export default {
 
       this.$store.commit('setIsLoading', false)
     },
+
     async getReviews() {
+      const brand_slug = this.$route.params.brand_slug
       const product_slug = this.$route.params.product_slug
 
       await axios
-        .get(`/reviews/${product_slug}/`)
+        .get(`/products/${brand_slug}/${product_slug}/reviews`)
         .then(response => {
-          this.reviews = response.data
-          
+          this.reviews = []
+
           for (var i in response.data){
             if (response.data[i].author == this.$store.state.username) {
               this.user_review_id = response.data[i].id
@@ -207,12 +209,16 @@ export default {
               this.score = response.data[i].score
               this.user_review = response.data[i].text
             }
+            if (response.data[i].text){
+              this.reviews.push(response.data[i])
+            }
           }
         })
         .catch(error => {
           console.log(error)
         })
     },
+
     async createReview() {
       const formData = {
         product: this.product.id,
@@ -222,7 +228,7 @@ export default {
 
       if (!this.user_review_id) {
         await axios
-        .post('reviews/create/', formData)
+        .post('review/create/', formData)
         .then(response => {
           this.user_score = response.data.score
           this.user_review = response.data.review
@@ -233,7 +239,7 @@ export default {
         })
       } else {
         await axios
-        .patch(`reviews/${this.user_review_id}/edit/`, formData)
+        .patch(`review/${this.user_review_id}/edit/`, formData)
         .then(response => {
           this.user_score = response.data.score
           this.user_review = response.data.review
