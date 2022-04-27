@@ -1,0 +1,49 @@
+<template>
+        <article class="media">
+            <figure class="media-left">
+                <p class="image is-64x64">
+                <img src="http://localhost:8000/media/placeholder.jpg" />
+                </p>
+            </figure>
+            <div class="media-content">
+                <div class="content">
+                <p>
+                    <strong>{{ author }}</strong> <small>{{ created_at }}</small>
+                    <br />
+                    {{ text }}
+                    <br />
+                    <small>
+                    <a>Like</a> · 
+                    <a>Dislike</a>
+                </small>
+                </p>
+                </div>
+            </div>
+        </article>
+
+</template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  props: ['author', 'text', 'created_at'],
+  data() {
+      return {
+          showForm: false,
+          replyButton: 'Ответить',
+      }
+  },
+  methods: {
+      toggleReplyForm() {
+          if (this.showForm) {
+              this.replyButton = 'Ответить'
+              this.showForm = false
+          } else {
+              this.replyButton = 'Закрыть форму'
+              this.showForm = true
+          }
+      }
+  }
+}
+</script>

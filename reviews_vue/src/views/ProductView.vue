@@ -72,68 +72,18 @@
 
     <section class="section reviews">
         <p class="title is-3">Отзывы</p>
-
-        <div class="review" v-for="review in reviews" :key="review.id">
-          <article class="media">
-          <figure class="media-left">
-              <p class="image is-64x64">
-              <img src="http://localhost:8000/media/placeholder.jpg" />
-              </p>
-          </figure>
-          <div class="media-content">
-              <div class="content">
-              <p>
-                  <strong>{{ review.author }}</strong> <small>{{ review.created_at }}</small>
-                  <br />
-                  {{ review.text }}
-                  <br />
-                  <small><a>Like</a> · <a>Dislike</a> · <a>Reply</a> </small>
-              </p>
-              </div>
-
-              <article class="media">
-              <figure class="media-left">
-                  <p class="image is-64x64">
-                  <img src="http://localhost:8000/media/placeholder.jpg" />
-                  </p>
-              </figure>
-              <div class="media-content">
-                  <div class="content">
-                  <p>
-                      <strong>Kayli Eunice </strong> <small>05.04.22 15:32</small>
-                      <br />
-                      Sed convallis scelerisque mauris, non pulvinar nunc mattis vel.
-                      Maecenas varius felis sit amet magna vestibulum euismod
-                      malesuada cursus libero. Vestibulum ante ipsum primis in
-                      faucibus orci luctus et ultrices posuere cubilia Curae;
-                      Phasellus lacinia non nisl id feugiat.
-                      <br />
-                      
-                  </p>
-                  </div>
-              </div>
-              </article>
-          </div>
-          </article>
-
-          <article class="media">
-          <div class="media-content">
-              <div class="field">
-              <p class="control">
-                  <textarea
-                  class="textarea"
-                  placeholder="Add a comment..."
-                  ></textarea>
-              </p>
-              </div>
-              <div class="field">
-              <p class="control">
-                  <button class="button">Post comment</button>
-              </p>
-              </div>
-          </div>
-          </article>
-        </div>
+        <Review
+          v-for="review in reviews"
+          :key="review.id"
+          :id="review.id"
+          :author="review.author"
+          :score="review.score"
+          :text="review.text"
+          :created_at="review.created_at"
+          :comments="review.comments"
+          :commentingPostId="commentingPostId"
+          @commenting="setCommentingPostId"
+        />
     </section>
   </div>
 </template>
@@ -158,8 +108,12 @@ img {
 
 <script>
 import axios from 'axios'
+import Review from '../components/Review.vue'
 
 export default {
+  components: {
+    Review
+  },
   data() {
     return {
       product: null,
@@ -168,6 +122,7 @@ export default {
       user_score: 0,
       user_review: '',
       user_review_id: null,
+      commentingPostId: 0,
     }
   },
   mounted() {
@@ -175,6 +130,9 @@ export default {
     this.getReviews()
   },
   methods: {
+    setCommentingPostId(id) {
+      this.commentingPostId = id
+    },
     async getProductData(){
       this.$store.commit('setIsLoading', true)
 
@@ -202,7 +160,7 @@ export default {
         .then(response => {
           this.reviews = []
 
-          for (var i in response.data){
+          for (var i in response.data) {
             if (response.data[i].author == this.$store.state.username) {
               this.user_review_id = response.data[i].id
               this.user_score = response.data[i].score

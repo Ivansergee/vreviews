@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, Brand, Producer, Flavor, Review
+from .models import Product, Brand, Producer, Flavor, Review, Comment
 
 
 class FlavorSerializer(serializers.ModelSerializer):
@@ -51,6 +51,14 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'slug', 'get_image', 'brand', 'flavors']
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'author', 'text', 'created_at']
+
+
 class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -60,7 +68,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class ProductReviewSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()
+    comments = CommentSerializer(many=True)
 
     class Meta:
         model = Review
-        fields = ['id', 'author', 'score', 'text', 'created_at']
+        fields = ['id', 'author', 'score', 'text', 'created_at', 'comments']
