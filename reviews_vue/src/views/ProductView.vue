@@ -83,6 +83,7 @@
           :comments="review.comments"
           :commentingPostId="commentingPostId"
           @commenting="setCommentingPostId"
+          @commented="getReviews"
         />
     </section>
   </div>

@@ -52,11 +52,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'author', 'text', 'created_at']
+        fields = ['id', 'review', 'text', 'created_at']
 
 
 class ReviewSerializer(serializers.ModelSerializer):

@@ -12,10 +12,6 @@
                     <br />
                     {{ text }}
                     <br />
-                    <small>
-                    <a>Like</a> · 
-                    <a>Dislike</a>
-                </small>
                 </p>
                 </div>
             </div>

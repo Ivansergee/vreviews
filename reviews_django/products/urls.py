@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ProductDetail, BrandDetail, CreateReview, UpdateReview, DeleteReview, ListReviews
+from .views import ProductDetail, BrandDetail, CreateReview, UpdateReview, DeleteReview, ListReviews, CreateComment
 
 
 urlpatterns = [
@@ -13,8 +13,7 @@ urlpatterns = [
     path('review/<int:id>/edit/', UpdateReview.as_view(), name='edit_review'),
     path('review/<int:id>/delete/', DeleteReview.as_view(), name='delete_review'),
     
-    path('review/<int:id>/comment/', DeleteReview.as_view(), name='comment_review'),
+    path('review/<int:id>/comment/', CreateComment.as_view(), name='create_comment'),
     path('review/<int:id>/rate/', DeleteReview.as_view(), name='rate_review'),
-    path('comment/<int:id>/rate/', DeleteReview.as_view(), name='rate_comment'),
 
 ]

@@ -39,13 +39,14 @@
             <p class="control">
                 <textarea
                 class="textarea"
-                placeholder="Add a comment..."
+                placeholder="Ваш комментарий..."
+                v-model="commentText"
                 ></textarea>
             </p>
             </div>
             <div class="field">
             <p class="control">
-                <button class="button">Post comment</button>
+                <button class="button" @click="addComment()">Отправить</button>
             </p>
             </div>
         </div>
@@ -68,22 +69,37 @@ export default {
       Comment,
   },
   props: ['id', 'author', 'score', 'text', 'created_at', 'comments', 'commentingPostId'],
-  emits: ['commenting'],
+  emits: ['commenting', 'commented'],
   data() {
       return {
           replyButton: 'Ответить',
-          button: true
+          commentText: null,
       }
   },
   methods: {
-      toggleReplyForm() {
-        if (this.commentingPostId === this.id){
-            this.$emit('commenting', 0)
-        } else {
-            this.$emit('commenting', this.id)
-        }
-      },
-      
-  }
+        toggleReplyForm() {
+            if (this.commentingPostId === this.id){
+                this.$emit('commenting', 0)
+            } else {
+                this.$emit('commenting', this.id)
+            }
+        },
+
+        async addComment() {
+            const formData = {
+                review: this.id,
+                text: this.commentText
+            }
+            await axios
+            .post(`review/${this.id}/comment/`, formData)
+            .then(response => {
+                this.$emit('commented')
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
+  },
+
 }
 </script>

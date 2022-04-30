@@ -75,23 +75,22 @@ class Product(models.Model):
 
 
 class Review(models.Model):
-    author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
-    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE, blank=False)
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE, blank=False)
+    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
     text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
-    review = models.ForeignKey(Review, related_name='comments', on_delete=models.CASCADE)
-    text = models.TextField()
+    author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE, blank=False)
+    review = models.ForeignKey(Review, related_name='comments', on_delete=models.CASCADE, blank=False)
+    text = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Reaction(models.Model):
-    author = models.ForeignKey(User, related_name='reactions', on_delete=models.CASCADE)
-    review = models.ForeignKey(Review, related_name='reactions', blank=True, on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment, related_name='reactions', blank=True, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='reactions', on_delete=models.CASCADE, blank=False)
+    review = models.ForeignKey(Review, related_name='reactions', on_delete=models.CASCADE, blank=False)
     like = models.BooleanField()  # True = like, False = dislike
 
