@@ -80,6 +80,8 @@ class Review(models.Model):
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
     text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+    dislikes = models.IntegerField(validators=[MinValueValidator(0)], default=0)
 
 
 class Comment(models.Model):

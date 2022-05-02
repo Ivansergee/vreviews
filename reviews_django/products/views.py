@@ -64,5 +64,8 @@ class CreateComment(generics.CreateAPIView):
     authentication_classes = [TokenAuthentication]
 
     def perform_create(self, serializer):
-        print(self.request.user)
         return serializer.save(author=self.request.user)
+
+
+class LikeReview(generics.CreateAPIView):
+    pass

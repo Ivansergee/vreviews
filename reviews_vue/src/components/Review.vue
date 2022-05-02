@@ -99,6 +99,21 @@ export default {
                 console.log(error)
             })
         },
+
+        async addReaction(reaction) {
+            const formData = {
+                review: this.id,
+                reaction: this.commentText
+            }
+            await axios
+            .post(`review/${this.id}/comment/`, formData)
+            .then(response => {
+                this.$emit('commented')
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
   },
 
 }
