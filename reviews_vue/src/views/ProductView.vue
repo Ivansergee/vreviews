@@ -80,10 +80,14 @@
           :score="review.score"
           :text="review.text"
           :created_at="review.created_at"
+          :likesCount="review.likes_count"
+          :dislikesCount="review.dislikes_count"
+          :userReaction="review.user_reaction"
           :comments="review.comments"
           :commentingPostId="commentingPostId"
           @commenting="setCommentingPostId"
           @commented="getReviews"
+          @rated="setRated"
         />
     </section>
   </div>
@@ -134,14 +138,35 @@ export default {
     setCommentingPostId(id) {
       this.commentingPostId = id
     },
+
+    setRated(data) {
+      for (var i in this.reviews) {
+        if (this.reviews[i].id == data.id) {
+          this.reviews[i].user_reaction = data.like
+          if (data.like) {
+            this.reviews[i].likes_count += 1
+          } else {
+            this.reviews[i].dislikes_count += 1
+          }
+        }
+      }
+    },
+
+    unsetRated(id) {
+      for (var i in this.reviews) {
+        if (this.reviews[i].id == id) {
+          this.reviews[i].user_reaction = null
+        }
+      }
+    },
+
     async getProductData(){
       this.$store.commit('setIsLoading', true)
 
-      const brand_slug = this.$route.params.brand_slug
       const product_slug = this.$route.params.product_slug
 
       await axios
-        .get(`/products/${brand_slug}/${product_slug}`)
+        .get(`/products/${product_slug}`)
         .then(response => {
           this.product = response.data
         })
@@ -153,11 +178,12 @@ export default {
     },
 
     async getReviews() {
-      const brand_slug = this.$route.params.brand_slug
+      this.$store.commit('setIsLoading', true)
+
       const product_slug = this.$route.params.product_slug
 
       await axios
-        .get(`/products/${brand_slug}/${product_slug}/reviews`)
+        .get(`/products/${product_slug}/reviews/`)
         .then(response => {
           this.reviews = []
 
@@ -176,6 +202,8 @@ export default {
         .catch(error => {
           console.log(error)
         })
+      
+      this.$store.commit('setIsLoading', false)
     },
 
     async createReview() {

@@ -5,7 +5,7 @@ export default createStore({
     isAuthenticated: false,
     token: null,
     isLoading: false,
-    username: null
+    username: null,
   },
   getters: {
   },
@@ -34,7 +34,7 @@ export default createStore({
     },
     setIsLoading(state, status) {
       state.isLoading = status
-    }
+    },
   },
   actions: {
   },

@@ -16,8 +16,12 @@
                 {{ text }}
                 <br />
                 <small>
-                    <a>Like</a> · 
-                    <a>Dislike</a> · 
+                    <a @click="addReaction(true)">
+                        <i class="fa-thumbs-up" :class="[userReaction === true ? 'fa-solid' : 'fa-regular']"></i>
+                    </a> <small>{{ likesCount }}</small> · 
+                    <a @click="addReaction(false)">
+                        <i class="fa-thumbs-down" :class="[userReaction === false ? 'fa-solid' : 'fa-regular']"></i>
+                    </a> <small>{{ dislikesCount }}</small> · 
                     <a @click="toggleReplyForm()">{{ commentingPostId === id ? 'Закрыть' : 'Ответить' }}</a>
                 </small>
             </p>
@@ -68,11 +72,10 @@ export default {
   components: {
       Comment,
   },
-  props: ['id', 'author', 'score', 'text', 'created_at', 'comments', 'commentingPostId'],
-  emits: ['commenting', 'commented'],
+  props: ['id', 'author', 'score', 'text', 'created_at', 'comments', 'commentingPostId', 'userReaction', 'likesCount', 'dislikesCount'],
+  emits: ['commenting', 'commented', 'rated'],
   data() {
       return {
-          replyButton: 'Ответить',
           commentText: null,
       }
   },
@@ -94,6 +97,8 @@ export default {
             .post(`review/${this.id}/comment/`, formData)
             .then(response => {
                 this.$emit('commented')
+                this.commentText = null
+                this.toggleReplyForm()
             })
             .catch(error => {
                 console.log(error)
@@ -101,14 +106,23 @@ export default {
         },
 
         async addReaction(reaction) {
-            const formData = {
-                review: this.id,
-                reaction: this.commentText
-            }
             await axios
-            .post(`review/${this.id}/comment/`, formData)
+            .post(`review/${this.id}/rate/`, {like: reaction})
             .then(response => {
-                this.$emit('commented')
+                console.log(response)
+                this.$emit('rated', {id: this.id, like: reaction})
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
+
+        async removeReaction(reaction) {
+            await axios
+            .delete(`reaction/${this.id}/rate/`, {like: reaction})
+            .then(response => {
+                console.log(response)
+                this.$emit('rated', {id: this.id, like: reaction})
             })
             .catch(error => {
                 console.log(error)

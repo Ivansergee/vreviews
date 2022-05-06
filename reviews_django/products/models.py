@@ -3,11 +3,9 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from datetime import datetime
-
 
 class Producer(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     country = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     slug = models.SlugField(blank=True, db_index=True)
@@ -16,7 +14,7 @@ class Producer(models.Model):
         return self.name
 
 class Brand(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     producer = models.ForeignKey(Producer, related_name='brands', on_delete=models.PROTECT)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='brands/', default='placeholder.jpg')
@@ -35,7 +33,7 @@ class Brand(models.Model):
             return ''
 
 class Flavor(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -80,8 +78,18 @@ class Review(models.Model):
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
     text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    likes = models.IntegerField(validators=[MinValueValidator(0)], default=0)
-    dislikes = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+
+    def __str__(self):
+        return f"{self.product} {self.author}'s review"
+
+    def get_total_likes(self):
+        pass
+    
+    def get_total_dislikes(self):
+        pass
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['author', 'product'], name='unique_review')]
 
 
 class Comment(models.Model):
@@ -90,9 +98,18 @@ class Comment(models.Model):
     text = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'{self.review} comment'
+
 
 class Reaction(models.Model):
     author = models.ForeignKey(User, related_name='reactions', on_delete=models.CASCADE, blank=False)
     review = models.ForeignKey(Review, related_name='reactions', on_delete=models.CASCADE, blank=False)
     like = models.BooleanField()  # True = like, False = dislike
+
+    def __str__(self):
+        return f'{self.review}' + (' like' if self.like else ' dislike') + f' by {self.author}'
+    
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['author', 'review'], name='unique_reaction')]
 

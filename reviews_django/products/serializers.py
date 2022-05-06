@@ -52,10 +52,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'review', 'text', 'created_at']
+        fields = ['id', 'author', 'review', 'text', 'created_at']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -65,18 +66,22 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ['id', 'product', 'score', 'text']
 
 
-class ProductReviewSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
-    comments = CommentSerializer(many=True)
-
-    class Meta:
-        model = Review
-        fields = ['id', 'author', 'score', 'text', 'created_at', 'comments', 'likes', 'dislikes']
-
-
 class ReactionSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()
+    review = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Reaction
         fields = ['id', 'author', 'review', 'like']
+
+
+class ProductReviewSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+    comments = CommentSerializer(many=True)
+    likes_count = serializers.IntegerField()
+    dislikes_count = serializers.IntegerField()
+    user_reaction = serializers.BooleanField()
+
+    class Meta:
+        model = Review
+        fields = ['id', 'author', 'score', 'text', 'created_at', 'likes_count', 'dislikes_count', 'user_reaction', 'comments']

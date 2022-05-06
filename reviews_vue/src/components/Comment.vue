@@ -24,22 +24,5 @@ import axios from 'axios'
 
 export default {
   props: ['author', 'text', 'created_at'],
-  data() {
-      return {
-          showForm: false,
-          replyButton: 'Ответить',
-      }
-  },
-  methods: {
-      toggleReplyForm() {
-          if (this.showForm) {
-              this.replyButton = 'Ответить'
-              this.showForm = false
-          } else {
-              this.replyButton = 'Закрыть форму'
-              this.showForm = true
-          }
-      }
-  }
 }
 </script>

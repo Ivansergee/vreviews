@@ -91,6 +91,9 @@ export default {
                         console.log(error.message)
                     }
                 })
+
+                await axios
+                .get()
             }
         }
     }

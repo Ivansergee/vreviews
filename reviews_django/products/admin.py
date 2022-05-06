@@ -8,4 +8,5 @@ admin.site.register(Producer)
 admin.site.register(Review)
 admin.site.register(Reaction)
 admin.site.register(Comment)
+admin.site.register(Flavor)
 
