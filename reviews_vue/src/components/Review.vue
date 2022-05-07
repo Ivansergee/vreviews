@@ -16,10 +16,10 @@
                 {{ text }}
                 <br />
                 <small>
-                    <a @click="addReaction(true)">
+                    <a @click="manageReaction(true)">
                         <i class="fa-thumbs-up" :class="[userReaction === true ? 'fa-solid' : 'fa-regular']"></i>
                     </a> <small>{{ likesCount }}</small> · 
-                    <a @click="addReaction(false)">
+                    <a @click="manageReaction(false)">
                         <i class="fa-thumbs-down" :class="[userReaction === false ? 'fa-solid' : 'fa-regular']"></i>
                     </a> <small>{{ dislikesCount }}</small> · 
                     <a @click="toggleReplyForm()">{{ commentingPostId === id ? 'Закрыть' : 'Ответить' }}</a>
@@ -105,29 +105,41 @@ export default {
             })
         },
 
-        async addReaction(reaction) {
-            await axios
-            .post(`review/${this.id}/rate/`, {like: reaction})
-            .then(response => {
-                console.log(response)
-                this.$emit('rated', {id: this.id, like: reaction})
-            })
-            .catch(error => {
-                console.log(error)
-            })
+        async manageReaction(reaction) {
+            console.log(this.userReaction)
+            if (this.userReaction === null){
+                await axios
+                .post(`review/${this.id}/rate/`, {like: reaction})
+                .then(response => {
+                    console.log(response)
+                    this.$emit('rated', {id: this.id, like: reaction})
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else if (this.userReaction !== reaction) {
+                await axios
+                .patch(`review/${this.id}/edit-reaction/`, {like: reaction})
+                .then(response => {
+                    console.log(response)
+                    this.$emit('rated', {id: this.id, like: reaction})
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else {
+                await axios
+                .delete(`review/${this.id}/edit-reaction/`)
+                .then(response => {
+                    console.log(response)
+                    this.$emit('rated', {id: this.id, like: reaction})
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
         },
 
-        async removeReaction(reaction) {
-            await axios
-            .delete(`reaction/${this.id}/rate/`)
-            .then(response => {
-                console.log(response)
-                this.$emit('unrate', this.id)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        },
   },
 
 }

@@ -98,6 +98,7 @@ class UpdateDeleteReaction(mixins.UpdateModelMixin, mixins.DestroyModelMixin, ge
     def get_object(self):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, author=self.request.user)
+        return obj
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)

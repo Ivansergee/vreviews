@@ -143,12 +143,30 @@ export default {
     setRated(data) {
       for (var i in this.reviews) {
         if (this.reviews[i].id == data.id) {
-          this.reviews[i].user_reaction = data.like
-          if (data.like) {
-            this.reviews[i].likes_count += 1
+
+          if (this.reviews[i].user_reaction === null){
+            this.reviews[i].user_reaction = data.like
+            data.like ? this.reviews[i].likes_count += 1 : this.reviews[i].dislikes_count += 1
+          } else if (this.reviews[i].user_reaction === true) {
+            if (data.like) {
+              this.reviews[i].user_reaction = null
+              this.reviews[i].likes_count -= 1
+            } else {
+              this.reviews[i].user_reaction = data.like
+              this.reviews[i].likes_count -= 1
+              this.reviews[i].dislikes_count += 1
+            }
           } else {
-            this.reviews[i].dislikes_count += 1
+            if (!data.like) {
+              this.reviews[i].user_reaction = null
+              this.reviews[i].dislikes_count -= 1
+            } else {
+              this.reviews[i].user_reaction = data.like
+              this.reviews[i].likes_count += 1
+              this.reviews[i].dislikes_count -= 1
+            }
           }
+
         }
       }
     },
