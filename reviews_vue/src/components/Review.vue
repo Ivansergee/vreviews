@@ -106,12 +106,10 @@ export default {
         },
 
         async manageReaction(reaction) {
-            console.log(this.userReaction)
             if (this.userReaction === null){
                 await axios
                 .post(`review/${this.id}/rate/`, {like: reaction})
                 .then(response => {
-                    console.log(response)
                     this.$emit('rated', {id: this.id, like: reaction})
                 })
                 .catch(error => {
@@ -121,7 +119,6 @@ export default {
                 await axios
                 .patch(`review/${this.id}/edit-reaction/`, {like: reaction})
                 .then(response => {
-                    console.log(response)
                     this.$emit('rated', {id: this.id, like: reaction})
                 })
                 .catch(error => {
@@ -131,7 +128,6 @@ export default {
                 await axios
                 .delete(`review/${this.id}/edit-reaction/`)
                 .then(response => {
-                    console.log(response)
                     this.$emit('rated', {id: this.id, like: reaction})
                 })
                 .catch(error => {
