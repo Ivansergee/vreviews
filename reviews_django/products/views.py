@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
 from django.db.models import Count, Q, OuterRef, Subquery
+from django.shortcuts import get_object_or_404
 
 from .serializers import ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer, CommentSerializer, ReactionSerializer
 from .models import Product, Brand, Review, Reaction
@@ -91,8 +92,12 @@ class UpdateDeleteReaction(mixins.UpdateModelMixin, mixins.DestroyModelMixin, ge
     authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
-        queryset = Reaction.objects.filter(review=self.kwargs['id'], author=self.request.user)
+        queryset = Reaction.objects.filter(review=self.kwargs['id'])
         return queryset
+    
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, author=self.request.user)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)

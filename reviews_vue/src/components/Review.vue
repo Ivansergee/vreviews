@@ -73,7 +73,7 @@ export default {
       Comment,
   },
   props: ['id', 'author', 'score', 'text', 'created_at', 'comments', 'commentingPostId', 'userReaction', 'likesCount', 'dislikesCount'],
-  emits: ['commenting', 'commented', 'rated'],
+  emits: ['commenting', 'commented', 'rated', 'unrate'],
   data() {
       return {
           commentText: null,
@@ -119,10 +119,10 @@ export default {
 
         async removeReaction(reaction) {
             await axios
-            .delete(`reaction/${this.id}/rate/`, {like: reaction})
+            .delete(`reaction/${this.id}/rate/`)
             .then(response => {
                 console.log(response)
-                this.$emit('rated', {id: this.id, like: reaction})
+                this.$emit('unrate', this.id)
             })
             .catch(error => {
                 console.log(error)

@@ -88,6 +88,7 @@
           @commenting="setCommentingPostId"
           @commented="getReviews"
           @rated="setRated"
+          @unrate="unsetRated"
         />
     </section>
   </div>
