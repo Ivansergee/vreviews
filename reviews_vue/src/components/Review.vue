@@ -62,6 +62,14 @@
 .reply-form {
     margin-bottom: 2em;
 }
+
+.fa-thumbs-up {
+    color: green;
+}
+
+.fa-thumbs-down {
+    color: red;
+}
 </style>
 
 <script>
