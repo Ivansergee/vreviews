@@ -1,6 +1,6 @@
 <template>
-    <div class="review">
-        <article class="media">
+<div class="review">
+    <article class="media">
         <figure class="media-left">
             <p class="image is-64x64">
             <img src="http://localhost:8000/media/placeholder.jpg" />
@@ -35,9 +35,9 @@
               :created_at="comment.created_at"
             />
         </div>
-        </article>
+    </article>
 
-        <article class="media reply-form">
+    <article class="media reply-form">
         <div class="media-content" v-if="commentingPostId === id">
             <div class="field">
             <p class="control">
@@ -54,8 +54,8 @@
             </p>
             </div>
         </div>
-        </article>
-    </div>
+    </article>
+</div>
 </template>
 
 <style scoped>
@@ -80,8 +80,19 @@ export default {
   components: {
       Comment,
   },
-  props: ['id', 'author', 'score', 'text', 'created_at', 'comments', 'commentingPostId', 'userReaction', 'likesCount', 'dislikesCount'],
-  emits: ['commenting', 'commented', 'rated', 'unrate'],
+  props: [
+      'id',
+      'author',
+      'score',
+      'text',
+      'created_at',
+      'comments',
+      'commentingPostId',
+      'userReaction',
+      'likesCount',
+      'dislikesCount'
+  ],
+  emits: ['commenting', 'commented', 'rated'],
   data() {
       return {
           commentText: null,

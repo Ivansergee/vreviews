@@ -70,6 +70,19 @@ class Product(models.Model):
             return settings.HOST_URL + self.image.url
         else:
             return ''
+    
+    def get_avg_score(self):
+        p = Product.published_objects.get(slug=self.slug)
+        avg_score = p.reviews.all().aggregate(models.Avg('score'))['score__avg']
+        return round(avg_score, 1)
+
+    def get_reviews_amount(self):
+        p = Product.published_objects.get(slug=self.slug)
+        return p.reviews.exclude(text__exact='').count()
+
+    def get_score_amount(self):
+        p = Product.published_objects.get(slug=self.slug)
+        return p.reviews.all().count()
 
 
 class Review(models.Model):

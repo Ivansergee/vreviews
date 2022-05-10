@@ -37,40 +37,63 @@
           <p class="title is-4">Оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">7.4</span>
+            <span class="tag is-primary">{{ product.get_avg_score }}</span>
           </div>
-          <p><strong>Отзывов:</strong> 15</p>
-          <p><strong>Оценок:</strong> 25</p>
+          <p><strong>Отзывов: </strong>{{ product.get_reviews_amount }}</p>
+          <p><strong>Оценок: </strong>{{ product.get_score_amount }}</p>
           <p><strong>Место в рейтинге:</strong> 10</p>
         </div>
       </div>
     </div>
 
-    <section class="section user-review" v-if="$store.state.isAuthenticated">
-        <p class="title is-4">Ваша оценка</p>
-        <div class="tags has-addons" @mouseleave="score=user_score" @click="createReview()">
+    <section class="user-review" v-if="$store.state.isAuthenticated">
+      <p class="title is-4">Ваша оценка</p>
+      <div v-if="!user_review">
+        <div class="tags has-addons" @mouseleave="score=user_score" @click="setScore()">
             <a class="tag" v-for="i in 10" :key="i" @mouseover="score=i">
               <i class="bi" :class="[score >= i ? 'bi-star-fill' : 'bi-star']"></i>
             </a>
             <span class="tag is-primary">{{ score }}</span>
         </div>
         <article class="media">
-        <div class="media-content">
-            <div class="field">
-                <p class="control">
-                    <textarea class="textarea" placeholder="Ваш отзыв..." v-model="user_review"></textarea>
-                </p>
-            </div>
-            <div class="field">
-                <p class="control">
-                    <button class="button" @click="createReview()">Отправить</button>
-                </p>
-            </div>
-        </div>
+          <div class="media-content">
+              <div class="field">
+                  <p class="control">
+                      <textarea class="textarea" placeholder="Ваш отзыв..." v-model="new_user_review"></textarea>
+                  </p>
+              </div>
+              <div class="field">
+                  <p class="control">
+                      <button class="button" @click="addReview()">Отправить</button>
+                  </p>
+              </div>
+          </div>
         </article>
+      </div>
+      <div v-else>
+        <p><strong>Оценка: </strong>{{ user_score }}</p>
+        <p><strong>Отзыв: </strong><br>{{ user_review }}</p>
+        <div class="mt-5">
+          <button class="button is-info mr-2" @click="new_user_review=user_review; user_review=''">Редактировать</button>
+          <button class="button is-danger ml-2" @click="activeModal=true">Удалить</button>
+        </div>
+      </div>
     </section>
 
-    <section class="section reviews">
+    <div class="modal is-align-items-center" :class="{'is-active': activeModal}">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <p class="mb-5">Вы уверены?</p>
+            <div class="controls">
+              <button class="button is-danger mr-2" @click="deleteReview()">Удалить</button>
+              <button class="button is-light ml-2" @click="activeModal=false">Отмена</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <section class="reviews">
         <p class="title is-3">Отзывы</p>
         <Review
           v-for="review in reviews"
@@ -88,7 +111,6 @@
           @commenting="setCommentingPostId"
           @commented="getReviews"
           @rated="setRated"
-          @unrate="unsetRated"
         />
     </section>
   </div>
@@ -101,7 +123,9 @@ img {
 }
 .user-review {
     border-top: 2px solid rgb(90, 90, 90);
+    border-bottom: 2px solid rgb(90, 90, 90);
     padding-top: 1em;
+    padding-bottom: 1em;
 }
 .reviews {
     margin-top: 2em;
@@ -110,6 +134,14 @@ img {
   max-width: 80%;
   margin: auto;
 }
+.controls {
+  display: flex;
+  justify-content: center;
+}
+.box p {
+  text-align: center;
+}
+
 </style>
 
 <script>
@@ -127,8 +159,10 @@ export default {
       score: 0,
       user_score: 0,
       user_review: '',
+      new_user_review: null,
       user_review_id: null,
       commentingPostId: 0,
+      activeModal: false,
     }
   },
   mounted() {
@@ -167,14 +201,6 @@ export default {
             }
           }
 
-        }
-      }
-    },
-
-    unsetRated(id) {
-      for (var i in this.reviews) {
-        if (this.reviews[i].id == id) {
-          this.reviews[i].user_reaction = null
         }
       }
     },
@@ -225,11 +251,11 @@ export default {
       this.$store.commit('setIsLoading', false)
     },
 
-    async createReview() {
+    async addReview() {
       const formData = {
         product: this.product.id,
         score: this.review_id ? this.user_score : this.score,
-        text: this.user_review
+        text: this.new_user_review
       }
 
       if (!this.user_review_id) {
@@ -256,7 +282,54 @@ export default {
       }
 
       this.getReviews()
-    }
+    },
+
+    async deleteReview() {
+      await axios
+        .delete(`review/${this.user_review_id}/delete/`)
+        .then(response => {
+          this.user_score = 0
+          this.score = 0
+          this.user_review = ''
+          this.new_user_review = ''
+          this.user_review_id = null
+          this.activeModal = false
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      this.getReviews()
+    },
+
+    async setScore() {
+      const formData = {
+        product: this.product.id,
+        score: this.review_id ? this.user_score : this.score,
+      }
+
+      if (!this.user_review_id) {
+        await axios
+        .post('review/create/', formData)
+        .then(response => {
+          this.user_score = response.data.score
+          this.user_review_id = response.data.id
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      } else {
+        await axios
+        .patch(`review/${this.user_review_id}/edit/`, formData)
+        .then(response => {
+          this.user_score = response.data.score
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      }
+
+    },
+
   },
 }
 </script>

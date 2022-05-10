@@ -48,7 +48,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'slug', 'get_image', 'brand', 'flavors']
+        fields = [
+            'id',
+            'name',
+            'description',
+            'slug',
+            'get_image',
+            'brand',
+            'flavors',
+            'get_reviews_amount',
+            'get_avg_score',
+            'get_score_amount'
+        ]
 
 
 class CommentSerializer(serializers.ModelSerializer):
