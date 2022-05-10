@@ -3,7 +3,7 @@ from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
-from django.db.models import Count, Q, OuterRef, Subquery
+from django.db.models import Avg, Count, Q, OuterRef, Subquery
 from django.shortcuts import get_object_or_404
 
 from .serializers import ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer, CommentSerializer, ReactionSerializer
@@ -24,9 +24,9 @@ class BrandDetail(generics.RetrieveAPIView):
     lookup_url_kwarg = 'brand_slug'
 
 
-# class ProductsList(generics.ListAPIView):
-#     queryset = Product.published_objects.all()
-#     serializer_class = ProductSerializer
+class ProductsList(generics.ListAPIView):
+    queryset = Product.published_objects.annotate(avg_score=Avg('reviews__score')).order_by('-avg_score')
+    serializer_class = ProductSerializer
 
 
 class CreateReview(generics.CreateAPIView):

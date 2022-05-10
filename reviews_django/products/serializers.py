@@ -1,13 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, Brand, Producer, Flavor, Review, Comment, Reaction
-
-
-class FlavorSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Flavor
-        fields = ['id', 'name']
+from .models import Product, Brand, Producer, Review, Comment, Reaction
 
 
 class ProductProducerSerializer(serializers.ModelSerializer):
@@ -18,11 +11,21 @@ class ProductProducerSerializer(serializers.ModelSerializer):
 
 
 class BrandProductSerializer(serializers.ModelSerializer):
-    flavors = FlavorSerializer(many=True)
+    flavors = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'slug', 'get_absolute_url', 'get_image', 'flavors']
+        fields = [
+            'id',
+            'name',
+            'slug',
+            'get_absolute_url',
+            'get_image',
+            'flavors',
+            'get_reviews_amount',
+            'get_avg_score',
+            'get_score_amount'
+        ]
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -31,7 +34,18 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ['id', 'name', 'description', 'slug', 'get_image', 'producer', 'products']
+        fields = [
+            'id',
+            'name',
+            'description',
+            'slug',
+            'get_image',
+            'get_reviews_amount',
+            'get_avg_score',
+            'get_score_amount',
+            'producer',
+            'products'
+        ]
 
 
 class ProductBrandSerializer(serializers.ModelSerializer):
@@ -44,7 +58,7 @@ class ProductBrandSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     brand = ProductBrandSerializer()
-    flavors = FlavorSerializer(many=True)
+    flavors = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Product
@@ -56,6 +70,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'get_image',
             'brand',
             'flavors',
+            'get_absolute_url',
             'get_reviews_amount',
             'get_avg_score',
             'get_score_amount'

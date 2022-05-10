@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg, Count, Sum, F
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -31,6 +32,24 @@ class Brand(models.Model):
             return settings.HOST_URL + self.image.url
         else:
             return ''
+    
+    def get_avg_score(self):
+        p = Product.published_objects.filter(brand__slug=self.slug)
+        avg = p.annotate(avg_score=Avg('reviews__score')).aggregate(
+            avg_score_brand=Avg(F('avg_score')))['avg_score_brand']
+        return round(avg, 1)
+
+    def get_reviews_amount(self):
+        p = Product.published_objects.filter(brand__slug=self.slug)
+        n = p.annotate(rev_amount=Count('reviews')).aggregate(
+            rev_amount_brand=Sum(F('rev_amount')))['rev_amount_brand']
+        return n
+
+    def get_score_amount(self):
+        p = Product.published_objects.filter(brand__slug=self.slug)
+        n = p.annotate(score_amount=Count('reviews__score')).aggregate(
+            score_amount_brand=Sum(F('score_amount')))['score_amount_brand']
+        return n
 
 class Flavor(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -73,7 +92,7 @@ class Product(models.Model):
     
     def get_avg_score(self):
         p = Product.published_objects.get(slug=self.slug)
-        avg_score = p.reviews.all().aggregate(models.Avg('score'))['score__avg']
+        avg_score = p.reviews.all().aggregate(Avg('score'))['score__avg']
         return round(avg_score, 1)
 
     def get_reviews_amount(self):

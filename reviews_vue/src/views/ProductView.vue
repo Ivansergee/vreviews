@@ -21,7 +21,7 @@
           <p><strong>Производитель:</strong> {{ product.brand.producer.name }}</p>
           <p><strong>Вкусы:</strong></p>
           <p class="tags">
-            <a class="tag is-info" v-for="flavor in product.flavors" :key="flavor.id">{{ flavor.name }}</a>
+            <a class="tag is-info" v-for="flavor in product.flavors" :key="flavor.id">{{ flavor }}</a>
           </p>
           <p><strong>Содержание никотина:</strong></p>
           <p class="tags">

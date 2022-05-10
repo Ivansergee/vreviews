@@ -26,43 +26,27 @@
           <p class="title is-4">Средняя оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">8.2</span>
+            <span class="tag is-primary">{{ brand.get_avg_score }}</span>
           </div>
-          <p><strong>Отзывов:</strong> 15</p>
-          <p><strong>Оценок:</strong> 25</p>
+          <p><strong>Отзывов:</strong> {{ brand.get_reviews_amount }}</p>
+          <p><strong>Оценок:</strong> {{ brand.get_score_amount }}</p>
         </div>
       </div>
     </div>
 
     <div class="products">
       <p class="title">Все вкусы {{ brand.name }}</p>
-          
-          <div class="columns is-vcentered" v-for="product in brand.products" :key="product.id">
-            <div class="column is-2">
-              <figure class="image is-1by1">
-                <img
-                  :src=product.get_image
-                />
-              </figure>
-            </div>
-            <div class="column is-3">
-                <p class="title is-5"><a :href="product.get_absolute_url">{{ product.name }}</a></p>
-                <p class="is-italic is-size-6">Клубничный лимонад</p>
-            </div>
-            <div class="column is-2">
-                <span><i class="bi bi-chat-left-text"></i> 10   </span>
-                <span><i class="bi bi-star-fill"></i> 15</span>
-            </div>
-            <div class="column">
-                <p class="tags">
-                    <span class="tag is-info" v-for="flavor in product.flavors" :key="flavor.id">{{ flavor.name }}</span>
-                </p>
-            </div>
-            <div class="column">
-                <span class="tag is-primary is-large"><i class="bi bi-star-fill"></i> 7.4</span>
-            </div>
-          </div>
-
+      <Product
+        v-for="product in brand.products"
+        :key="product.id"
+        :name="product.name"
+        :image="product.get_image"
+        :absolute_url="product.get_absolute_url"
+        :avg_score="product.get_avg_score"
+        :flavors="product.flavors"
+        :reviews_amount="product.get_reviews_amount"
+        :score_amount="product.get_score_amount"
+      />
     </div>
   </div>
 </template>
@@ -88,8 +72,12 @@ img {
 
 <script>
 import axios from 'axios'
+import Product from '../components/Product.vue'
 
 export default {
+  components: {
+    Product
+  },
   data() {
     return {
       brand: null,
