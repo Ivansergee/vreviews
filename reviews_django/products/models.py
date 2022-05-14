@@ -37,7 +37,7 @@ class Brand(models.Model):
         p = Product.published_objects.filter(brand__slug=self.slug)
         avg = p.annotate(avg_score=Avg('reviews__score')).aggregate(
             avg_score_brand=Avg(F('avg_score')))['avg_score_brand']
-        return round(avg, 1)
+        return round(avg, 1) if avg else 0
 
     def get_reviews_amount(self):
         p = Product.published_objects.filter(brand__slug=self.slug)
@@ -93,7 +93,7 @@ class Product(models.Model):
     def get_avg_score(self):
         p = Product.published_objects.get(slug=self.slug)
         avg_score = p.reviews.all().aggregate(Avg('score'))['score__avg']
-        return round(avg_score, 1)
+        return round(avg_score, 1) if avg_score else 0
 
     def get_reviews_amount(self):
         p = Product.published_objects.get(slug=self.slug)
@@ -107,7 +107,7 @@ class Product(models.Model):
 class Review(models.Model):
     author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE, blank=False)
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE, blank=False)
-    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False)
+    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=0)
     text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
