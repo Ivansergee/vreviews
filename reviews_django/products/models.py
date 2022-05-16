@@ -114,11 +114,11 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.product} {self.author}'s review"
 
-    def get_total_likes(self):
-        pass
-    
-    def get_total_dislikes(self):
-        pass
+    def likes_count(self):
+        return Reaction.objects.filter(review=self.pk).filter(like=True).count()
+
+    def dislikes_count(self):
+        return Reaction.objects.filter(review=self.pk).filter(like=False).count()
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['author', 'product'], name='unique_review')]

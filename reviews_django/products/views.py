@@ -3,7 +3,7 @@ from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
-from django.db.models import Avg, Count, Q, OuterRef, Subquery
+from django.db.models import Avg, OuterRef, Subquery, Value
 from django.shortcuts import get_object_or_404
 
 from .serializers import ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer, CommentSerializer, ReactionSerializer
@@ -59,12 +59,11 @@ class ListReviews(generics.ListAPIView):
 
     def get_queryset(self):
         product_slug = self.kwargs['product_slug']
-        user_reactions = Reaction.objects.filter(review=OuterRef('pk'), author=self.request.user)
-        queryset = Review.objects.filter(product__slug=product_slug).annotate(
-                likes_count=Count('reactions', filter=Q(reactions__like=True)),
-                dislikes_count=Count('reactions', filter=Q(reactions__like=False)),
-                user_reaction=Subquery(user_reactions.values('like')[:1])
-                )
+        if self.request.user.is_authenticated:
+            user_reactions = Reaction.objects.filter(review=OuterRef('pk'), author=self.request.user)
+            queryset = Review.objects.filter(product__slug=product_slug).annotate(user_reaction=Subquery(user_reactions.values('like')[:1]))
+        else:
+            queryset = Review.objects.filter(product__slug=product_slug).annotate(user_reaction=Value(''))
         return queryset
 
 
