@@ -8,7 +8,7 @@
                     <div class="field">
                         <label><span class="subtitle">Название</span></label>
                         <div class="control">
-                            <input type="text" class="input" v-model="formData.name">
+                            <input type="text" class="input" v-model="productData.name">
                         </div>
                     </div>
 
@@ -16,7 +16,7 @@
                         <label><span class="subtitle">Бренд</span></label>
                         <br>
                         <div class="select">
-                            <select v-model="formData.brand">
+                            <select v-model="productData.brand">
                                 <option v-for="brand in brands" :key="brand.id" :value="brand.id" >{{ brand.name }}</option>
                             </select>
                         </div>
@@ -26,7 +26,7 @@
                         <label><span class="subtitle">Вкусы</span></label>
                         <br>
                         <div class="select is-multiple">
-                            <select multiple size="8" v-model="formData.flavors">
+                            <select multiple size="8" v-model="productData.flavors">
                                 <option v-for="flavor in flavors" :key="flavor.id" :value="flavor.id" >{{ flavor.name }}</option>
                             </select>
                         </div>
@@ -80,7 +80,7 @@
 
                     <div class="field">
                         <div class="control">
-                            <button class="button is-dark">Регистрация</button>
+                            <button class="button is-dark">Отправить</button>
                         </div>
                     </div>
                 </form>
@@ -120,17 +120,14 @@ export default {
         type: null,
         name: null
       },
-      croppedImage: null,
       errors: [],
-      formData: {
+      productData: {
           name: '',
           description: '',
           nic_content: [],
           flavors: [],
           brand: '',
-          image: '',
-          thumbnail: '',
-      }
+      },
     }
   },
   mounted() {
@@ -138,15 +135,39 @@ export default {
     this.getBrands()
   },
   methods: {
-      async submitForm() {
-        await axios
-        .post('add-product/', this.formData)
-        .then(response => {
-            console.log(response)
-        })
-        .catch(error => {
-            console.log(error)
-        })
+      submitForm() {
+        const formData = new FormData()
+
+        const result = this.$refs.cropper.getResult()
+        result.canvas.toBlob((blob) => {
+            formData.append('thumbnail', blob, this.image.name)
+            formData.append('image', this.image.src)
+            formData.append('name', this.productData.name)
+            formData.append('description', this.productData.description)
+            formData.append('nic_content', this.productData.nic_content)
+            formData.append('flavors', this.productData.flavors)
+            formData.append('brand', this.productData.brand)
+
+            axios
+            .post('add-product/', formData, {headers:{'Content-Type': 'multipart/form-data'}})
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
+            // for(var pair of formData.entries()) {
+            // console.log(pair[0]+ ': '+ pair[1])
+            // }
+
+            }, this.image.type)
+        
+
+        // for(var pair of formData.entries()) {
+        //     console.log(pair[0]+ ': '+ pair[1])
+        // }
+
     },
 
       uploadImage(event) {
@@ -155,9 +176,9 @@ export default {
             if (this.image.src) {
             URL.revokeObjectURL(this.image.src);
             }
-            const blob = URL.createObjectURL(files[0]);
+            const src = URL.createObjectURL(files[0]);
             this.image = {
-            src: blob,
+            src: src,
             type: files[0].type,
             name: files[0].name
             };
@@ -166,7 +187,7 @@ export default {
 
       cropImage() {
         const result = this.$refs.cropper.getResult()
-        this.croppedImage = result.canvas.toDataURL(this.image.type)
+        result.canvas.toBlob((blob) => {console.log(blob)}, this.image.type)
       },
 
       async getFlavors() {

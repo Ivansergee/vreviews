@@ -1,7 +1,7 @@
 from rest_framework import generics, mixins
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.db.models import Avg, OuterRef, Subquery
 from django.shortcuts import get_object_or_404
@@ -12,6 +12,7 @@ from .models import Product, Brand, Review, Reaction, Flavor
 
 class ProductCreate(generics.CreateAPIView):
     serializer_class = CreateProductSerializer
+    parser_classes = [MultiPartParser, FormParser]
     # permission_classes = [IsAuthenticated]
     # authentication_classes = [TokenAuthentication]
 

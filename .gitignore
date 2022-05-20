@@ -2,3 +2,5 @@
 __pycache__/
 db.sqlite3
 .env
+reviews_django/media/brands
+reviews_django/media/products
