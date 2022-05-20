@@ -1,13 +1,27 @@
-from rest_framework import generics
-from rest_framework import mixins
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, mixins
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 
-from django.db.models import Avg, OuterRef, Subquery, Value
+from django.db.models import Avg, OuterRef, Subquery
 from django.shortcuts import get_object_or_404
 
-from .serializers import ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer, CommentSerializer, ReactionSerializer
-from .models import Product, Brand, Review, Reaction
+from .serializers import FlavorSerializer, CreateProductSerializer, BrandNameSerializer, ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer, CommentSerializer, ReactionSerializer
+from .models import Product, Brand, Review, Reaction, Flavor
+
+
+class ProductCreate(generics.CreateAPIView):
+    serializer_class = CreateProductSerializer
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+
+
+class FlavorsListCreate(generics.ListCreateAPIView):
+    serializer_class = FlavorSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+    queryset = Flavor.objects.order_by('name')
+
 
 
 class ProductDetail(generics.RetrieveAPIView):
@@ -17,6 +31,16 @@ class ProductDetail(generics.RetrieveAPIView):
     lookup_url_kwarg = 'product_slug'
 
 
+class ProductList(generics.ListAPIView):
+    queryset = Product.published_objects.annotate(avg_score=Avg('reviews__score')).order_by('-avg_score')
+    serializer_class = ProductSerializer
+
+
+class BrandsList(generics.ListAPIView):
+    queryset = Brand.objects.order_by('name')
+    serializer_class = BrandNameSerializer
+
+
 class BrandDetail(generics.RetrieveAPIView):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
@@ -24,14 +48,9 @@ class BrandDetail(generics.RetrieveAPIView):
     lookup_url_kwarg = 'brand_slug'
 
 
-class ProductsList(generics.ListAPIView):
-    queryset = Product.published_objects.annotate(avg_score=Avg('reviews__score')).order_by('-avg_score')
-    serializer_class = ProductSerializer
-
-
 class CreateReview(generics.CreateAPIView):
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
     def perform_create(self, serializer):
@@ -40,7 +59,7 @@ class CreateReview(generics.CreateAPIView):
 
 class UpdateReview(generics.UpdateAPIView):
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     queryset = Review.objects.all()
     lookup_url_kwarg = 'id'
@@ -48,7 +67,7 @@ class UpdateReview(generics.UpdateAPIView):
 
 class DeleteReview(generics.DestroyAPIView):
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     queryset = Review.objects.all()
     lookup_url_kwarg = 'id'
@@ -63,7 +82,7 @@ class ListReviews(generics.ListAPIView):
             user_reactions = Reaction.objects.filter(review=OuterRef('pk'), author=self.request.user)
             queryset = Review.objects.filter(product__slug=product_slug).annotate(user_reaction=Subquery(user_reactions.values('like')[:1]))
         else:
-            queryset = Review.objects.filter(product__slug=product_slug).annotate(user_reaction=Value(''))
+            queryset = Review.objects.filter(product__slug=product_slug)
         return queryset
 
 
@@ -78,6 +97,7 @@ class CreateComment(generics.CreateAPIView):
 class CreateReaction(generics.CreateAPIView):
     serializer_class = ReactionSerializer
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         return serializer.save(
@@ -89,6 +109,7 @@ class CreateReaction(generics.CreateAPIView):
 class UpdateDeleteReaction(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     serializer_class = ReactionSerializer
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         queryset = Reaction.objects.filter(review=self.kwargs['id'])

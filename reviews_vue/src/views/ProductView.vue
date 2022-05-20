@@ -41,7 +41,6 @@
           </div>
           <p><strong>Отзывов: </strong>{{ product.get_reviews_amount }}</p>
           <p><strong>Оценок: </strong>{{ product.get_score_amount }}</p>
-          <p><strong>Место в рейтинге:</strong> 10</p>
         </div>
       </div>
     </div>

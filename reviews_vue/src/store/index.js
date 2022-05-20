@@ -35,6 +35,9 @@ export default createStore({
     setIsLoading(state, status) {
       state.isLoading = status
     },
+    showLoginRequired(){
+      state.loginRequired = true
+    }
   },
   actions: {
   },

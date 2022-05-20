@@ -93,7 +93,7 @@ export default {
       const brand_slug = this.$route.params.brand_slug
 
       await axios
-        .get(`/products/brand/${brand_slug}/`)
+        .get(`/brand/${brand_slug}/`)
         .then(response => {
           this.brand = response.data
         })

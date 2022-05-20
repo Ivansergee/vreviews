@@ -15,6 +15,11 @@ class Producer(models.Model):
         return self.name
 
 class Brand(models.Model):
+
+    def image_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'brands/{instance.name}.{ext}'
+
     name = models.CharField(max_length=100, unique=True)
     producer = models.ForeignKey(Producer, related_name='brands', on_delete=models.PROTECT)
     description = models.TextField(blank=True)
@@ -57,20 +62,37 @@ class Flavor(models.Model):
     def __str__(self):
         return self.name
 
+class Nicotine(models.Model):
+    amount = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return self.amount
+
 class Product(models.Model):
 
     class PublishedObjects(models.Manager):
         def get_queryset(self):
             return super().get_queryset().filter(is_published=True)
+    
+    def image_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'products/{instance.brand}/{instance.name}.{ext}'
+    
+    def thumbnail_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'products/{instance.brand}/{instance.name}_thumbnail.{ext}'
 
     name = models.CharField('Название', max_length=100)
     brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     description = models.TextField(blank=True)
-    is_published = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='products/', default='placeholder.jpg')
+    nic_content = models.ManyToManyField(Nicotine, related_name='products')
+    is_salt = models.BooleanField()
+    image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
+    thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')
     slug = models.SlugField(blank=True, db_index=True)
+    is_published = models.BooleanField(default=False)
     objects = models.Manager()
     published_objects = PublishedObjects()
     
@@ -85,10 +107,10 @@ class Product(models.Model):
         return f'/{self.brand.slug}/{self.slug}/'
     
     def get_image(self):
-        if self.image:
-            return settings.HOST_URL + self.image.url
-        else:
-            return ''
+        return settings.HOST_URL + self.image.url
+    
+    def get_thumbnail(self):
+        return settings.HOST_URL + self.thumbnail.url
     
     def get_avg_score(self):
         p = Product.published_objects.get(slug=self.slug)

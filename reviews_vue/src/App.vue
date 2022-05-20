@@ -16,6 +16,7 @@
         <div class="navbar-start">
           <router-link class="navbar-item" :to="{name: 'liquids-list'}">Жидкости</router-link>
           <router-link class="navbar-item" to="/">Одноразки</router-link>
+          <router-link class="navbar-item" :to="{name: 'add-liquid'}">Добавить</router-link>
         </div>
 
         <div class="navbar-end" v-if="$store.state.isAuthenticated">
@@ -62,6 +63,7 @@
 
 <script>
 import axios from 'axios'
+import { toast } from 'bulma-toast'
 
 export default {
   data() {
@@ -92,6 +94,16 @@ export default {
       this.$store.commit('removeToken')
 
       this.$router.push('/')
+    },
+    showLoginRequired() {
+      toast({
+          message: 'Необходимо авторизоваться!',
+          type: 'is-danger',
+          dismissible: true,
+          duration: 3000,
+          pauseOnHover: true,
+          position: 'top-center',
+      })
     }
   },
   mounted() {

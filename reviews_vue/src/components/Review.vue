@@ -74,6 +74,7 @@
 
 <script>
 import axios from 'axios'
+
 import Comment from '../components/Comment.vue'
 
 export default {
@@ -100,7 +101,12 @@ export default {
   },
   methods: {
         toggleReplyForm() {
-            if (this.commentingPostId === this.id){
+            if (!this.$store.state.isAuthenticated) {
+                this.$root.showLoginRequired()
+                return null
+            }
+
+            if (this.commentingPostId === this.id) {
                 this.$emit('commenting', 0)
             } else {
                 this.$emit('commenting', this.id)
@@ -125,6 +131,10 @@ export default {
         },
 
         async manageReaction(reaction) {
+            if (!this.$store.state.isAuthenticated){
+                this.$root.showLoginRequired()
+                return null
+            }
             if (this.userReaction === null){
                 await axios
                 .post(`review/${this.id}/rate/`, {like: reaction})
