@@ -34,7 +34,7 @@
 
                     <div class="field">
                         <label><span class="subtitle">Изображение</span></label>
-                        <div class="control">
+                        <div class="control" v-if="image.src">
                             <cropper
                                 class="cropper"
                                 ref="cropper"

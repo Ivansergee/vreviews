@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor
+from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine
 
 
 class FlavorSerializer(serializers.ModelSerializer):
@@ -15,6 +15,13 @@ class BrandNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ['id', 'name']
+
+
+class NicotineSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Nicotine
+        fields = ['id', 'amount']
 
 
 class ProductProducerSerializer(serializers.ModelSerializer):
@@ -92,7 +99,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CreateProductSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField()
 
     class Meta:
         model = Product
@@ -101,7 +107,6 @@ class CreateProductSerializer(serializers.ModelSerializer):
             'description',
             'slug',
             'image',
-            'thumbnail',
             'brand',
             'is_salt',
             'nic_content',

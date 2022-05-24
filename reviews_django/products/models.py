@@ -14,6 +14,7 @@ class Producer(models.Model):
     def __str__(self):
         return self.name
 
+
 class Brand(models.Model):
 
     def image_path(instance, filename):
@@ -37,6 +38,7 @@ class Brand(models.Model):
             return settings.HOST_URL + self.image.url
         else:
             return ''
+
     
     def get_avg_score(self):
         p = Product.published_objects.filter(brand__slug=self.slug)
@@ -56,11 +58,13 @@ class Brand(models.Model):
             score_amount_brand=Sum(F('score_amount')))['score_amount_brand']
         return n
 
+
 class Flavor(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
 
 class Nicotine(models.Model):
     amount = models.CharField(max_length=20, unique=True)
@@ -68,19 +72,18 @@ class Nicotine(models.Model):
     def __str__(self):
         return self.amount
 
+
 class Product(models.Model):
 
     class PublishedObjects(models.Manager):
         def get_queryset(self):
             return super().get_queryset().filter(is_published=True)
+
     
     def image_path(instance, filename):
         ext = filename.split('.')[-1]
         return f'products/{instance.brand}/{instance.name}.{ext}'
-    
-    def thumbnail_path(instance, filename):
-        ext = filename.split('.')[-1]
-        return f'products/{instance.brand}/{instance.name}_thumbnail.{ext}'
+
 
     name = models.CharField('Название', max_length=100)
     brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
@@ -89,7 +92,6 @@ class Product(models.Model):
     nic_content = models.ManyToManyField(Nicotine, related_name='products')
     is_salt = models.BooleanField()
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
-    thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')
     slug = models.SlugField(blank=True, db_index=True)
     is_published = models.BooleanField(default=False)
@@ -99,6 +101,7 @@ class Product(models.Model):
     class Meta:
         ordering = ['-created_at']
         default_manager_name = 'published_objects'
+
     
     def __str__(self):
         return f'{self.brand} {self.name}'
@@ -108,9 +111,6 @@ class Product(models.Model):
     
     def get_image(self):
         return settings.HOST_URL + self.image.url
-    
-    def get_thumbnail(self):
-        return settings.HOST_URL + self.thumbnail.url
     
     def get_avg_score(self):
         p = Product.published_objects.get(slug=self.slug)
@@ -166,4 +166,3 @@ class Reaction(models.Model):
     
     class Meta:
         constraints = [models.UniqueConstraint(fields=['author', 'review'], name='unique_reaction')]
-
