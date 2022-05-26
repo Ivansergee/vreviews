@@ -6,8 +6,11 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Avg, OuterRef, Subquery
 from django.shortcuts import get_object_or_404
 
-from .serializers import FlavorSerializer, CreateProductSerializer, BrandNameSerializer, ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer, CommentSerializer, ReactionSerializer
-from .models import Product, Brand, Review, Reaction, Flavor
+from .serializers import (
+    NicotineSerializer, FlavorSerializer, CreateProductSerializer, BrandNameSerializer,
+    ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer,
+    CommentSerializer, ReactionSerializer)
+from .models import Product, Brand, Review, Reaction, Flavor, Nicotine
 
 
 class ProductCreate(generics.CreateAPIView):
@@ -23,6 +26,10 @@ class FlavorsListCreate(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     queryset = Flavor.objects.order_by('name')
 
+
+class NicotineList(generics.ListAPIView):
+    serializer_class = NicotineSerializer
+    queryset = Nicotine.objects.all()
 
 
 class ProductDetail(generics.RetrieveAPIView):

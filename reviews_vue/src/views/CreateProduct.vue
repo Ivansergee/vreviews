@@ -23,12 +23,39 @@
                     </div>
 
                     <div class="field">
+                        <label><span class="subtitle">Описание</span></label>
+                        <div class="control">
+                            <textarea class="textarea" cols="100" rows="5" v-model="productData.description">
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <div class="field">
                         <label><span class="subtitle">Вкусы</span></label>
                         <br>
                         <div class="select is-multiple">
-                            <select multiple size="8" v-model="productData.flavors">
+                            <select multiple size="5" v-model="productData.flavors">
                                 <option v-for="flavor in flavors" :key="flavor.id" :value="flavor.id" >{{ flavor.name }}</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label><span class="subtitle">Содержание никотина</span></label>
+                        <br>
+                        <div class="select is-multiple">
+                            <select multiple size="5" v-model="productData.nic_content">
+                                <option v-for="amount in nic_content" :key="amount.id" :value="amount.id" >{{ amount.amount }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <label class="checkbox">
+                            <input type="checkbox">
+                                Солевой никотин
+                            </label>
                         </div>
                     </div>
 
@@ -133,6 +160,7 @@ export default {
   mounted() {
     this.getFlavors()
     this.getBrands()
+    this.getNicContent()
   },
   methods: {
       submitForm() {
@@ -140,12 +168,15 @@ export default {
 
         const result = this.$refs.cropper.getResult()
         result.canvas.toBlob((blob) => {
-            formData.append('thumbnail', blob, this.image.name)
-            formData.append('image', this.image.src)
+            for (var i of this.productData.flavors){
+                formData.append('flavors', i)
+            }
+            for (var i of this.productData.nic_content){
+                formData.append('nic_content', i)
+            }
+            formData.append('image', blob, this.image.name)
             formData.append('name', this.productData.name)
             formData.append('description', this.productData.description)
-            formData.append('nic_content', this.productData.nic_content)
-            formData.append('flavors', this.productData.flavors)
             formData.append('brand', this.productData.brand)
 
             axios
@@ -157,18 +188,9 @@ export default {
                 console.log(error)
             })
 
-            // for(var pair of formData.entries()) {
-            // console.log(pair[0]+ ': '+ pair[1])
-            // }
-
-            }, this.image.type)
+        }, this.image.type)
         
-
-        // for(var pair of formData.entries()) {
-        //     console.log(pair[0]+ ': '+ pair[1])
-        // }
-
-    },
+      },
 
       uploadImage(event) {
         const { files } = event.target;
@@ -210,6 +232,16 @@ export default {
                 console.log(error)
           })
       },
+      async getNicContent() {
+          await axios
+          .get('nic-content/')
+          .then(response => {
+              this.nic_content = response.data
+          })
+          .catch(error => {
+                console.log(error)
+          })
+      }
   },
 }
 </script>

@@ -1,6 +1,10 @@
 from django.urls import path
 
-from .views import FlavorsListCreate, ProductCreate, ProductList, ProductDetail, BrandsList, BrandDetail, CreateReview, UpdateReview, DeleteReview, ListReviews, CreateComment, CreateReaction, UpdateDeleteReaction
+from .views import (
+    FlavorsListCreate, ProductCreate, ProductList, ProductDetail,
+    BrandsList, BrandDetail, CreateReview, UpdateReview, DeleteReview,
+    ListReviews, CreateComment, CreateReaction, UpdateDeleteReaction,
+    NicotineList,)
 
 
 urlpatterns = [
@@ -14,6 +18,7 @@ urlpatterns = [
     path('brand/<str:brand_slug>/', BrandDetail.as_view(), name='brand_detail'),
 
     path('flavors/', FlavorsListCreate.as_view(), name='flavors'),
+    path('nic-content/', NicotineList.as_view(), name='nic-content'),
 
     path('review/create/', CreateReview.as_view(), name='create_review'),
     path('review/<int:id>/edit/', UpdateReview.as_view(), name='edit_review'),
