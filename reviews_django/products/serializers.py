@@ -24,11 +24,11 @@ class NicotineSerializer(serializers.ModelSerializer):
         fields = ['id', 'amount']
 
 
-class ProductProducerSerializer(serializers.ModelSerializer):
+class ProducerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Producer
-        fields = ['name', 'country']
+        fields = ['name', 'country', 'slug']
 
 
 class BrandProductSerializer(serializers.ModelSerializer):
@@ -49,8 +49,8 @@ class BrandProductSerializer(serializers.ModelSerializer):
         ]
 
 
-class BrandSerializer(serializers.ModelSerializer):
-    producer = ProductProducerSerializer()
+class BrandDetailSerializer(serializers.ModelSerializer):
+    producer = ProducerSerializer()
     products = BrandProductSerializer(many=True)
 
     class Meta:
@@ -70,7 +70,7 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandSerializer(serializers.ModelSerializer):
-    producer = ProductProducerSerializer()
+    producer = ProducerSerializer()
 
     class Meta:
         model = Brand
@@ -90,7 +90,9 @@ class ProductSerializer(serializers.ModelSerializer):
             'slug',
             'brand',
             'flavors',
+            'nic_content',
             'is_salt',
+
             'get_image',
             'get_absolute_url',
             'get_reviews_amount',
@@ -98,21 +100,20 @@ class ProductSerializer(serializers.ModelSerializer):
             'get_score_amount'
         ]
 
+# class CreateProductSerializer(serializers.ModelSerializer):
 
-class CreateProductSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Product
-        fields = [
-            'name',
-            'description',
-            'slug',
-            'image',
-            'brand',
-            'is_salt',
-            'nic_content',
-            'flavors',
-        ]
+#     class Meta:
+#         model = Product
+#         fields = [
+#             'name',
+#             'description',
+#             'slug',
+#             'image',
+#             'brand',
+#             'is_salt',
+#             'nic_content',
+#             'flavors',
+#         ]
 
 
 class CommentSerializer(serializers.ModelSerializer):

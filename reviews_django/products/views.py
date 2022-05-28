@@ -8,13 +8,13 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import (
     NicotineSerializer, FlavorSerializer, CreateProductSerializer, BrandNameSerializer,
-    ProductSerializer, BrandSerializer, ReviewSerializer, ProductReviewSerializer,
+    ProductSerializer, BrandDetailSerializer, ReviewSerializer, ProductReviewSerializer,
     CommentSerializer, ReactionSerializer)
 from .models import Product, Brand, Review, Reaction, Flavor, Nicotine
 
 
 class ProductCreate(generics.CreateAPIView):
-    serializer_class = CreateProductSerializer
+    serializer_class = ProductSerializer
     parser_classes = [MultiPartParser, FormParser]
     # permission_classes = [IsAuthenticated]
     # authentication_classes = [TokenAuthentication]
@@ -51,7 +51,7 @@ class BrandsList(generics.ListAPIView):
 
 class BrandDetail(generics.RetrieveAPIView):
     queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
+    serializer_class = BrandDetailSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'brand_slug'
 
