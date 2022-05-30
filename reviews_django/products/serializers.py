@@ -100,20 +100,20 @@ class ProductSerializer(serializers.ModelSerializer):
             'get_score_amount'
         ]
 
-# class CreateProductSerializer(serializers.ModelSerializer):
+class CreateProductSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = Product
-#         fields = [
-#             'name',
-#             'description',
-#             'slug',
-#             'image',
-#             'brand',
-#             'is_salt',
-#             'nic_content',
-#             'flavors',
-#         ]
+    class Meta:
+        model = Product
+        fields = [
+            'name',
+            'description',
+            'slug',
+            'image',
+            'brand',
+            'is_salt',
+            'nic_content',
+            'flavors',
+        ]
 
 
 class CommentSerializer(serializers.ModelSerializer):

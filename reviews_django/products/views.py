@@ -14,7 +14,7 @@ from .models import Product, Brand, Review, Reaction, Flavor, Nicotine
 
 
 class ProductCreate(generics.CreateAPIView):
-    serializer_class = ProductSerializer
+    serializer_class = CreateProductSerializer
     parser_classes = [MultiPartParser, FormParser]
     # permission_classes = [IsAuthenticated]
     # authentication_classes = [TokenAuthentication]
