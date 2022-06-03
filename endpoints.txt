@@ -1,0 +1,31 @@
+Product:
+    products/ GET - list of products
+    products/ POST - create product
+    products/{id} GET - get product
+    products/{id} PATCH - update product 
+Brand:
+    brands/ GET - list of brands
+    brands/ POST - create brand
+    brands/{id} GET - get brand
+    brands/{id} PATCH - update brand
+Producer:
+    producers/ GET - list of producers
+    producers/ POST - create producer
+    producers/{id} GET - get producer
+    producers/{id} PATCH - update producer
+Review:
+    reviews/ GET - list of reviews
+    reviews/?product=productid GET - list of product reviews
+    reviews/ POST - create review
+    reviews/ PATCH - edit review
+Comment:
+    comments/ GET - list of products
+    comments/ POST - create product
+    comments/{id} GET - get product
+    comments/{id} PATCH - update product 
+Reaction:
+    comments/ GET - list of products
+    comments/ POST - create product
+    comments/{id} GET - get product
+    comments/{id} PATCH - update product 
+User:

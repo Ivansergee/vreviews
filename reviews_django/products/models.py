@@ -25,7 +25,7 @@ class Brand(models.Model):
     producer = models.ForeignKey(Producer, related_name='brands', on_delete=models.PROTECT)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='brands/', default='placeholder.jpg')
-    slug = models.SlugField(blank=True, db_index=True)
+    slug = models.SlugField(blank=True, db_index=True, unique=True)
 
     def __str__(self):
         return self.name
@@ -93,7 +93,7 @@ class Product(models.Model):
     is_salt = models.BooleanField()
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')
-    slug = models.SlugField(blank=True, db_index=True)
+    slug = models.SlugField(blank=True, db_index=True, unique=True)
     is_published = models.BooleanField(default=False)
     objects = models.Manager()
     published_objects = PublishedObjects()

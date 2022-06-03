@@ -13,6 +13,11 @@ from .serializers import (
 from .models import Product, Brand, Review, Reaction, Flavor, Nicotine
 
 
+class ProductListCreate(generics.ListCreateAPIView):
+    serializer_class = ProductSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+
 class ProductCreate(generics.CreateAPIView):
     serializer_class = CreateProductSerializer
     parser_classes = [MultiPartParser, FormParser]
@@ -133,4 +138,5 @@ class UpdateDeleteReaction(mixins.UpdateModelMixin, mixins.DestroyModelMixin, ge
     
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
 
