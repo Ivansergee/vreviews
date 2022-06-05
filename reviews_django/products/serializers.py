@@ -150,3 +150,29 @@ class ProductReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'author', 'score', 'text', 'created_at', 'likes_count', 'dislikes_count', 'user_reaction', 'comments']
+
+
+class TestProductSerializer(serializers.ModelSerializer):
+
+    flavors = serializers.StringRelatedField(many=True)
+    nic_content = serializers.StringRelatedField(many=True)
+    brand = 
+
+    class Meta:
+        model = Product
+        fields = [
+            'id',
+            'name',
+            'description',
+            'slug',
+            'brand',
+            'flavors',
+            'nic_content',
+            'is_salt',
+
+            'get_image',
+            'get_absolute_url',
+            'get_reviews_amount',
+            'get_avg_score',
+            'get_score_amount'
+        ]

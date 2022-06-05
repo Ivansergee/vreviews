@@ -1,13 +1,13 @@
 Product:
-    products/ GET - list of products
-    products/ POST - create product
-    products/{id} GET - get product
-    products/{id} PATCH - update product 
+    products/ GET - list of products Products.published_objects.all()
+    products/ POST - create product 
+    products/{slug} GET - get product
+    products/{slug} PATCH - update product 
 Brand:
     brands/ GET - list of brands
     brands/ POST - create brand
-    brands/{id} GET - get brand
-    brands/{id} PATCH - update brand
+    brands/{slug} GET - get brand
+    brands/{slug} PATCH - update brand
 Producer:
     producers/ GET - list of producers
     producers/ POST - create producer
