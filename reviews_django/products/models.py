@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Avg, Count, Sum, F
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
-from django.conf import settings
 
 
 class Producer(models.Model):
@@ -29,31 +28,22 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
-    
-    def get_absolute_url(self):
-        return f'/{self.slug}/'
-    
-    def get_image(self):
-        if self.image:
-            return settings.HOST_URL + self.image.url
-        else:
-            return ''
 
-    
+
     def get_avg_score(self):
-        p = Product.published_objects.filter(brand__slug=self.slug)
+        p = Product.objects.filter(brand__slug=self.slug)
         avg = p.annotate(avg_score=Avg('reviews__score')).aggregate(
             avg_score_brand=Avg(F('avg_score')))['avg_score_brand']
         return round(avg, 1) if avg else 0
 
     def get_reviews_amount(self):
-        p = Product.published_objects.filter(brand__slug=self.slug)
+        p = Product.objects.filter(brand__slug=self.slug)
         n = p.annotate(rev_amount=Count('reviews')).aggregate(
             rev_amount_brand=Sum(F('rev_amount')))['rev_amount_brand']
         return n
 
     def get_score_amount(self):
-        p = Product.published_objects.filter(brand__slug=self.slug)
+        p = Product.objects.filter(brand__slug=self.slug)
         n = p.annotate(score_amount=Count('reviews__score')).aggregate(
             score_amount_brand=Sum(F('score_amount')))['score_amount_brand']
         return n
@@ -75,11 +65,6 @@ class Nicotine(models.Model):
 
 class Product(models.Model):
 
-    class PublishedObjects(models.Manager):
-        def get_queryset(self):
-            return super().get_queryset().filter(is_published=True)
-
-    
     def image_path(instance, filename):
         ext = filename.split('.')[-1]
         return f'products/{instance.brand}/{instance.name}.{ext}'
@@ -93,36 +78,28 @@ class Product(models.Model):
     is_salt = models.BooleanField()
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')
-    slug = models.SlugField(blank=True, db_index=True, unique=True)
+    slug = models.SlugField(blank=True, null=True, db_index=True, unique=True, default=None)
     is_published = models.BooleanField(default=False)
-    objects = models.Manager()
-    published_objects = PublishedObjects()
-    
+
+
     class Meta:
         ordering = ['-created_at']
-        default_manager_name = 'published_objects'
 
-    
+
     def __str__(self):
         return f'{self.brand} {self.name}'
     
-    def get_absolute_url(self):
-        return f'/{self.brand.slug}/{self.slug}/'
-    
-    def get_image(self):
-        return settings.HOST_URL + self.image.url
-    
     def get_avg_score(self):
-        p = Product.published_objects.get(slug=self.slug)
+        p = Product.objects.get(id=self.id)
         avg_score = p.reviews.all().aggregate(Avg('score'))['score__avg']
         return round(avg_score, 1) if avg_score else 0
 
     def get_reviews_amount(self):
-        p = Product.published_objects.get(slug=self.slug)
+        p = Product.objects.get(id=self.id)
         return p.reviews.exclude(text__exact='').count()
 
     def get_score_amount(self):
-        p = Product.published_objects.get(slug=self.slug)
+        p = Product.objects.get(id=self.id)
         return p.reviews.all().count()
 
 

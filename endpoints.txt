@@ -2,17 +2,17 @@ Product:
     products/ GET - list of products Products.published_objects.all()
     products/ POST - create product 
     products/{slug} GET - get product
-    products/{slug} PATCH - update product 
+    admin: products/{slug} PATCH - update product 
 Brand:
     brands/ GET - list of brands
-    brands/ POST - create brand
     brands/{slug} GET - get brand
-    brands/{slug} PATCH - update brand
+    admin: brands/ POST - create brand
+    admin: brands/{slug} PATCH - update brand
 Producer:
     producers/ GET - list of producers
-    producers/ POST - create producer
     producers/{id} GET - get producer
-    producers/{id} PATCH - update producer
+    admin: producers/ POST - create producer
+    admin: producers/{id} PATCH - update producer
 Review:
     reviews/ GET - list of reviews
     reviews/?product=productid GET - list of product reviews
