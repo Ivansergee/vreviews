@@ -12,8 +12,8 @@ from django.shortcuts import get_object_or_404
 #     NicotineSerializer, FlavorSerializer, CreateProductSerializer, BrandNameSerializer,
 #     ProductSerializer, BrandDetailSerializer, ReviewSerializer, ProductReviewSerializer,
 #     CommentSerializer, ReactionSerializer)
-from .serializers import ProductSerializer, BrandSerializer
-from .models import Product, Brand, Review, Reaction, Flavor, Nicotine
+from .serializers import ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer
+from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine
 
 
 class ProductListCreate(generics.ListCreateAPIView):
@@ -39,6 +39,8 @@ class ProductDetail(generics.RetrieveAPIView):
 class BrandList(generics.ListAPIView):
     serializer_class = BrandSerializer
     queryset = Brand.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['producer__slug']
 
 
 class BrandDetail(generics.RetrieveAPIView):
@@ -47,6 +49,48 @@ class BrandDetail(generics.RetrieveAPIView):
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 
+
+class ProducerList(generics.ListAPIView):
+    serializer_class = ProducerSerializer
+    queryset = Producer.objects.all()
+
+
+class ProducerDetail(generics.RetrieveAPIView):
+    serializer_class = ProducerSerializer
+    queryset = Producer.objects.all()
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+
+
+class ReviewListCreateUpdate(mixins.CreateModelMixin, mixins.ListModelMixin,
+                            mixins.UpdateModelMixin, generics.GenericAPIView):
+
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['product__slug', 'author__username']
+
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            if self.request.user.is_authenticated:
+                user_reactions = Reaction.objects.filter(review=OuterRef('pk'), author=self.request.user)
+                queryset = Review.objects.annotate(user_reaction=Subquery(user_reactions.values('like')[:1]))
+                return queryset
+            return Review.objects.all()
+        return Review.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+    
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 # class FlavorsListCreate(generics.ListCreateAPIView):
 #     serializer_class = FlavorSerializer

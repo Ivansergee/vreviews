@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine
 
 
-class ProducerSerializer(serializers.ModelSerializer):
+class ProducerShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Producer
@@ -11,7 +11,7 @@ class ProducerSerializer(serializers.ModelSerializer):
 
 
 class BrandShortSerializer(serializers.ModelSerializer):
-    producer = ProducerSerializer(read_only=True)
+    producer = ProducerShortSerializer(read_only=True)
 
     class Meta:
         model = Brand
@@ -35,7 +35,7 @@ class ProductSerializer(serializers.ModelSerializer):
         source='brand',
         write_only=True
         )
-    flavors_id = serializers.PrimaryKeyRelatedField(
+    flavor_id = serializers.PrimaryKeyRelatedField(
         queryset=Flavor.objects.all(),
         source='flavors',
         many=True,
@@ -58,7 +58,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'brand',
             'brand_id',
             'flavors',
-            'flavors_id',
+            'flavor_id',
             'nic_content',
             'nic_content_id',
             'is_salt',
@@ -70,9 +70,15 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['slug']
 
+    def to_representation(self, instance):
+        response = super(ProductSerializer, self).to_representation(instance)
+        if instance.image:
+            response['image'] = instance.image.url
+        return response
+
 
 class BrandSerializer(serializers.ModelSerializer):
-    producer = ProducerSerializer(read_only=True)
+    producer = ProducerShortSerializer(read_only=True)
 
     class Meta:
         model = Brand
@@ -82,12 +88,69 @@ class BrandSerializer(serializers.ModelSerializer):
             'description',
             'slug',
             'producer',
+            'image',
 
             'get_reviews_amount',
             'get_avg_score',
             'get_score_amount',
         ]
 
+    def to_representation(self, instance):
+        response = super(BrandSerializer, self).to_representation(instance)
+        if instance.image:
+            response['image'] = instance.image.url
+        return response
+
+
+class ProducerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Brand
+        fields = [
+            'id',
+            'name',
+            'description',
+            'slug',
+            'image',
+
+            'get_reviews_amount',
+            'get_avg_score',
+            'get_score_amount',
+        ]
+
+    def to_representation(self, instance):
+        response = super(ProducerSerializer, self).to_representation(instance)
+        if instance.image:
+            response['image'] = instance.image.url
+        return response
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'author', 'review', 'text', 'created_at']
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+    comments = CommentSerializer(many=True, read_only=True)
+    user_reaction = serializers.NullBooleanField()
+
+    class Meta:
+        model = Review
+        fields = [
+            'id',
+            'author',
+            'score',
+            'text',
+            'created_at',
+            'likes_count',
+            'dislikes_count',
+            'user_reaction',
+            'comments'
+            ]
 
 # class FlavorSerializer(serializers.ModelSerializer):
 
@@ -202,13 +265,6 @@ class BrandSerializer(serializers.ModelSerializer):
 #         ]
 
 
-# class CommentSerializer(serializers.ModelSerializer):
-#     author = serializers.StringRelatedField()
-
-#     class Meta:
-#         model = Comment
-#         fields = ['id', 'author', 'review', 'text', 'created_at']
-
 
 # class ReviewSerializer(serializers.ModelSerializer):
 
@@ -236,29 +292,3 @@ class BrandSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Review
 #         fields = ['id', 'author', 'score', 'text', 'created_at', 'likes_count', 'dislikes_count', 'user_reaction', 'comments']
-
-
-# class TestProductSerializer(serializers.ModelSerializer):
-
-#     flavors = serializers.StringRelatedField(many=True)
-#     nic_content = serializers.StringRelatedField(many=True)
-#     brand = 
-
-#     class Meta:
-#         model = Product
-#         fields = [
-#             'id',
-#             'name',
-#             'description',
-#             'slug',
-#             'brand',
-#             'flavors',
-#             'nic_content',
-#             'is_salt',
-
-#             'get_image',
-#             'get_absolute_url',
-#             'get_reviews_amount',
-#             'get_avg_score',
-#             'get_score_amount'
-#         ]

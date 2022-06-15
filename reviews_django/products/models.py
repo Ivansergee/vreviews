@@ -5,13 +5,37 @@ from django.contrib.auth.models import User
 
 
 class Producer(models.Model):
+
+    def image_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'producers/{instance.name}.{ext}'
+
     name = models.CharField(max_length=100, unique=True)
     country = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True)
 
     def __str__(self):
         return self.name
+    
+    def get_avg_score(self):
+        p = Product.objects.filter(brand__producer__slug=self.slug)
+        avg = p.annotate(avg_score=Avg('reviews__score')).aggregate(
+            avg_score_brand=Avg(F('avg_score')))['avg_score_brand']
+        return round(avg, 1) if avg else 0
+
+    def get_reviews_amount(self):
+        p = Product.objects.filter(brand__producer__slug=self.slug)
+        n = p.annotate(rev_amount=Count('reviews')).aggregate(
+            rev_amount_brand=Sum(F('rev_amount')))['rev_amount_brand']
+        return n
+
+    def get_score_amount(self):
+        p = Product.objects.filter(brand__slug=self.slug)
+        n = p.annotate(score_amount=Count('reviews__score')).aggregate(
+            score_amount_brand=Sum(F('score_amount')))['score_amount_brand']
+        return n
 
 
 class Brand(models.Model):
@@ -23,7 +47,7 @@ class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
     producer = models.ForeignKey(Producer, related_name='brands', on_delete=models.PROTECT)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='brands/', default='placeholder.jpg')
+    image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True, unique=True)
 
     def __str__(self):

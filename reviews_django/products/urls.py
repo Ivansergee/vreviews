@@ -5,7 +5,7 @@ from django.urls import path
 #     BrandsList, BrandDetail, CreateReview, UpdateReview, DeleteReview,
 #     ListReviews, CreateComment, CreateReaction, UpdateDeleteReaction,
 #     NicotineList)
-from .views import ProductListCreate, ProductDetail, BrandList, BrandDetail
+from .views import ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList, ProducerDetail, ReviewListCreateUpdate
 
 
 
@@ -15,10 +15,12 @@ urlpatterns = [
 
     path('brands/', BrandList.as_view(), name='brands'),
     path('brands/<str:slug>', BrandDetail.as_view(), name='brand_detail'),
-    # path('products/<str:product_slug>/reviews/', ListReviews.as_view(), name='product_reviews'),
 
-    # path('brands/', BrandsList.as_view(), name='brands'),
-    # path('brand/<str:brand_slug>/', BrandDetail.as_view(), name='brand_detail'),
+    path('producers/', ProducerList.as_view(), name='producers'),
+    path('producers/<str:slug>', ProducerDetail.as_view(), name='producer_detail'),
+
+    path('reviews/', ReviewListCreateUpdate.as_view(), name='reviews'),
+    # path('products/<str:product_slug>/reviews/', ListReviews.as_view(), name='product_reviews'),
 
     # path('flavors/', FlavorsListCreate.as_view(), name='flavors'),
     # path('nic-content/', NicotineList.as_view(), name='nic-content'),
