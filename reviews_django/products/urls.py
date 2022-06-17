@@ -5,21 +5,24 @@ from django.urls import path
 #     BrandsList, BrandDetail, CreateReview, UpdateReview, DeleteReview,
 #     ListReviews, CreateComment, CreateReaction, UpdateDeleteReaction,
 #     NicotineList)
-from .views import ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList, ProducerDetail, ReviewListCreateUpdate
+from .views import ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList, ProducerDetail, ReviewListCreate, ReviewUpdate
 
 
 
 urlpatterns = [
     path('products/', ProductListCreate.as_view(), name='products'),
-    path('products/<str:slug>', ProductDetail.as_view(), name='product_detail'),
+    path('products/<str:slug>/', ProductDetail.as_view(), name='product_detail'),
 
     path('brands/', BrandList.as_view(), name='brands'),
-    path('brands/<str:slug>', BrandDetail.as_view(), name='brand_detail'),
+    path('brands/<str:slug>/', BrandDetail.as_view(), name='brand_detail'),
 
     path('producers/', ProducerList.as_view(), name='producers'),
-    path('producers/<str:slug>', ProducerDetail.as_view(), name='producer_detail'),
+    path('producers/<str:slug>/', ProducerDetail.as_view(), name='producer_detail'),
 
-    path('reviews/', ReviewListCreateUpdate.as_view(), name='reviews'),
+    path('reviews/', ReviewListCreate.as_view(), name='reviews'),
+    path('reviews/<int:pk>/edit/', ReviewUpdate.as_view(), name='edit_review'),
+    # path('reviews/<int:pk>/delete/', ReviewDelete.as_view(), name='delete_review'),
+
     # path('products/<str:product_slug>/reviews/', ListReviews.as_view(), name='product_reviews'),
 
     # path('flavors/', FlavorsListCreate.as_view(), name='flavors'),

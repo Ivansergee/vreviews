@@ -135,14 +135,22 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()
+    product = serializers.StringRelatedField()
     comments = CommentSerializer(many=True, read_only=True)
-    user_reaction = serializers.NullBooleanField()
+    user_reaction = serializers.NullBooleanField(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.filter(is_published=True),
+        source='product',
+        write_only=True
+        )
 
     class Meta:
         model = Review
         fields = [
             'id',
             'author',
+            'product',
+            'product_id',
             'score',
             'text',
             'created_at',

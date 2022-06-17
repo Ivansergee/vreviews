@@ -1,5 +1,5 @@
 from rest_framework import generics, mixins
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 #     CommentSerializer, ReactionSerializer)
 from .serializers import ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine
+from .permissions import IsAuthorOrReadOnly
 
 
 class ProductListCreate(generics.ListCreateAPIView):
@@ -62,9 +63,7 @@ class ProducerDetail(generics.RetrieveAPIView):
     lookup_url_kwarg = 'slug'
 
 
-class ReviewListCreateUpdate(mixins.CreateModelMixin, mixins.ListModelMixin,
-                            mixins.UpdateModelMixin, generics.GenericAPIView):
-
+class ReviewListCreate(generics.ListCreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
@@ -79,18 +78,26 @@ class ReviewListCreateUpdate(mixins.CreateModelMixin, mixins.ListModelMixin,
                 return queryset
             return Review.objects.all()
         return Review.objects.all()
+    
+    def perform_create(self, serializer):
+        return serializer.save(author=self.request.user)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-    
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+
+class ReviewUpdate(generics.UpdateAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthorOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+    queryset = Review.objects.all()
+
+
+
+# class ReviewDelete(generics.DestroyAPIView):
+#     serializer_class = ReviewSerializer
+#     permission_classes = [IsAdminUser]
+#     authentication_classes = [TokenAuthentication]
+#     queryset = Review.objects.all()
+#     lookup_url_kwarg = 'id'
+
 
 # class FlavorsListCreate(generics.ListCreateAPIView):
 #     serializer_class = FlavorSerializer
@@ -135,22 +142,6 @@ class ReviewListCreateUpdate(mixins.CreateModelMixin, mixins.ListModelMixin,
 
 #     def perform_create(self, serializer):
 #         return serializer.save(author=self.request.user)
-
-
-# class UpdateReview(generics.UpdateAPIView):
-#     serializer_class = ReviewSerializer
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [TokenAuthentication]
-#     queryset = Review.objects.all()
-#     lookup_url_kwarg = 'id'
-
-
-# class DeleteReview(generics.DestroyAPIView):
-#     serializer_class = ReviewSerializer
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [TokenAuthentication]
-#     queryset = Review.objects.all()
-#     lookup_url_kwarg = 'id'
 
 
 # class ListReviews(generics.ListAPIView):
