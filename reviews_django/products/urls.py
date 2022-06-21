@@ -5,7 +5,8 @@ from django.urls import path
 #     BrandsList, BrandDetail, CreateReview, UpdateReview, DeleteReview,
 #     ListReviews, CreateComment, CreateReaction, UpdateDeleteReaction,
 #     NicotineList)
-from .views import ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList, ProducerDetail, ReviewListCreate, ReviewUpdate
+from .views import (ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList,
+                    ProducerDetail, ReviewListCreate, ReviewUpdate, CommentCreate, ReactionView)
 
 
 
@@ -20,18 +21,11 @@ urlpatterns = [
     path('producers/<str:slug>/', ProducerDetail.as_view(), name='producer_detail'),
 
     path('reviews/', ReviewListCreate.as_view(), name='reviews'),
-    path('reviews/<int:pk>/edit/', ReviewUpdate.as_view(), name='edit_review'),
-    # path('reviews/<int:pk>/delete/', ReviewDelete.as_view(), name='delete_review'),
-
-    # path('products/<str:product_slug>/reviews/', ListReviews.as_view(), name='product_reviews'),
+    path('reviews/<int:id>/edit/', ReviewUpdate.as_view(), name='edit_review'),
+    path('reviews/<int:id>/comment/', CommentCreate.as_view(), name='create_comment'),
+    path('reviews/<int:id>/rate/', ReactionView.as_view(), name='rate_review'),
 
     # path('flavors/', FlavorsListCreate.as_view(), name='flavors'),
     # path('nic-content/', NicotineList.as_view(), name='nic-content'),
 
-    # path('review/create/', CreateReview.as_view(), name='create_review'),
-    # path('review/<int:id>/edit/', UpdateReview.as_view(), name='edit_review'),
-    # path('review/<int:id>/delete/', DeleteReview.as_view(), name='delete_review'),
-    # path('review/<int:id>/comment/', CreateComment.as_view(), name='create_comment'),
-    # path('review/<int:id>/rate/', CreateReaction.as_view(), name='rate_review'),
-    # path('review/<int:id>/edit-reaction/', UpdateDeleteReaction.as_view(), name='edit_reaction'),
 ]
