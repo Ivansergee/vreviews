@@ -48,6 +48,12 @@ class ProductSerializer(serializers.ModelSerializer):
         many=True,
         write_only=True
         )
+    image_url = serializers.SerializerMethodField()
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        url = obj.image.url
+        return request.build_absolute_uri(url)
 
     class Meta:
         model = Product
@@ -64,12 +70,16 @@ class ProductSerializer(serializers.ModelSerializer):
             'nic_content_id',
             'is_salt',
             'image',
+            'image_url',
 
             'get_reviews_amount',
             'get_avg_score',
             'get_score_amount'
         ]
         read_only_fields = ['slug']
+        extra_kwargs = {
+            'image': {'write_only': True}
+        }
 
     def to_representation(self, instance):
         response = super(ProductSerializer, self).to_representation(instance)
@@ -172,22 +182,22 @@ class ReactionSerializer(serializers.ModelSerializer):
         fields = ['id', 'author', 'review', 'like']
 
 
-# class FlavorSerializer(serializers.ModelSerializer):
+class FlavorsSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = Flavor
-#         fields = ['id', 'name']
-
-
-# class BrandNamesSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = Brand
-#         fields = ['id', 'name']
+    class Meta:
+        model = Flavor
+        fields = ['id', 'name']
 
 
-# class NicotineSerializer(serializers.ModelSerializer):
+class BrandNamesSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = Nicotine
-#         fields = ['id', 'amount']
+    class Meta:
+        model = Brand
+        fields = ['id', 'name']
+
+
+class NicotineSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Nicotine
+        fields = ['id', 'amount']

@@ -9,7 +9,8 @@
         </div>
         <div class="column is-3">
           <p class="title is-5">
-            <a :href="absolute_url">{{ name }}</a>
+            <router-link :to="{ name: 'product-detail', params: {product_slug: slug} }"
+            >{{ name }}</router-link>
           </p>
         </div>
         <div class="column is-2">
@@ -43,7 +44,7 @@ export default {
   props: [
     "name",
     "image",
-    "absolute_url",
+    "slug",
     "reviews_amount",
     "score_amount",
     "flavors",

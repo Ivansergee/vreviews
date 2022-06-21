@@ -9,13 +9,13 @@
       <div class="column is-4">
         <figure class="image is-1by1">
           <img
-            :src=product.get_image
+            :src=product.image_url
           />
         </figure>
       </div>
       <div class="column is-4">
         <div class="content">
-          <p><strong>Бренд:</strong> <router-link :to="{name: 'brand-list'}">{{ product.brand.name }}</router-link></p>
+          <p><strong>Бренд:</strong> <router-link :to="{name: 'brand-list', params: {brand_slug: product.brand.slug}}">{{ product.brand.name }}</router-link></p>
           <p><strong>Название:</strong> {{ product.name }}</p>
           <p><strong>Страна:</strong> {{ product.brand.producer.country }}</p>
           <p><strong>Производитель:</strong> {{ product.brand.producer.name }}</p>
@@ -227,7 +227,7 @@ export default {
       const product_slug = this.$route.params.product_slug
 
       await axios
-        .get(`/products/${product_slug}/reviews/`)
+        .get(`/reviews/?product__slug=${product_slug}/`)
         .then(response => {
           this.reviews = []
 
@@ -259,7 +259,7 @@ export default {
 
       if (!this.user_review_id) {
         await axios
-        .post('review/create/', formData)
+        .post('reviews/', formData)
         .then(response => {
           this.user_score = response.data.score
           this.user_review = response.data.review
@@ -270,7 +270,7 @@ export default {
         })
       } else {
         await axios
-        .patch(`review/${this.user_review_id}/edit/`, formData)
+        .patch(`reviews/${this.user_review_id}/edit/`, formData)
         .then(response => {
           this.user_score = response.data.score
           this.user_review = response.data.review
@@ -285,7 +285,7 @@ export default {
 
     async deleteReview() {
       await axios
-        .delete(`review/${this.user_review_id}/delete/`)
+        .delete(`reviews/${this.user_review_id}/delete/`)
         .then(response => {
           this.user_score = 0
           this.score = 0
@@ -308,7 +308,7 @@ export default {
 
       if (!this.user_review_id) {
         await axios
-        .post('review/create/', formData)
+        .post('reviews/', formData)
         .then(response => {
           this.user_score = response.data.score
           this.user_review_id = response.data.id
@@ -318,7 +318,7 @@ export default {
         })
       } else {
         await axios
-        .patch(`review/${this.user_review_id}/edit/`, formData)
+        .patch(`reviews/${this.user_review_id}/edit/`, formData)
         .then(response => {
           this.user_score = response.data.score
         })

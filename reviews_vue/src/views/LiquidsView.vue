@@ -5,8 +5,8 @@
         v-for="product in products"
         :key="product.id"
         :name="product.name"
-        :image="product.get_image"
-        :absolute_url="product.get_absolute_url"
+        :image="product.image_url"
+        :slug="product.slug"
         :avg_score="product.get_avg_score"
         :flavors="product.flavors"
         :reviews_amount="product.get_reviews_amount"
@@ -43,6 +43,7 @@ export default {
         .get('/products/')
         .then(response => {
           this.products = response.data
+          console.log(this.products);
         })
         .catch(error => {
           console.log(error)

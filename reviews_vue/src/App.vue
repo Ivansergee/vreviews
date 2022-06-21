@@ -26,12 +26,10 @@
       >
         <div class="navbar-start">
           <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
-            >Жидкости</router-link
-          >
+            >Жидкости</router-link>
           <router-link class="navbar-item" to="/">Одноразки</router-link>
           <router-link class="navbar-item" :to="{ name: 'add-liquid' }"
-            >Добавить</router-link
-          >
+            >Добавить</router-link>
         </div>
 
         <div class="navbar-end" v-if="$store.state.isAuthenticated">

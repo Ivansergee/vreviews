@@ -19,13 +19,13 @@ const routes = [
     component: LiquidsView
   },
   {
-    path: '/:brand_slug',
+    path: '/brand/:brand_slug',
     name: 'brand-list',
     component: BrandView
   },
   {
-    path: '/:brand_slug/:product_slug',
-    name: 'liquid-detail',
+    path: '/product/:product_slug',
+    name: 'product-detail',
     component: ProductView
   },
   {
