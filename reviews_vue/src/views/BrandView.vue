@@ -37,11 +37,11 @@
     <div class="products">
       <p class="title">Все вкусы {{ brand.name }}</p>
       <Product
-        v-for="product in brand.products"
+        v-for="product in products"
         :key="product.id"
         :name="product.name"
-        :image="product.get_image"
-        :absolute_url="product.get_absolute_url"
+        :image="product.image_url"
+        :slug="product.slug"
         :avg_score="product.get_avg_score"
         :flavors="product.flavors"
         :reviews_amount="product.get_reviews_amount"
@@ -81,10 +81,12 @@ export default {
   data() {
     return {
       brand: null,
+      products: [],
     }
   },
   mounted() {
     this.getBrandData()
+    this.getProducts()
   },
   methods: {
     async getBrandData(){
@@ -93,9 +95,26 @@ export default {
       const brand_slug = this.$route.params.brand_slug
 
       await axios
-        .get(`/brand/${brand_slug}/`)
+        .get(`/brands/${brand_slug}/`)
         .then(response => {
           this.brand = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      this.$store.commit('setIsLoading', false)
+    },
+
+    async getProducts(){
+      this.$store.commit('setIsLoading', true)
+
+      const brand_slug = this.$route.params.brand_slug
+
+      await axios
+        .get(`/products/?brand__slug=${brand_slug}`)
+        .then(response => {
+          this.products = response.data
         })
         .catch(error => {
           console.log(error)

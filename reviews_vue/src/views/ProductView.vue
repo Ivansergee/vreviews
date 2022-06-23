@@ -227,7 +227,7 @@ export default {
       const product_slug = this.$route.params.product_slug
 
       await axios
-        .get(`/reviews/?product__slug=${product_slug}/`)
+        .get(`/reviews/?product__slug=${product_slug}`)
         .then(response => {
           this.reviews = []
 

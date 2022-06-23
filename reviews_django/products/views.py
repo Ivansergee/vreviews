@@ -88,7 +88,7 @@ class ReviewUpdate(generics.UpdateAPIView):
     permission_classes = [IsAuthorOrReadOnly]
     authentication_classes = [TokenAuthentication]
     queryset = Review.objects.all()
-
+    lookup_url_kwarg = 'id'
 
 class CommentCreate(generics.CreateAPIView):
     serializer_class = CommentSerializer

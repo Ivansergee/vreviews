@@ -129,7 +129,7 @@ export default {
         text: this.commentText,
       };
       await axios
-        .post(`review/${this.id}/comment/`, formData)
+        .post(`reviews/${this.id}/comment/`, formData)
         .then((response) => {
           this.$emit("commented");
           this.commentText = null;
@@ -147,7 +147,7 @@ export default {
       }
       if (this.userReaction === null) {
         await axios
-          .post(`review/${this.id}/rate/`, { like: reaction })
+          .post(`reviews/${this.id}/rate/`, { like: reaction })
           .then((response) => {
             this.$emit("rated", { id: this.id, like: reaction });
           })
@@ -156,7 +156,7 @@ export default {
           });
       } else if (this.userReaction !== reaction) {
         await axios
-          .patch(`review/${this.id}/edit-reaction/`, { like: reaction })
+          .patch(`reviews/${this.id}/rate/`, { like: reaction })
           .then((response) => {
             this.$emit("rated", { id: this.id, like: reaction });
           })
@@ -165,7 +165,7 @@ export default {
           });
       } else {
         await axios
-          .delete(`review/${this.id}/edit-reaction/`)
+          .delete(`reviews/${this.id}/rate/`)
           .then((response) => {
             this.$emit("rated", { id: this.id, like: reaction });
           })
