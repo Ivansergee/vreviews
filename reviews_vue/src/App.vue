@@ -33,6 +33,9 @@
         </div>
 
         <div class="navbar-end" v-if="$store.state.isAuthenticated">
+          <router-link class="navbar-item" :to="{ name: 'liquids-list' }" v-if="$store.state.isAdmin">
+            Администрирование
+          </router-link>
           <a class="navbar-item">
             <span class="icon-text">
               <span class="icon">
@@ -50,11 +53,9 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link class="button is-blue" :to="{ name: 'login' }"
-                >Вход</router-link
-              >
+                >Вход</router-link>
               <router-link class="button is-success" :to="{ name: 'signup' }"
-                >Регистрация</router-link
-              >
+                >Регистрация</router-link>
             </div>
           </div>
         </div>
@@ -106,6 +107,8 @@ export default {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       localStorage.removeItem("userid");
+      localStorage.removeItem("isAdmin");
+
 
       this.$store.commit("removeToken");
 

@@ -90,8 +90,14 @@ export default {
                             
                         console.log(error.message)
                     }
+                }),
+
+                await axios
+                .get('users/me/')
+                .then(response => {
+                    this.$store.commit('setIsAdmin', response.data.is_staff);
+                    localStorage.setItem('isAdmin', response.data.is_staff);
                 })
-                
             }
         }
     }

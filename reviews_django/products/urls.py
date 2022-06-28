@@ -6,13 +6,16 @@ from django.urls import path
 #     ListReviews, CreateComment, CreateReaction, UpdateDeleteReaction,
 #     NicotineList)
 from .views import (ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList,
-                    ProducerDetail, ReviewListCreate, ReviewUpdate, CommentCreate, ReactionView)
+                    ProducerDetail, ReviewListCreate, ReviewUpdate, CommentCreate, ReactionView,
+                    FlavorsListCreate, NicotineList, BrandNames)
 
 
 
 urlpatterns = [
     path('products/', ProductListCreate.as_view(), name='products'),
     path('products/<str:slug>/', ProductDetail.as_view(), name='product_detail'),
+    path('products/<str:slug>/', ProductDetail.as_view(), name='product_detail'),
+
 
     path('brands/', BrandList.as_view(), name='brands'),
     path('brands/<str:slug>/', BrandDetail.as_view(), name='brand_detail'),
@@ -25,7 +28,8 @@ urlpatterns = [
     path('reviews/<int:id>/comment/', CommentCreate.as_view(), name='create_comment'),
     path('reviews/<int:id>/rate/', ReactionView.as_view(), name='rate_review'),
 
-    # path('flavors/', FlavorsListCreate.as_view(), name='flavors'),
-    # path('nic-content/', NicotineList.as_view(), name='nic-content'),
+    path('flavors/', FlavorsListCreate.as_view(), name='flavors'),
+    path('nic-content/', NicotineList.as_view(), name='nic_contents'),
+    path('brand-names/', BrandNames.as_view(), name='brand_names'),
 
 ]

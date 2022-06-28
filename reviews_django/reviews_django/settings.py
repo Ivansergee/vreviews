@@ -134,6 +134,12 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%d.%m.%Y %H:%M",
 }
 
+DJOSER = {
+    'SERIALIZERS': {
+        'current_user': 'products.serializers.CustomUserSerializer'
+    }
+}
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 

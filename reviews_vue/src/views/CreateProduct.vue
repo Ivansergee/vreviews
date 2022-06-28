@@ -75,7 +75,7 @@
           <div class="field">
             <div class="control">
               <label class="checkbox">
-                <input type="checkbox" />
+                <input type="checkbox" v-model="productData.is_salt" />
                 Солевой никотин
               </label>
             </div>
@@ -151,6 +151,7 @@
 import axios from "axios";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
+import { toast } from "bulma-toast";
 
 export default {
   components: {
@@ -173,6 +174,7 @@ export default {
         nic_content: [],
         flavors: [],
         brand: "",
+        is_salt: false,
       },
     };
   },
@@ -188,22 +190,36 @@ export default {
       const result = this.$refs.cropper.getResult();
       result.canvas.toBlob((blob) => {
         for (var i of this.productData.flavors) {
-          formData.append("flavors", i);
+          formData.append("flavor_id", i);
         }
         for (var i of this.productData.nic_content) {
-          formData.append("nic_content", i);
+          formData.append("nic_content_id", i);
         }
         formData.append("image", blob, this.image.name);
         formData.append("name", this.productData.name);
         formData.append("description", this.productData.description);
-        formData.append("brand", this.productData.brand);
+        formData.append("brand_id", this.productData.brand);
+        formData.append("is_salt", this.productData.is_salt);
 
         axios
-          .post("add-product/", formData, {
+          .post("products/", formData, {
             headers: { "Content-Type": "multipart/form-data" },
           })
           .then((response) => {
-            console.log(response);
+            this.showSuccess();
+            this.productData = {
+              name: "",
+              description: "",
+              nic_content: [],
+              flavors: [],
+              brand: "",
+              is_salt: false,
+            };
+            this.image = {
+              src: null,
+              type: null,
+              name: null,
+            };
           })
           .catch((error) => {
             console.log(error);
@@ -245,7 +261,7 @@ export default {
     },
     async getBrands() {
       await axios
-        .get("brands/")
+        .get("brand-names/")
         .then((response) => {
           this.brands = response.data;
         })
@@ -262,6 +278,17 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+
+    showSuccess() {
+      toast({
+        message: "Спасибо! Информация отправлена на проверку и скоро будет опубликована на сайте.",
+        type: "is-success",
+        dismissible: true,
+        duration: 10000,
+        pauseOnHover: true,
+        position: "top-center",
+      });
     },
   },
 };

@@ -6,6 +6,8 @@ import ProductView from '../views/ProductView.vue'
 import LogIn from '../views/LogIn.vue'
 import SignUp from '../views/SignUp.vue'
 import CreateProduct from '../views/CreateProduct'
+import AdminView from '../views/AdminView'
+import ProfileView from '../views/ProfileView'
 
 const routes = [
   {
@@ -42,6 +44,16 @@ const routes = [
     path: '/add-liquid',
     name: 'add-liquid',
     component: CreateProduct
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView
   },
 ]
 
