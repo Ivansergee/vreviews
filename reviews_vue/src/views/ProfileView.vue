@@ -1,18 +1,33 @@
 <template>
-    <div class="products" v-if="products">
-      <p class="title">Топ жидкостей</p>
-      <Product
-        v-for="product in products"
-        :key="product.id"
-        :name="product.name"
-        :image="product.image_url"
-        :slug="product.slug"
-        :avg_score="product.get_avg_score"
-        :flavors="product.flavors"
-        :reviews_amount="product.get_reviews_amount"
-        :score_amount="product.get_score_amount"
-      />
+  <div>
+    <div class="tabs is-medium">
+      <ul>
+        <li :class="[activeTab === 'profile' ? 'is-active' : '']">
+          <a @click="setActiveTab('profile')">Профиль</a>
+        </li>
+        <li :class="[activeTab === 'reviews' ? 'is-active' : '']">
+          <a @click="setActiveTab('reviews')">Отзывы</a>
+        </li>
+        <li :class="[activeTab === 'bookmarks' ? 'is-active' : '']">
+          <a @click="setActiveTab('bookmarks')">Закладки</a>
+        </li>
+      </ul>
     </div>
+    <div class="columns profile" v-if="activeTab == 'profile'">
+      <div class="column is-one-third">
+        image
+      </div>
+      <div class="column is-two-thirds">
+        info
+      </div>
+    </div>
+    <div class="reviews" v-if="activeTab == 'reviews'">
+      <p>Reviews</p>
+    </div>
+    <div class="bookmarks" v-if="activeTab == 'bookmarks'">
+      <p>Bookmarks</p>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -29,14 +44,15 @@ export default {
   },
   data() {
     return {
-      products: null,
+      activeTab: 'profile',
     }
   },
   mounted() {
-    this.getProducts()
   },
   methods: {
-
+    setActiveTab(tab) {
+      this.activeTab = tab;
+    }
   },
 }
 </script>

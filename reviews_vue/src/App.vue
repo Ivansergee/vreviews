@@ -33,17 +33,17 @@
         </div>
 
         <div class="navbar-end" v-if="$store.state.isAuthenticated">
-          <router-link class="navbar-item" :to="{ name: 'liquids-list' }" v-if="$store.state.isAdmin">
+          <router-link class="navbar-item" :to="{ name: 'admin' }" v-if="$store.state.isAdmin">
             Администрирование
           </router-link>
-          <a class="navbar-item">
+          <router-link class="navbar-item profile" :to="{ name: 'profile' }">
             <span class="icon-text">
               <span class="icon">
                 <i class="fa-solid fa-user-large fa-lg"></i>
               </span>
               <span>{{ $store.state.username }}</span>
             </span>
-          </a>
+          </router-link>
           <a class="navbar-item" @click="logout()">
             <span class="logout">Выход</span>
           </a>
@@ -145,7 +145,7 @@ body,
   margin: 0;
 }
 
-.logout {
+.logout .profile {
   text-decoration: underline;
 }
 
@@ -190,4 +190,5 @@ body,
     height: 80px;
   }
 }
+
 </style>
