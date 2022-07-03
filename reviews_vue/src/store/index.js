@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     isAuthenticated: false,
+    isAdmin: false,
     token: null,
     isLoading: false,
     username: null,
@@ -12,31 +13,37 @@ export default createStore({
   mutations: {
     initializeStore(state) {
       if (localStorage.getItem('token')) {
-        state.token = localStorage.getItem('token')
-        state.username = localStorage.getItem('username')
-        state.isAuthenticated = true
+        state.token = localStorage.getItem('token');
+        state.username = localStorage.getItem('username');
+        state.isAdmin = localStorage.getItem('isAdmin') === 'true';
+        state.isAuthenticated = true;
       } else {
-        state.token = null
-        state.isAuthenticated = false
+        state.token = null;
+        state.isAuthenticated = false;
+        state.isAdmin = false;
       }
     },
     setToken(state, token) {
-      state.token = token
-      state.isAuthenticated = true
+      state.token = token;
+      state.isAuthenticated = true;
     },
     setUsername(state, username) {
-      state.username = username
+      state.username = username;
+    },
+    setIsAdmin(state, isAdmin) {
+      state.isAdmin = isAdmin;
     },
     removeToken(state) {
-      state.token = null
-      state.isAuthenticated = false
-      state.username = null
+      state.token = null;
+      state.isAuthenticated = false;
+      state.username = null;
+      state.isAdmin = false;
     },
     setIsLoading(state, status) {
-      state.isLoading = status
+      state.isLoading = status;
     },
     showLoginRequired() {
-      state.loginRequired = true
+      state.loginRequired = true;
     }
   },
   actions: {

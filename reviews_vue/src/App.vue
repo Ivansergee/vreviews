@@ -33,14 +33,17 @@
         </div>
 
         <div class="navbar-end" v-if="$store.state.isAuthenticated">
-          <a class="navbar-item">
+          <router-link class="navbar-item" :to="{ name: 'admin' }" v-if="$store.state.isAdmin">
+            Администрирование
+          </router-link>
+          <router-link class="navbar-item profile" :to="{ name: 'profile' }">
             <span class="icon-text">
               <span class="icon">
                 <i class="fa-solid fa-user-large fa-lg"></i>
               </span>
               <span>{{ $store.state.username }}</span>
             </span>
-          </a>
+          </router-link>
           <a class="navbar-item" @click="logout()">
             <span class="logout">Выход</span>
           </a>
@@ -50,11 +53,9 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link class="button is-blue" :to="{ name: 'login' }"
-                >Вход</router-link
-              >
+                >Вход</router-link>
               <router-link class="button is-success" :to="{ name: 'signup' }"
-                >Регистрация</router-link
-              >
+                >Регистрация</router-link>
             </div>
           </div>
         </div>
@@ -106,6 +107,8 @@ export default {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       localStorage.removeItem("userid");
+      localStorage.removeItem("isAdmin");
+
 
       this.$store.commit("removeToken");
 
@@ -142,7 +145,7 @@ body,
   margin: 0;
 }
 
-.logout {
+.logout .profile {
   text-decoration: underline;
 }
 
@@ -187,4 +190,5 @@ body,
     height: 80px;
   }
 }
+
 </style>

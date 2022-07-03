@@ -25,9 +25,7 @@
           </p>
           <p><strong>Содержание никотина:</strong></p>
           <p class="tags">
-            <span class="tag is-warning">12</span>
-            <span class="tag is-warning">20</span>
-            <span class="tag is-warning">20 HYBRID</span>
+            <a class="tag is-warning" v-for="amount in product.nic_content" :key="amount.id">{{ amount }}</a>
           </p>
           <p>{{ product.description }}</p>
         </div>
@@ -230,8 +228,9 @@ export default {
         .get(`/reviews/?product__slug=${product_slug}`)
         .then(response => {
           this.reviews = []
-
+            console.log(response.data)
           for (var i in response.data) {
+            console.log(response.data[i])
             if (response.data[i].author == this.$store.state.username) {
               this.user_review_id = response.data[i].id
               this.user_score = response.data[i].score
@@ -239,6 +238,7 @@ export default {
               this.user_review = response.data[i].text
             }
             if (response.data[i].text){
+              console.log('here')
               this.reviews.push(response.data[i])
             }
           }
@@ -252,7 +252,7 @@ export default {
 
     async addReview() {
       const formData = {
-        product: this.product.id,
+        product_id: this.product.id,
         score: this.review_id ? this.user_score : this.score,
         text: this.new_user_review
       }
@@ -302,7 +302,7 @@ export default {
 
     async setScore() {
       const formData = {
-        product: this.product.id,
+        product_id: this.product.id,
         score: this.review_id ? this.user_score : this.score,
       }
 

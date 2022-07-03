@@ -12,7 +12,10 @@ from django.shortcuts import get_object_or_404
 #     NicotineSerializer, FlavorSerializer, CreateProductSerializer, BrandNameSerializer,
 #     ProductSerializer, BrandDetailSerializer, ReviewSerializer, ProductReviewSerializer,
 #     CommentSerializer, ReactionSerializer)
-from .serializers import ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer, CommentSerializer, ReactionSerializer
+from .serializers import (
+    ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
+    CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
+    BrandNamesSerializer)
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine
 from .permissions import IsAuthorOrReadOnly
 
@@ -87,6 +90,7 @@ class ReviewUpdate(generics.UpdateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthorOrReadOnly]
     authentication_classes = [TokenAuthentication]
+    lookup_field = 'id'
     queryset = Review.objects.all()
     lookup_url_kwarg = 'id'
 
@@ -138,13 +142,33 @@ class ReactionView(mixins.CreateModelMixin, mixins.UpdateModelMixin,
 #     lookup_url_kwarg = 'id'
 
 
-# class FlavorsListCreate(generics.ListCreateAPIView):
-#     serializer_class = FlavorSerializer
-#     permission_classes = [IsAuthenticatedOrReadOnly]
-#     authentication_classes = [TokenAuthentication]
-#     queryset = Flavor.objects.order_by('name')
+class FlavorsListCreate(generics.ListCreateAPIView):
+    serializer_class = FlavorsSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+    queryset = Flavor.objects.order_by('name')
 
 
-# class NicotineList(generics.ListAPIView):
-#     serializer_class = NicotineSerializer
-#     queryset = Nicotine.objects.all()
+class NicotineList(generics.ListAPIView):
+    serializer_class = NicotineSerializer
+    queryset = Nicotine.objects.all()
+
+
+class BrandNames(generics.ListAPIView):
+    serializer_class = BrandNamesSerializer
+    queryset = Brand.objects.all()
+
+
+class AdminProductListCreate(generics.ListCreateAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['brand__slug', 'is_published']
+
+
+class AdminProductDetail(generics.RetrieveAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'

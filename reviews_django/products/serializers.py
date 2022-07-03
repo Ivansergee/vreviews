@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from djoser.serializers import UserSerializer
 
 from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine
 
@@ -201,3 +202,71 @@ class NicotineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nicotine
         fields = ['id', 'amount']
+
+
+class CustomUserSerializer(UserSerializer):
+
+    class Meta(UserSerializer.Meta):
+        fields = (
+            'id',
+            'email',
+            'username',
+            'is_staff',
+        )
+
+
+class AdminProductSerializer(serializers.ModelSerializer):
+    brand = BrandShortSerializer(read_only=True)
+    flavors = serializers.StringRelatedField(many=True)
+    nic_content = serializers.StringRelatedField(many=True)
+    brand_id = serializers.PrimaryKeyRelatedField(
+        queryset=Brand.objects.all(),
+        source='brand',
+        write_only=True
+        )
+    flavor_id = serializers.PrimaryKeyRelatedField(
+        queryset=Flavor.objects.all(),
+        source='flavors',
+        many=True,
+        write_only=True
+        )
+    nic_content_id = serializers.PrimaryKeyRelatedField(
+        queryset=Nicotine.objects.all(),
+        source='nic_content',
+        many=True,
+        write_only=True
+        )
+    image_url = serializers.SerializerMethodField()
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        url = obj.image.url
+        return request.build_absolute_uri(url)
+
+    class Meta:
+        model = Product
+        fields = [
+            'id',
+            'name',
+            'description',
+            'slug',
+            'brand',
+            'brand_id',
+            'flavors',
+            'flavor_id',
+            'nic_content',
+            'nic_content_id',
+            'is_salt',
+            'image',
+            'image_url',
+            'is_published'
+        ]
+        extra_kwargs = {
+            'image': {'write_only': True}
+        }
+
+    def to_representation(self, instance):
+        response = super(ProductSerializer, self).to_representation(instance)
+        if instance.image:
+            response['image'] = instance.image.url
+        return response
