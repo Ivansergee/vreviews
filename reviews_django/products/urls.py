@@ -14,8 +14,6 @@ from .views import (ProductListCreate, ProductDetail, BrandList, BrandDetail, Pr
 urlpatterns = [
     path('products/', ProductListCreate.as_view(), name='products'),
     path('products/<str:slug>/', ProductDetail.as_view(), name='product_detail'),
-    path('products/<str:slug>/', ProductDetail.as_view(), name='product_detail'),
-
 
     path('brands/', BrandList.as_view(), name='brands'),
     path('brands/<str:slug>/', BrandDetail.as_view(), name='brand_detail'),

@@ -171,7 +171,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             'dislikes_count',
             'user_reaction',
             'comments'
-            ]
+        ]
 
 
 class ReactionSerializer(serializers.ModelSerializer):
