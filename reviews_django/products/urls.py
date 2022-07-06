@@ -7,7 +7,7 @@ from django.urls import path
 #     NicotineList)
 from .views import (ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList,
                     ProducerDetail, ReviewListCreate, ReviewUpdate, CommentCreate, ReactionView,
-                    FlavorsListCreate, NicotineList, BrandNames)
+                    FlavorsListCreate, NicotineList, BrandNames, UserView)
 
 
 
@@ -30,4 +30,5 @@ urlpatterns = [
     path('nic-content/', NicotineList.as_view(), name='nic_contents'),
     path('brand-names/', BrandNames.as_view(), name='brand_names'),
 
+    path('user/<str:username>/', UserView.as_view(), name='user')
 ]

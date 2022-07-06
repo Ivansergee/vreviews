@@ -7,17 +7,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from django.db.models import Avg, OuterRef, Subquery
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
-# from .serializers import (
-#     NicotineSerializer, FlavorSerializer, CreateProductSerializer, BrandNameSerializer,
-#     ProductSerializer, BrandDetailSerializer, ReviewSerializer, ProductReviewSerializer,
-#     CommentSerializer, ReactionSerializer)
 from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
-    BrandNamesSerializer)
+    BrandNamesSerializer, UserProfileSerializer)
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine
-from .permissions import IsAuthorOrReadOnly
+from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly
 
 
 class ProductListCreate(generics.ListCreateAPIView):
@@ -172,3 +169,11 @@ class AdminProductDetail(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
     lookup_url_kwarg = 'id'
+
+
+class UserView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = User.objects.all()
+    lookup_field = 'username'

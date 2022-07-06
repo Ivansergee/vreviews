@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from djoser.serializers import UserSerializer
 
-from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine
+from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile
 
 
 class ProducerShortSerializer(serializers.ModelSerializer):
@@ -30,7 +30,7 @@ class FlavorSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandShortSerializer(read_only=True)
-    flavors = serializers.StringRelatedField(many=True)
+    flavors = serializers.StringRelatedField(many=True, read_only=True)
     nic_content = serializers.StringRelatedField(many=True)
     brand_id = serializers.PrimaryKeyRelatedField(
         queryset=Brand.objects.all(),
@@ -147,8 +147,23 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+
+    class ProductInfo(serializers.ModelSerializer):
+        image_url = serializers.SerializerMethodField()
+
+        def get_image_url(self, obj):
+            request = self.context.get('request')
+            url = obj.image.url
+            return request.build_absolute_uri(url)
+
+        class Meta:
+            model = Product
+            fields = ['name', 'slug', 'image_url']
+            read_only_fields = ['name', 'slug']
+
+
     author = serializers.StringRelatedField()
-    product = serializers.StringRelatedField()
+    product = ProductInfo(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     user_reaction = serializers.NullBooleanField(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
@@ -270,3 +285,17 @@ class AdminProductSerializer(serializers.ModelSerializer):
         if instance.image:
             response['image'] = instance.image.url
         return response
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    
+    class ProfileSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Profile
+            fields = ['about', 'avatar', 'gender', 'birthday', 'vk', 'yt', 'tg']
+
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'profile']

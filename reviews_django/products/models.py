@@ -19,6 +19,11 @@ class Producer(models.Model):
     def __str__(self):
         return self.name
     
+    def delete(self):
+        if self.image.name != 'placeholder.jpg':
+            self.image.delete()
+        super().delete()
+    
     def get_avg_score(self):
         p = Product.objects.filter(brand__producer__slug=self.slug)
         avg = p.annotate(avg_score=Avg('reviews__score')).aggregate(
@@ -53,6 +58,10 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self):
+        if self.image.name != 'placeholder.jpg':
+            self.image.delete()
+        super().delete()
 
     def get_avg_score(self):
         p = Product.objects.filter(brand__slug=self.slug)
@@ -113,6 +122,11 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.brand} {self.name}'
     
+    def delete(self):
+        if self.image.name != 'placeholder.jpg':
+            self.image.delete()
+        super().delete()
+    
     def get_avg_score(self):
         p = Product.objects.get(id=self.id)
         avg_score = p.reviews.all().aggregate(Avg('score'))['score__avg']
@@ -167,3 +181,32 @@ class Reaction(models.Model):
     
     class Meta:
         constraints = [models.UniqueConstraint(fields=['author', 'review'], name='unique_reaction')]
+
+
+class Bookmark(models.Model):
+    author = models.ForeignKey(User, related_name='bookmarks', on_delete=models.CASCADE, blank=False)
+    product = models.ForeignKey(Product, related_name='bookmarks', on_delete=models.CASCADE, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Profile(models.Model):
+    def image_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'avatars/{instance.user.username}.{ext}'
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    about = models.TextField(blank=True, null=True)
+    birthday = models.DateField(blank=True, null=True)
+    gender = models.BooleanField(null=True, blank=True)
+    avatar = models.ImageField(upload_to=image_path, default='default_avatar.jpg')
+    vk = models.CharField(max_length=100, blank=True, null=True)
+    yt = models.CharField(max_length=200, blank=True, null=True)
+    tg = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.user} profile'
+
+    def delete(self):
+        if self.image.name != 'default_avatar.jpg':
+            self.image.delete()
+        super().delete()
