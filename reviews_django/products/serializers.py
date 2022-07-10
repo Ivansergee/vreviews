@@ -78,15 +78,12 @@ class ProductSerializer(serializers.ModelSerializer):
             'get_score_amount'
         ]
         read_only_fields = ['slug']
-        extra_kwargs = {
-            'image': {'write_only': True}
-        }
 
-    def to_representation(self, instance):
-        response = super(ProductSerializer, self).to_representation(instance)
-        if instance.image:
-            response['image'] = instance.image.url
-        return response
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.context['request'].method == 'GET':
+           self.fields.pop('image')
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -230,69 +227,66 @@ class CustomUserSerializer(UserSerializer):
         )
 
 
-class AdminProductSerializer(serializers.ModelSerializer):
-    brand = BrandShortSerializer(read_only=True)
-    flavors = serializers.StringRelatedField(many=True)
-    nic_content = serializers.StringRelatedField(many=True)
-    brand_id = serializers.PrimaryKeyRelatedField(
-        queryset=Brand.objects.all(),
-        source='brand',
-        write_only=True
-        )
-    flavor_id = serializers.PrimaryKeyRelatedField(
-        queryset=Flavor.objects.all(),
-        source='flavors',
-        many=True,
-        write_only=True
-        )
-    nic_content_id = serializers.PrimaryKeyRelatedField(
-        queryset=Nicotine.objects.all(),
-        source='nic_content',
-        many=True,
-        write_only=True
-        )
-    image_url = serializers.SerializerMethodField()
+# class AdminProductSerializer(serializers.ModelSerializer):
+#     brand = BrandShortSerializer(read_only=True)
+#     flavors = serializers.StringRelatedField(many=True)
+#     nic_content = serializers.StringRelatedField(many=True)
+#     brand_id = serializers.PrimaryKeyRelatedField(
+#         queryset=Brand.objects.all(),
+#         source='brand',
+#         write_only=True
+#         )
+#     flavor_id = serializers.PrimaryKeyRelatedField(
+#         queryset=Flavor.objects.all(),
+#         source='flavors',
+#         many=True,
+#         write_only=True
+#         )
+#     nic_content_id = serializers.PrimaryKeyRelatedField(
+#         queryset=Nicotine.objects.all(),
+#         source='nic_content',
+#         many=True,
+#         write_only=True
+#         )
+#     image_url = serializers.SerializerMethodField()
 
-    def get_image_url(self, obj):
-        request = self.context.get('request')
-        url = obj.image.url
-        return request.build_absolute_uri(url)
+#     def get_image_url(self, obj):
+#         request = self.context.get('request')
+#         url = obj.image.url
+#         return request.build_absolute_uri(url)
 
+#     class Meta:
+#         model = Product
+#         fields = [
+#             'id',
+#             'name',
+#             'description',
+#             'slug',
+#             'brand',
+#             'brand_id',
+#             'flavors',
+#             'flavor_id',
+#             'nic_content',
+#             'nic_content_id',
+#             'is_salt',
+#             'image',
+#             'image_url',
+#             'is_published'
+#         ]
+
+
+
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
-        fields = [
-            'id',
-            'name',
-            'description',
-            'slug',
-            'brand',
-            'brand_id',
-            'flavors',
-            'flavor_id',
-            'nic_content',
-            'nic_content_id',
-            'is_salt',
-            'image',
-            'image_url',
-            'is_published'
-        ]
-        extra_kwargs = {
-            'image': {'write_only': True}
-        }
-
-    def to_representation(self, instance):
-        response = super(ProductSerializer, self).to_representation(instance)
-        if instance.image:
-            response['image'] = instance.image.url
-        return response
+        model = Profile
+        fields = ['about', 'avatar', 'gender', 'birthday', 'vk', 'yt', 'tg']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    
-    class ProfileSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Profile
-            fields = ['about', 'avatar', 'gender', 'birthday', 'vk', 'yt', 'tg']
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.username != self.context['request'].user.username:
+            self.fields.pop('email')
 
     profile = ProfileSerializer()
 

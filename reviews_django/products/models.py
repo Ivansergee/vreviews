@@ -198,7 +198,7 @@ class Profile(models.Model):
     about = models.TextField(blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
     gender = models.BooleanField(null=True, blank=True)
-    avatar = models.ImageField(upload_to=image_path, default='default_avatar.jpg')
+    avatar = models.ImageField(upload_to=image_path, default='default_avatar.png')
     vk = models.CharField(max_length=100, blank=True, null=True)
     yt = models.CharField(max_length=200, blank=True, null=True)
     tg = models.CharField(max_length=100, blank=True, null=True)
@@ -207,6 +207,6 @@ class Profile(models.Model):
         return f'{self.user} profile'
 
     def delete(self):
-        if self.image.name != 'default_avatar.jpg':
+        if self.image.name != 'default_avatar.png':
             self.image.delete()
         super().delete()

@@ -13,20 +13,22 @@
         </li>
       </ul>
     </div>
-    <div class="columns profile" v-if="activeTab == 'profile'">
+    <div class="columns profile" v-if="activeTab == 'profile' && userInfo">
       <div class="column is-one-third">
         <figure class="avatar image is-square">
-          <img src="https://bulma.io/images/placeholders/256x256.png">
+          <img :src="userInfo.profile.avatar">
         </figure>
       </div>
       <div class="column is-two-thirds">
-        <p><strong class="title is-6">Имя </strong><span>Foobar</span></p>
-        <p><strong class="title is-6">Email </strong><span>Foobar</span></p>
-        <p><strong class="title is-6">Возраст </strong><span>Foobar</span></p>
-        <p><strong class="title is-6">Город </strong><span>Foobar</span></p>
-        <p><strong class="title is-6">Telegram </strong><span>Foobar</span></p>
-        <p><strong class="title is-6">VK </strong><span>Foobar</span></p>
-        <p><strong class="title is-6">Youtube </strong><span>Foobar</span></p>
+        <p><strong class="title is-6">Имя </strong><span>{{ userInfo.username }}</span></p>
+        <p v-if="userInfo.email"><strong class="title is-6">Email </strong><span>{{ userInfo.email }}</span></p>
+        <p><strong class="title is-6">Возраст </strong><span>{{ userInfo.profile.birthday || '-' }}</span></p>
+        <p><strong class="title is-6">Город </strong><span>{{ userInfo.profile.city || '-' }}</span></p>
+        <p><strong class="title is-6">Telegram </strong><span>{{ userInfo.profile.tg || '-' }}</span></p>
+        <p><strong class="title is-6">VK </strong><span>{{ userInfo.profile.vk || '-' }}</span></p>
+        <p><strong class="title is-6">Youtube </strong><span>{{ userInfo.profile.yt || '-' }}</span></p>
+        <p class="mt-5"><strong class="title is-6">Обо мне </strong></p>
+        <p>{{ userInfo.profile.about || '-' }}</p>
       </div>
     </div>
     <div class="reviews" v-if="activeTab == 'reviews'">
@@ -55,11 +57,13 @@
 <style scoped>
   .avatar {
     margin: auto;
+    background-color: white;
   }
   
   .avatar>img {
     max-width: 250px;
     max-height: 250px;
+    margin: auto;
   }
 </style>
 
@@ -77,10 +81,12 @@ export default {
     return {
       activeTab: 'profile',
       reviews: null,
+      userInfo: null,
     }
   },
   mounted() {
     this.getReviews();
+    this.getUserInfo();
   },
   methods: {
     setActiveTab(tab) {
@@ -95,7 +101,6 @@ export default {
         .get(`/reviews/?author__username=${username}`)
         .then(response => {
             this.reviews = response.data;
-            console.log(this.reviews);
         })
         .catch(error => {
           console.log(error)
@@ -104,7 +109,21 @@ export default {
       this.$store.commit('setIsLoading', false)
     },
     async getUserInfo() {
+      this.$store.commit('setIsLoading', true)
 
+      const username = this.$store.state.username
+
+      await axios
+        .get(`/user/${username}`)
+        .then(response => {
+            this.userInfo = response.data;
+            console.log(this.userInfo);
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      
+      this.$store.commit('setIsLoading', false)
     },
     async getBookmarks() {
 
