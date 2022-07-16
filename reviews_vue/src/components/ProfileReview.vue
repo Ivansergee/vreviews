@@ -11,7 +11,7 @@
           <p>
             <router-link :to="{ name: 'product-detail', params: {product_slug: productSlug} }"
             >{{ product }}</router-link>
-            <small>{{ created_at }}</small>
+            <small>{{ formatTime(created_at) }}</small>
             <br />
             <strong>Оценка:</strong> {{ score }}
             <br />
@@ -58,7 +58,8 @@
 </style>
 
 <script>
-import axios from "axios";
+import moment from 'moment'
+
 import Comment from "./Comment.vue";
 
 export default {
@@ -77,6 +78,11 @@ export default {
     "likesCount",
     "dislikesCount",
   ],
+  methods: {
+    formatTime(time) {
+      return moment(time).format('DD.MM.YYYY HH:mm')
+    }
+  }
 
 };
 </script>

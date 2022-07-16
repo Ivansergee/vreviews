@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from djoser.serializers import UserSerializer
 
-from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile
+from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark
 
 
 class ProducerShortSerializer(serializers.ModelSerializer):
@@ -50,11 +50,18 @@ class ProductSerializer(serializers.ModelSerializer):
         write_only=True
         )
     image_url = serializers.SerializerMethodField()
+    user_bookmark = serializers.SerializerMethodField()
+    avg_score = serializers.FloatField(read_only=True)
 
     def get_image_url(self, obj):
         request = self.context.get('request')
         url = obj.image.url
         return request.build_absolute_uri(url)
+
+    def get_user_bookmark(self, obj):
+        if self.context['request'].user.is_authenticated:
+            return obj.bookmarks.filter(author=self.context['request'].user).exists()
+        return None
 
     class Meta:
         model = Product
@@ -72,9 +79,10 @@ class ProductSerializer(serializers.ModelSerializer):
             'is_salt',
             'image',
             'image_url',
+            'user_bookmark',
+            'avg_score',
 
             'get_reviews_amount',
-            'get_avg_score',
             'get_score_amount'
         ]
         read_only_fields = ['slug']
@@ -293,3 +301,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'profile']
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+
+    class Meta:
+        model = Bookmark
+        fields = ['id', 'product', 'created_at', 'author']

@@ -7,7 +7,7 @@
         :name="product.name"
         :image="product.image_url"
         :slug="product.slug"
-        :avg_score="product.get_avg_score"
+        :avg_score="product.avg_score ? product.avg_score : 0"
         :flavors="product.flavors"
         :reviews_amount="product.get_reviews_amount"
         :score_amount="product.get_score_amount"
@@ -40,13 +40,12 @@ export default {
       this.$store.commit('setIsLoading', true)
 
       await axios
-        .get('/products/')
+        .get('/products/?ordering=-avg_score')
         .then(response => {
-          this.products = response.data
-          console.log(this.products);
+          this.products = response.data;
         })
         .catch(error => {
-          console.log(error)
+          console.log(error);
         })
 
       this.$store.commit('setIsLoading', false)

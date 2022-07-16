@@ -32,6 +32,11 @@
             ><i class="bi bi-star-fill"></i> {{ avg_score }}</span
           >
         </div>
+        <div class="column">
+          <a class="button is-danger" @click="removeBookmark()">
+            <span>Удалить</span>
+          </a>
+        </div>
       </div>
 </template>
 
@@ -42,8 +47,12 @@
 </style>
 
 <script>
+import axios from 'axios';
+
+
 export default {
   props: [
+    "id",
     "name",
     "image",
     "slug",
@@ -52,5 +61,19 @@ export default {
     "flavors",
     "avg_score",
   ],
+  emits: ['deleted'],
+  methods: {
+    async removeBookmark() {
+      const data = {product: this.id};
+        await axios
+        .delete('/bookmarks/', {data: data})
+        .then(() => {
+            this.$emit("deleted", this.id);
+          })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
 };
 </script>

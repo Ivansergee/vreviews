@@ -8,7 +8,7 @@
     <div class="media-content">
       <div class="content">
         <p>
-          <strong>{{ author }}</strong> <small>{{ created_at }}</small>
+          <strong>{{ author }}</strong> <small>{{ formatTime(created_at) }}</small>
           <br />
           {{ text }}
           <br />
@@ -19,7 +19,15 @@
 </template>
 
 <script>
+import moment from 'moment';
+
+
 export default {
   props: ["author", "text", "created_at"],
+  methods: {
+    formatTime(time) {
+      return moment(time).format('DD.MM.YYYY HH:mm')
+    }
+  }
 };
 </script>

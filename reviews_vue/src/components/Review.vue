@@ -9,7 +9,7 @@
       <div class="media-content">
         <div class="content">
           <p>
-            <strong>{{ author }}</strong> <small>{{ created_at }}</small>
+            <strong>{{ author }}</strong> <small>{{ formatTime(created_at) }}</small>
             <br />
             <strong>Оценка:</strong> {{ score }}
             <br />
@@ -32,6 +32,10 @@
               <small>{{ dislikesCount }}</small> ·
               <a @click="toggleReplyForm()">{{
                 commentingPostId === id ? "Закрыть" : "Ответить"
+              }}</a> · 
+
+              <a @click="activeModal = true">{{
+                $store.state.isAdmin ? "Удалить" : ""
               }}</a>
             </small>
           </p>
@@ -65,6 +69,26 @@
         </div>
       </div>
     </article>
+
+    <div
+      class="modal is-align-items-center"
+      :class="{ 'is-active': activeModal }"
+    >
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <p class="mb-5">Вы уверены?</p>
+          <div class="controls">
+            <button class="button is-danger mr-2" @click="deleteReview()">
+              Удалить
+            </button>
+            <button class="button is-light ml-2" @click="activeModal = false">
+              Отмена
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -72,18 +96,24 @@
 .reply-form {
   margin-bottom: 2em;
 }
-
 .fa-thumbs-up {
   color: green;
 }
-
 .fa-thumbs-down {
   color: red;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+}
+.box p {
+  text-align: center;
 }
 </style>
 
 <script>
 import axios from "axios";
+import moment from 'moment';
 
 import Comment from "../components/Comment.vue";
 
@@ -103,13 +133,18 @@ export default {
     "likesCount",
     "dislikesCount",
   ],
-  emits: ["commenting", "commented", "rated"],
+  emits: ["commenting", "commented", "rated", "deleted"],
   data() {
     return {
       commentText: null,
+      activeModal: false,
     };
   },
   methods: {
+    formatTime(time) {
+      return moment(time).format('DD.MM.YYYY HH:mm')
+    },
+
     toggleReplyForm() {
       if (!this.$store.state.isAuthenticated) {
         this.$root.showLoginRequired();
@@ -123,6 +158,18 @@ export default {
       }
     },
 
+    async deleteReview() {
+      await axios
+        .delete(`reviews/${this.id}/delete/`)
+        .then(() => {
+          this.$emit("deleted", this.id);
+          this.activeModal = false;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
     async addComment() {
       const formData = {
         review: this.id,
@@ -130,7 +177,7 @@ export default {
       };
       await axios
         .post(`reviews/${this.id}/comment/`, formData)
-        .then((response) => {
+        .then(() => {
           this.$emit("commented");
           this.commentText = null;
           this.toggleReplyForm();
@@ -148,7 +195,7 @@ export default {
       if (this.userReaction === null) {
         await axios
           .post(`reviews/${this.id}/rate/`, { like: reaction })
-          .then((response) => {
+          .then(() => {
             this.$emit("rated", { id: this.id, like: reaction });
           })
           .catch((error) => {
@@ -157,7 +204,7 @@ export default {
       } else if (this.userReaction !== reaction) {
         await axios
           .patch(`reviews/${this.id}/rate/`, { like: reaction })
-          .then((response) => {
+          .then(() => {
             this.$emit("rated", { id: this.id, like: reaction });
           })
           .catch((error) => {

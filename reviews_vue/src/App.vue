@@ -52,8 +52,8 @@
         <div class="navbar-end" v-else>
           <div class="navbar-item">
             <div class="buttons">
-              <router-link class="button is-blue" :to="{ name: 'login' }"
-                >Вход</router-link>
+              <a class="button is-blue" @click="showLogIn = true"
+                >Вход</a>
               <router-link class="button is-success" :to="{ name: 'signup' }"
                 >Регистрация</router-link>
             </div>
@@ -67,6 +67,13 @@
       :class="{ 'is-loading': $store.state.isLoading }"
     >
       <div class="lds-dual-ring"></div>
+    </div>
+    
+    <div class="modal" :class="{ 'is-active': showLogIn }">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <LogIn />
+      </div>
     </div>
 
     <main class="section">
@@ -83,10 +90,16 @@
 import axios from "axios";
 import { toast } from "bulma-toast";
 
+import LogIn from './components/LogIn.vue'
+
 export default {
+  components: {
+    LogIn
+  },
   data() {
     return {
       showMobileMenu: false,
+      showLogIn: false,
     };
   },
   beforeCreate() {

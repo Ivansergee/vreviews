@@ -188,6 +188,12 @@ class Bookmark(models.Model):
     product = models.ForeignKey(Product, related_name='bookmarks', on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'{self.product} bookmark by {self.author}'
+    
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['author', 'product'], name='unique_bookmark')]
+
 
 class Profile(models.Model):
     def image_path(instance, filename):

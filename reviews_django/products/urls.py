@@ -1,13 +1,8 @@
 from django.urls import path
 
-# from .views import (
-#     FlavorsListCreate, ProductCreate, ProductList, ProductDetail,
-#     BrandsList, BrandDetail, CreateReview, UpdateReview, DeleteReview,
-#     ListReviews, CreateComment, CreateReaction, UpdateDeleteReaction,
-#     NicotineList)
 from .views import (ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList,
-                    ProducerDetail, ReviewListCreate, ReviewUpdate, CommentCreate, ReactionView,
-                    FlavorsListCreate, NicotineList, BrandNames, UserView)
+                    ProducerDetail, ReviewListCreate, ReviewUpdate, ReviewDelete, CommentCreate, ReactionView,
+                    FlavorsListCreate, NicotineList, BrandNames, UserView, BookmarkView)
 
 
 
@@ -23,6 +18,7 @@ urlpatterns = [
 
     path('reviews/', ReviewListCreate.as_view(), name='reviews'),
     path('reviews/<int:id>/edit/', ReviewUpdate.as_view(), name='edit_review'),
+    path('reviews/<int:id>/delete/', ReviewDelete.as_view(), name='delete_review'),
     path('reviews/<int:id>/comment/', CommentCreate.as_view(), name='create_comment'),
     path('reviews/<int:id>/rate/', ReactionView.as_view(), name='rate_review'),
 
@@ -30,5 +26,7 @@ urlpatterns = [
     path('nic-content/', NicotineList.as_view(), name='nic_contents'),
     path('brand-names/', BrandNames.as_view(), name='brand_names'),
 
-    path('user/<str:username>/', UserView.as_view(), name='user')
+    path('user/<str:username>/', UserView.as_view(), name='user'),
+
+    path('bookmarks/', BookmarkView.as_view(), name='bookmark'),
 ]

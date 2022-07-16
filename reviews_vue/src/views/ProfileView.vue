@@ -49,7 +49,20 @@
         />
     </div>
     <div class="bookmarks" v-if="activeTab == 'bookmarks'">
-      <p>Bookmarks</p>
+      <p v-if="!bookmarks.length">Нет закладок</p>
+      <Bookmark
+        v-for="bookmark in bookmarks"
+        :key="bookmark.id"
+        :id="bookmark.id"
+        :name="bookmark.name"
+        :image="bookmark.image_url"
+        :slug="bookmark.slug"
+        :avg_score="bookmark.get_avg_score"
+        :flavors="bookmark.flavors"
+        :reviews_amount="bookmark.get_reviews_amount"
+        :score_amount="bookmark.get_score_amount"
+        @deleted="deleteBookmark"
+      />
     </div>
   </div>
 </template>
@@ -68,37 +81,41 @@
 </style>
 
 <script>
-import axios from 'axios'
-import Product from '../components/Product.vue'
-import ProfileReview from '../components/ProfileReview.vue'
+import axios from 'axios';
+import Bookmark from '../components/Bookmark.vue';
+import ProfileReview from '../components/ProfileReview.vue';
+
 
 export default {
   components: {
-    Product,
-    ProfileReview
+    Bookmark,
+    ProfileReview,
   },
   data() {
     return {
       activeTab: 'profile',
       reviews: null,
       userInfo: null,
+      bookmarks: null,
     }
   },
   mounted() {
     this.getReviews();
     this.getUserInfo();
+    this.getBookmarks();
   },
   methods: {
     setActiveTab(tab) {
       this.activeTab = tab;
     },
+
     async getReviews() {
       this.$store.commit('setIsLoading', true)
 
       const username = this.$store.state.username
 
       await axios
-        .get(`/reviews/?author__username=${username}`)
+        .get(`/reviews/?author=${username}`)
         .then(response => {
             this.reviews = response.data;
         })
@@ -108,16 +125,16 @@ export default {
       
       this.$store.commit('setIsLoading', false)
     },
+
     async getUserInfo() {
       this.$store.commit('setIsLoading', true)
 
       const username = this.$store.state.username
 
       await axios
-        .get(`/user/${username}`)
+        .get(`/user/${username}/`)
         .then(response => {
             this.userInfo = response.data;
-            console.log(this.userInfo);
         })
         .catch(error => {
           console.log(error)
@@ -125,9 +142,32 @@ export default {
       
       this.$store.commit('setIsLoading', false)
     },
-    async getBookmarks() {
 
+    async getBookmarks() {
+      this.$store.commit('setIsLoading', true)
+
+      const username = this.$store.state.username
+
+      await axios
+        .get(`/products/?bookmarks_author=${username}&ordering=-bookmarks__created_at`)
+        .then(response => {
+            this.bookmarks = response.data;
+            console.log(this.bookmarks);
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      
+      this.$store.commit('setIsLoading', false)
     },
+
+    deleteBookmark(id) {
+      for (var i in this.bookmarks) {
+        if (this.bookmarks[i].id == id) {
+          this.bookmarks.splice(i, 1)
+        }
+      }
+    }
   },
 }
 </script>

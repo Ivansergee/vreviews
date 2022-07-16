@@ -3,3 +3,4 @@ run_django:
 
 run_vue:
 	cd reviews_vue; npm run serve
+
