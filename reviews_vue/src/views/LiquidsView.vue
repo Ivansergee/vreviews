@@ -7,7 +7,7 @@
         :name="product.name"
         :image="product.image_url"
         :slug="product.slug"
-        :avg_score="product.avg_score ? product.avg_score : 0"
+        :avg_score="product.avg_score ? product.avg_score : '-'"
         :flavors="product.flavors"
         :reviews_amount="product.get_reviews_amount"
         :score_amount="product.get_score_amount"

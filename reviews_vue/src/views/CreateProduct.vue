@@ -11,13 +11,13 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" v-if="options">
             <label><span class="subtitle">Бренд</span></label>
             <br />
             <div class="select">
               <select v-model="productData.brand">
                 <option
-                  v-for="brand in brands"
+                  v-for="brand in options.brands"
                   :key="brand.id"
                   :value="brand.id"
                 >
@@ -40,13 +40,13 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" v-if="options">
             <label><span class="subtitle">Вкусы</span></label>
             <br />
             <div class="select is-multiple">
               <select multiple size="5" v-model="productData.flavors">
                 <option
-                  v-for="flavor in flavors"
+                  v-for="flavor in options.flavors"
                   :key="flavor.id"
                   :value="flavor.id"
                 >
@@ -56,13 +56,13 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" v-if="options">
             <label><span class="subtitle">Содержание никотина</span></label>
             <br />
             <div class="select is-multiple">
               <select multiple size="5" v-model="productData.nic_content">
                 <option
-                  v-for="amount in nic_content"
+                  v-for="amount in options.nic_content"
                   :key="amount.id"
                   :value="amount.id"
                 >
@@ -159,9 +159,7 @@ export default {
   },
   data() {
     return {
-      brands: [],
-      flavors: [],
-      nic_content: [],
+      options: null,
       image: {
         src: null,
         type: null,
@@ -179,9 +177,7 @@ export default {
     };
   },
   mounted() {
-    this.getFlavors();
-    this.getBrands();
-    this.getNicContent();
+    this.getOptions();
   },
   methods: {
     submitForm() {
@@ -249,31 +245,11 @@ export default {
       }, this.image.type);
     },
 
-    async getFlavors() {
+    async getOptions() {
       await axios
-        .get("flavors/")
+        .get("product-options/")
         .then((response) => {
-          this.flavors = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async getBrands() {
-      await axios
-        .get("brand-names/")
-        .then((response) => {
-          this.brands = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    async getNicContent() {
-      await axios
-        .get("nic-content/")
-        .then((response) => {
-          this.nic_content = response.data;
+          this.options = response.data;
         })
         .catch((error) => {
           console.log(error);

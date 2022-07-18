@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from rest_framework import generics, mixins, status
+from rest_framework import generics, mixins
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -159,22 +160,27 @@ class ReactionView(mixins.CreateModelMixin, mixins.UpdateModelMixin,
 #     queryset = Review.objects.all()
 #     lookup_url_kwarg = 'id'
 
+class ProductCreateOptions(generics.ListAPIView):
+
+    def list(self, request):
+        qs = Flavor.objects.order_by('name')
+        flavors = FlavorsSerializer(qs, many=True).data
+        qs = Brand.objects.order_by('name')
+        brands = BrandNamesSerializer(qs, many=True).data
+        qs = Nicotine.objects.all()
+        nic_content = NicotineSerializer(qs, many=True).data
+        return Response({
+            'brands': brands,
+            'flavors': flavors,
+            'nic_content': nic_content
+            })
+
 
 class FlavorsListCreate(generics.ListCreateAPIView):
     serializer_class = FlavorsSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
     queryset = Flavor.objects.order_by('name')
-
-
-class NicotineList(generics.ListAPIView):
-    serializer_class = NicotineSerializer
-    queryset = Nicotine.objects.all()
-
-
-class BrandNames(generics.ListAPIView):
-    serializer_class = BrandNamesSerializer
-    queryset = Brand.objects.all()
 
 
 class AdminProductListCreate(generics.ListCreateAPIView):

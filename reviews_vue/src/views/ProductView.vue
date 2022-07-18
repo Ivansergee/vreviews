@@ -72,7 +72,7 @@
           <p class="title is-4">Оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">{{ product.avg_score ? product.avg_score : 0}}</span>
+            <span class="tag is-primary">{{ product.avg_score ? product.avg_score : '-'}}</span>
           </div>
           <p><strong>Отзывов: </strong>{{ product.get_reviews_amount }}</p>
           <p><strong>Оценок: </strong>{{ product.get_score_amount }}</p>
