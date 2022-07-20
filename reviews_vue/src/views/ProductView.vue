@@ -231,7 +231,7 @@ export default {
           });
         }
       } else {
-        this.$root.showLoginRequired();
+        this.$root.showLogIn = true;
       }
     },
 

@@ -147,7 +147,7 @@ export default {
 
     toggleReplyForm() {
       if (!this.$store.state.isAuthenticated) {
-        this.$root.showLoginRequired();
+        this.$root.showLogIn = true;
         return null;
       }
 
@@ -189,7 +189,7 @@ export default {
 
     async manageReaction(reaction) {
       if (!this.$store.state.isAuthenticated) {
-        this.$root.showLoginRequired();
+        this.$root.showLogIn = true;
         return null;
       }
       if (this.userReaction === null) {
