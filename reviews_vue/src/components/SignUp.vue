@@ -1,51 +1,64 @@
 <template>
-    <div class="page-sign-up">
-        <div class="columns">
-            <div class="column is-4 is-offset-4">
+    <div class="box">
+        <div class="level">
+            <div class="level-left">
                 <h1 class="title">Регистрация</h1>
-                <form @submit.prevent="submitForm">
-                    <div class="field">
-                        <label>Имя пользователя</label>
-                        <div class="control">
-                            <input type="text" class="input" v-model="username">
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label>Email</label>
-                        <div class="control">
-                            <input type="email" class="input" v-model="email">
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label>Пароль</label>
-                        <div class="control">
-                            <input type="password" class="input" v-model="password1">
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label>Подтвердите пароль</label>
-                        <div class="control">
-                            <input type="password" class="input" v-model="password2">
-                        </div>
-                    </div>
-
-                    <div class="notification is-danger" v-if="errors.length">
-                        <p v-for="error in errors" :key="error">{{ error }}</p>
-                    </div>
-
-                    <div class="field">
-                        <div class="control">
-                            <button class="button is-dark">Регистрация</button>
-                        </div>
-                    </div>
-                </form>
+            </div>
+            <div class="level-right">
+                <button class="delete is-medium" aria-label="close" @click="close()"></button>
             </div>
         </div>
+
+        <form @submit.prevent="submitForm">
+            <div class="field">
+                <label>Имя пользователя</label>
+                <div class="control">
+                    <input type="text" class="input" v-model="username">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Email</label>
+                <div class="control">
+                    <input type="email" class="input" v-model="email">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Пароль</label>
+                <div class="control">
+                    <input type="password" class="input" v-model="password1">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Подтвердите пароль</label>
+                <div class="control">
+                    <input type="password" class="input" v-model="password2">
+                </div>
+            </div>
+
+            <div class="notification is-danger" v-if="errors.length">
+                <p v-for="error in errors" :key="error">{{ error }}</p>
+            </div>
+
+            <div class="level">
+                <div class="level-left">
+                    <button class="button is-dark">Регистрация</button>
+                </div>
+                <div class="level-right">
+                    <span>Уже зарегистрированы?&nbsp;&nbsp;</span><a @click="close(); $emit('showLogin')">Войти</a>
+                </div>
+            </div>
+        </form>
     </div>
 </template>
+
+<style scoped>
+.modal-background {
+    background-color: rgb(10 10 10 / 60%);
+}
+</style>
 
 <script>
 import axios from 'axios'
@@ -53,6 +66,7 @@ import { toast } from 'bulma-toast'
 
 export default {
     name: 'Sign Up',
+    emits: ['signed', 'showLogin'],
     data() {
         return {
             username: '',
@@ -91,7 +105,7 @@ export default {
 
                 axios
                 .post('/users/', formData)
-                .then(response => {
+                .then(() => {
                     toast({
                         message: 'Вы успешно зарегистрированы!',
                         type: 'is-success',
@@ -101,7 +115,7 @@ export default {
                         position: 'top-center',
                     })
 
-                    this.$router.push('/login')
+                    this.close();
                 })
                 .catch(error => {
                     if (error.response) {
@@ -116,6 +130,14 @@ export default {
                     }
                 })
             }
+        },
+
+        close(){
+            this.username = '';
+            this.email = '';
+            this.password1 = '';
+            this.password2 = '';
+            this.$emit('signed');
         }
     }
 }

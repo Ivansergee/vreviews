@@ -3,8 +3,6 @@ import HomeView from '../views/HomeView.vue'
 import BrandView from '../views/BrandView.vue'
 import LiquidsView from '../views/LiquidsView.vue'
 import ProductView from '../views/ProductView.vue'
-import LogIn from '../views/LogIn.vue'
-import SignUp from '../views/SignUp.vue'
 import CreateProduct from '../views/CreateProduct'
 import AdminView from '../views/AdminView'
 import ProfileView from '../views/ProfileView'
@@ -29,16 +27,6 @@ const routes = [
     path: '/product/:product_slug',
     name: 'product-detail',
     component: ProductView
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: LogIn
-  },
-  {
-    path: '/signup',
-    name: 'signup',
-    component: SignUp
   },
   {
     path: '/add-liquid',

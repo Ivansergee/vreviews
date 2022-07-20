@@ -54,8 +54,8 @@
             <div class="buttons">
               <a class="button is-blue" @click="showLogIn = true"
                 >Вход</a>
-              <router-link class="button is-success" :to="{ name: 'signup' }"
-                >Регистрация</router-link>
+              <a class="button is-success" @click="showSignUp = true"
+                >Регистрация</a>
             </div>
           </div>
         </div>
@@ -70,9 +70,22 @@
     </div>
     
     <div class="modal" :class="{ 'is-active': showLogIn }">
-      <div class="modal-background"></div>
+      <div class="modal-background" @click="showLogIn = false"></div>
       <div class="modal-content">
-        <LogIn />
+        <LogIn
+          @logged="showLogIn = false"
+          @showRegister="showSignUp = true"
+        />
+      </div>
+    </div>
+
+    <div class="modal" :class="{ 'is-active': showSignUp }">
+      <div class="modal-background" @click="showSignUp = false"></div>
+      <div class="modal-content">
+        <SignUp
+          @signed="showSignUp = false"
+          @showLogin="showLogIn = true"
+        />
       </div>
     </div>
 
@@ -90,16 +103,19 @@
 import axios from "axios";
 import { toast } from "bulma-toast";
 
-import LogIn from './components/LogIn.vue'
+import LogIn from './components/LogIn.vue';
+import SignUp from './components/SignUp.vue';
 
 export default {
   components: {
-    LogIn
+    LogIn,
+    SignUp
   },
   data() {
     return {
       showMobileMenu: false,
       showLogIn: false,
+      showSignUp: false,
     };
   },
   beforeCreate() {
@@ -124,8 +140,6 @@ export default {
 
 
       this.$store.commit("removeToken");
-
-      this.$router.push("/");
     },
     showLoginRequired() {
       toast({
