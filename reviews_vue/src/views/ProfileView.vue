@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="tabs is-medium">
       <ul>
         <li :class="[activeTab === 'profile' ? 'is-active' : '']">
@@ -14,12 +14,12 @@
       </ul>
     </div>
     <div class="columns profile" v-if="activeTab == 'profile' && userInfo">
-      <div class="column is-one-third">
-        <figure class="avatar image is-square">
+      <div class="column is-4">
+        <figure class="avatar image is-1by1">
           <img :src="userInfo.profile.avatar">
         </figure>
       </div>
-      <div class="column is-two-thirds">
+      <div class="column is-8">
         <p><strong class="title is-6">Имя </strong><span>{{ userInfo.username }}</span></p>
         <p v-if="userInfo.email"><strong class="title is-6">Email </strong><span>{{ userInfo.email }}</span></p>
         <p><strong class="title is-6">Возраст </strong><span>{{ userInfo.profile.birthday || '-' }}</span></p>
@@ -57,7 +57,7 @@
         :name="bookmark.name"
         :image="bookmark.image_url"
         :slug="bookmark.slug"
-        :avg_score="bookmark.get_avg_score"
+        :avg_score="bookmark.avg_score"
         :flavors="bookmark.flavors"
         :reviews_amount="bookmark.get_reviews_amount"
         :score_amount="bookmark.get_score_amount"
@@ -67,16 +67,11 @@
   </div>
 </template>
 
-<style scoped>
-  .avatar {
-    margin: auto;
-    background-color: white;
-  }
-  
+<style scoped>  
   .avatar>img {
+    background-color: white;
     max-width: 250px;
     max-height: 250px;
-    margin: auto;
   }
 </style>
 

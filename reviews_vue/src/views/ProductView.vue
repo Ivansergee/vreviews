@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <section class="user-review" v-if="$store.state.isAuthenticated">
+    <section class="user-review">
       <p class="title is-4">Ваша оценка</p>
       <div v-if="!user_review">
         <div
@@ -312,6 +312,11 @@ export default {
     },
 
     async addReview() {
+      if (!this.$store.isAuthenticated) {
+        this.$root.showLogIn = true;
+        return null
+      }
+
       const formData = {
         product_id: this.product.id,
         score: this.review_id ? this.user_score : this.score,
@@ -360,6 +365,11 @@ export default {
     },
 
     async setScore() {
+      if (!this.$store.isAuthenticated) {
+        this.$root.showLogIn = true;
+        return null
+      }
+      
       const formData = {
         product_id: this.product.id,
         score: this.review_id ? this.user_score : this.score,
