@@ -231,3 +231,19 @@ class BookmarkView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Destro
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+    
+
+class SearchView(generics.ListAPIView):
+    
+    def list(self, request):
+        qs = Flavor.objects.order_by('name')
+        flavors = FlavorsSerializer(qs, many=True).data
+        qs = Brand.objects.order_by('name')
+        brands = BrandNamesSerializer(qs, many=True).data
+        qs = Nicotine.objects.all()
+        nic_content = NicotineSerializer(qs, many=True).data
+        return Response({
+            'products': flavors,
+            'brands': brands,
+            'producers': nic_content
+            })
