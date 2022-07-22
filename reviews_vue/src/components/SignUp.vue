@@ -44,7 +44,10 @@
 
             <div class="level">
                 <div class="level-left">
-                    <button class="button is-dark">Регистрация</button>
+                    <button
+                      class="button is-dark"
+                      :class="{ 'is-loading': isLoading }"
+                    >Регистрация</button>
                 </div>
                 <div class="level-right">
                     <span>Уже зарегистрированы?&nbsp;&nbsp;</span><a @click="close(); $emit('showLogin')">Войти</a>
@@ -73,7 +76,8 @@ export default {
             email: '',
             password1: '',
             password2: '',
-            errors: []
+            errors: [],
+            isLoading: false,
         }
     },
     methods: {
@@ -103,6 +107,7 @@ export default {
                     password: this.password1,
                 }
 
+                this.isLoading = true;
                 axios
                 .post('/users/', formData)
                 .then(() => {
@@ -129,6 +134,7 @@ export default {
                         console.log(JSON.stringify(error))
                     }
                 })
+                this.isLoading = false;
             }
         },
 

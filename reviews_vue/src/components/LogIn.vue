@@ -30,7 +30,10 @@
 
             <div class="level">
                 <div class="level-left">
-                    <button class="button is-dark">Войти</button>
+                    <button
+                      class="button is-dark"
+                      :class="{'is-loading': isLoading}"
+                    >Войти</button>
                 </div>
                 <div class="level-right">
                     <a @click="close(); $emit('showRegister')">Создать аккаунт</a>
@@ -57,7 +60,8 @@ export default {
         return {
             username: '',
             password: '',
-            errors: []
+            errors: [],
+            isLoading: false,
         }
     },
     methods: {
@@ -76,6 +80,7 @@ export default {
                     password: this.password,
                 }
 
+                this.isLoading = true;
                 await axios
                 .post('token/login/', formData)
                 .then(response => {
@@ -110,6 +115,7 @@ export default {
                     this.$store.commit('setIsAdmin', response.data.is_staff);
                     localStorage.setItem('isAdmin', response.data.is_staff);
                 })
+                this.isLoading = false
             }
         },
 
