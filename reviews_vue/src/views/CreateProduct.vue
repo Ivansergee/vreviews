@@ -40,20 +40,20 @@
             </div>
           </div>
 
-          <div class="field" v-if="options">
+          <div class="field" v-if="options.flavors">
             <label><span class="subtitle">Вкусы</span></label>
             <br />
-            <div class="select is-multiple">
-              <select multiple size="5" v-model="productData.flavors">
-                <option
-                  v-for="flavor in options.flavors"
-                  :key="flavor.id"
-                  :value="flavor.id"
-                >
-                  {{ flavor.name }}
-                </option>
-              </select>
-            </div>
+            <VueMultiselect
+              v-model="productData.flavors"
+              :options="options.flavors"
+              :multiple="true"
+              :taggable="true"
+              @tag="addTag"
+              tag-placeholder="Add this as new tag"
+              placeholder="Type to search or add tag"
+              label="name"
+              track-by="id"
+            />
           </div>
 
           <div class="field" v-if="options">
@@ -146,20 +146,23 @@
   cursor: move;
 }
 </style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <script>
 import axios from "axios";
 import { Cropper } from "vue-advanced-cropper";
+import VueMultiselect from 'vue-multiselect';
 import "vue-advanced-cropper/dist/style.css";
 import { toast } from "bulma-toast";
 
 export default {
   components: {
     Cropper,
+    VueMultiselect,
   },
   data() {
     return {
-      options: null,
+      options: [],
       image: {
         src: null,
         type: null,
@@ -180,6 +183,13 @@ export default {
     this.getOptions();
   },
   methods: {
+    addTag (newTag) {
+      const tag = {
+        name: newTag,
+      }
+      this.options.flavors.push(tag)
+      this.productData.flavors.push(tag)
+    },
     submitForm() {
       const formData = new FormData();
 

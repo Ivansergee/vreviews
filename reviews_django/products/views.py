@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.exceptions import APIException
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -28,9 +28,10 @@ class ProductListCreate(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(is_published=True).annotate(avg_score=Avg('reviews__score'))
     parser_classes = [MultiPartParser, FormParser]
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = ProductFilter
     ordering_fields = ['avg_score', 'bookmarks__created_at']
+    search_fields = ['name']
 
 
 class ProductDetail(generics.RetrieveAPIView):
@@ -43,8 +44,9 @@ class ProductDetail(generics.RetrieveAPIView):
 class BrandList(generics.ListAPIView):
     serializer_class = BrandSerializer
     queryset = Brand.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['producer__slug']
+    search_fields = ['name']
 
 
 class BrandDetail(generics.RetrieveAPIView):
@@ -57,6 +59,8 @@ class BrandDetail(generics.RetrieveAPIView):
 class ProducerList(generics.ListAPIView):
     serializer_class = ProducerSerializer
     queryset = Producer.objects.all()
+    filter_backends = [SearchFilter]
+    search_fields = ['name']
 
 
 class ProducerDetail(generics.RetrieveAPIView):
@@ -160,7 +164,7 @@ class ReactionView(mixins.CreateModelMixin, mixins.UpdateModelMixin,
 #     queryset = Review.objects.all()
 #     lookup_url_kwarg = 'id'
 
-class ProductCreateOptions(generics.ListAPIView):
+class ProductOptions(generics.ListAPIView):
 
     def list(self, request):
         qs = Flavor.objects.order_by('name')
@@ -231,19 +235,4 @@ class BookmarkView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Destro
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-    
 
-class SearchView(generics.ListAPIView):
-    
-    def list(self, request):
-        qs = Flavor.objects.order_by('name')
-        flavors = FlavorsSerializer(qs, many=True).data
-        qs = Brand.objects.order_by('name')
-        brands = BrandNamesSerializer(qs, many=True).data
-        qs = Nicotine.objects.all()
-        nic_content = NicotineSerializer(qs, many=True).data
-        return Response({
-            'products': flavors,
-            'brands': brands,
-            'producers': nic_content
-            })
