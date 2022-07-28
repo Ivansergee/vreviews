@@ -28,6 +28,7 @@ class ProductsApiTestCase(APITestCase):
             description='Test producer 2 description',
             slug='producer_2'
         )
+
         self.brand_1 = Brand.objects.create(
             name='Test brand 1',
             description='Test brand 1 description',
@@ -72,34 +73,9 @@ class ProductsApiTestCase(APITestCase):
         self.product_3.nic_content.add(self.nic_content_3)
         self.product_3.flavors.add(self.flavor_2, self.flavor_3)
 
-    def test_list(self):
-        url = reverse('products')
-        response = self.client.get(url)
-        serializer_data = ProductSerializer([self.product_2, self.product_1], many=True).data
-        self.assertEqual(HTTP_200_OK, response.status_code)
-        self.assertEqual(len(response.data), 2)
-        self.assertEqual(serializer_data, response.data)
-
-    def test_post(self):
-        url = reverse('products')
-        data = {
-            'name': 'Test product 3',
-            'brand_id': self.brand_2.id,
-            'description': 'Test product 3 description',
-            'is_salt': 'false',
-            'nic_content_id': [self.nic_content_2.id,  self.nic_content_3.id],
-            'flavor_id': [self.flavor_1.id, self.flavor_2.id],
-        }
-        response = self.client.post(url, data=data)
-        self.assertEqual(HTTP_201_CREATED, response.status_code)
-        self.assertTrue(Product.objects.get(id=response.data['id']))
-        self.assertFalse(Product.objects.get(id=response.data['id']).is_published)
-    
-    def test_filter_by_brand(self):
-        url = reverse('products')
-        response = self.client.get(url, {'brand__slug': self.brand_2.slug})
-        self.assertEqual(HTTP_200_OK, response.status_code)
-        qs = Product.objects.filter(brand__slug=self.brand_2.slug).filter(is_published=True)
-        serializer_data = ProductSerializer(qs, many=True).data
-        self.assertEqual(serializer_data, response.data)
+    def test_product_list(self):
+        response = self.client.get(reverse('products'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
+        print(response.json())
 

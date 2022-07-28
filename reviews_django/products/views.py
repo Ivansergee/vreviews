@@ -22,6 +22,7 @@ from .serializers import (
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter
+from .pagination import CustomPagination
 
 
 class ProductListCreate(generics.ListCreateAPIView):
@@ -32,6 +33,7 @@ class ProductListCreate(generics.ListCreateAPIView):
     filterset_class = ProductFilter
     ordering_fields = ['avg_score', 'bookmarks__created_at']
     search_fields = ['name']
+    pagination_class = CustomPagination
 
 
 class ProductDetail(generics.RetrieveAPIView):
@@ -47,6 +49,7 @@ class BrandList(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['producer__slug']
     search_fields = ['name']
+    pagination_class = CustomPagination
 
 
 class BrandDetail(generics.RetrieveAPIView):
@@ -61,6 +64,7 @@ class ProducerList(generics.ListAPIView):
     queryset = Producer.objects.all()
     filter_backends = [SearchFilter]
     search_fields = ['name']
+    pagination_class = CustomPagination
 
 
 class ProducerDetail(generics.RetrieveAPIView):
@@ -76,6 +80,7 @@ class ReviewListCreate(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     filter_backends = [DjangoFilterBackend]
     filterset_class = ReviewFilter
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         if self.request.method == 'GET':
@@ -195,13 +200,6 @@ class AdminProductListCreate(generics.ListCreateAPIView):
     filterset_fields = ['brand__slug', 'is_published']
 
 
-class AdminProductDetail(generics.RetrieveAPIView):
-    serializer_class = ProductSerializer
-    queryset = Product.objects.all()
-    lookup_field = 'id'
-    lookup_url_kwarg = 'id'
-
-
 class UserView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserProfileSerializer
     authentication_classes = [TokenAuthentication]
@@ -210,7 +208,7 @@ class UserView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'username'
 
 
-class BookmarkView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+class BookmarkView(mixins.CreateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
 
     serializer_class = BookmarkSerializer
     queryset = Bookmark.objects.all()
@@ -226,9 +224,6 @@ class BookmarkView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Destro
     
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
