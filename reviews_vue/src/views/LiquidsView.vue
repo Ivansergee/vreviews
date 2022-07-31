@@ -42,7 +42,7 @@ export default {
       await axios
         .get('/products/?ordering=-avg_score')
         .then(response => {
-          this.products = response.data;
+          this.products = response.data.results;
         })
         .catch(error => {
           console.log(error);

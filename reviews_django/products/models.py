@@ -159,6 +159,7 @@ class Review(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['author', 'product'], name='unique_review')]
+        ordering = ['-created_at']
 
 
 class Comment(models.Model):
@@ -203,7 +204,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     about = models.TextField(blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
-    gender = models.BooleanField(null=True, blank=True)
     avatar = models.ImageField(upload_to=image_path, default='default_avatar.png')
     vk = models.CharField(max_length=100, blank=True, null=True)
     yt = models.CharField(max_length=200, blank=True, null=True)

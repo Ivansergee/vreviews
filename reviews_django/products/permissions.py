@@ -19,6 +19,12 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         return obj.username == request.user.username
 
 
+class IsOwner(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user.username == request.user.username
+
+
 class AuthorCanDelete(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
