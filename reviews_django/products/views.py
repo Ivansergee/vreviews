@@ -18,9 +18,9 @@ from django.utils import timezone
 from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
-    BrandNamesSerializer, UserProfileSerializer, BookmarkSerializer)
-from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark
-from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, AuthorCanDelete
+    BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer)
+from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile
+from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter
 from .pagination import CustomPagination
 
@@ -201,7 +201,7 @@ class AdminProductListCreate(generics.ListCreateAPIView):
 
 
 class UserView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = UserProfileSerializer
+    serializer_class = UserSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsOwnerOrReadOnly]
     queryset = User.objects.all()

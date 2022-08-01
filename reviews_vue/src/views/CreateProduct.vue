@@ -151,8 +151,8 @@
 <script>
 import axios from "axios";
 import { Cropper } from "vue-advanced-cropper";
-import VueMultiselect from 'vue-multiselect';
 import "vue-advanced-cropper/dist/style.css";
+import VueMultiselect from 'vue-multiselect';
 import { toast } from "bulma-toast";
 
 export default {

@@ -148,13 +148,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    # 'DATETIME_FORMAT': "%d.%m.%Y %H:%M",
 }
 
 DJOSER = {
     'SERIALIZERS': {
         'current_user': 'products.serializers.CustomUserSerializer'
-    }
+    },
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

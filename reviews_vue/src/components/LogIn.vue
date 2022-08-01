@@ -108,6 +108,7 @@ export default {
                         console.log(error.message)
                     }
                 }),
+                this.isLoading = false
 
                 await axios
                 .get('users/me/')
@@ -115,7 +116,7 @@ export default {
                     this.$store.commit('setIsAdmin', response.data.is_staff);
                     localStorage.setItem('isAdmin', response.data.is_staff);
                 })
-                this.isLoading = false
+                
             }
         },
 

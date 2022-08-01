@@ -238,20 +238,15 @@ class CustomUserSerializer(UserSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['about', 'avatar', 'gender', 'birthday', 'vk', 'yt', 'tg']
+        fields = ['about', 'avatar', 'birthday', 'vk', 'yt', 'tg']
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.instance.username != self.context['request'].user.username:
-            self.fields.pop('email')
-
+class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'profile']
+        fields = ['id', 'username', 'profile']
 
 
 class BookmarkSerializer(serializers.ModelSerializer):

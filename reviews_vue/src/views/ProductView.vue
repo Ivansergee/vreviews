@@ -293,15 +293,16 @@ export default {
         .get(`/reviews/?product=${product_slug}`)
         .then((response) => {
           this.reviews = [];
-          for (var i in response.data) {
-            if (response.data[i].author == this.$store.state.username) {
-              this.user_review_id = response.data[i].id;
-              this.user_score = response.data[i].score;
-              this.score = response.data[i].score;
-              this.user_review = response.data[i].text;
+          let results = response.data.results;
+          for (var i in results) {
+            if (results[i].author == this.$store.state.username) {
+              this.user_review_id = results[i].id;
+              this.user_score = results[i].score;
+              this.score = results[i].score;
+              this.user_review = results[i].text;
             }
-            if (response.data[i].text) {
-              this.reviews.push(response.data[i]);
+            if (results[i].text) {
+              this.reviews.push(results[i]);
             }
           }
         })
