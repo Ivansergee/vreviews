@@ -159,6 +159,7 @@ class Review(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['author', 'product'], name='unique_review')]
+        ordering = ['id']
 
 
 class Comment(models.Model):

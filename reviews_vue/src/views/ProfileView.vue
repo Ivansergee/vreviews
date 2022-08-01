@@ -63,6 +63,7 @@
         :score_amount="bookmark.get_score_amount"
         @deleted="deleteBookmark"
       />
+      <a class="button is-success" :class="{'disabled': !nextBookmarks}" @click="getBookmarks()">Показать ещё</a>
     </div>
   </div>
 </template>
@@ -91,7 +92,9 @@ export default {
       activeTab: 'profile',
       reviews: null,
       userInfo: null,
-      bookmarks: null,
+      bookmarks: [],
+      bookmarksAmount: null,
+      nextBookmarks: null,
     }
   },
   mounted() {
@@ -140,14 +143,22 @@ export default {
 
     async getBookmarks() {
       this.$store.commit('setIsLoading', true)
+      console.log(this.nextBookmarks);
 
       const username = this.$store.state.username
+      if (!this.nextBookmarks){
+        var url = `/products/?bookmarks_author=${username}&ordering=-bookmarks__created_at`
+      } else {
+        var url = this.nextBookmarks;
+      }
 
       await axios
-        .get(`/products/?bookmarks_author=${username}&ordering=-bookmarks__created_at`)
+        .get(url)
         .then(response => {
-            this.bookmarks = response.data;
-            console.log(this.bookmarks);
+            this.bookmarks.push(...response.data.results);
+            this.nextBookmarks = response.data.next;
+            this.bookmarksAmount = response.data.count;
+            console.log(this.nextBookmarks);
         })
         .catch(error => {
           console.log(error)

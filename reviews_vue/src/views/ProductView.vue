@@ -109,7 +109,7 @@
             </div>
             <div class="field">
               <p class="control">
-                <button class="button" @click="addReview()">Отправить</button>
+                <button class="button" :class="{'is-loading': isLoading}" @click="addReview()">Отправить</button>
               </p>
             </div>
           </div>
@@ -201,6 +201,7 @@ export default {
       user_review_id: null,
       commentingPostId: 0,
       activeModal: false,
+      isLoading: false,
     };
   },
   mounted() {
@@ -312,7 +313,7 @@ export default {
     },
 
     async addReview() {
-      if (!this.$store.isAuthenticated) {
+      if (!this.$store.state.isAuthenticated) {
         this.$root.showLogIn = true;
         return null
       }
@@ -323,6 +324,7 @@ export default {
         text: this.new_user_review,
       };
 
+      this.isLoading = true;
       if (!this.user_review_id) {
         await axios
           .post("reviews/", formData)
@@ -352,6 +354,7 @@ export default {
             });
           });
       }
+      this.isLoading = false;
 
       this.getReviews();
     },
@@ -365,7 +368,7 @@ export default {
     },
 
     async setScore() {
-      if (!this.$store.isAuthenticated) {
+      if (!this.$store.state.isAuthenticated) {
         this.$root.showLogIn = true;
         return null
       }
