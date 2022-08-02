@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Avg, Count, Sum, F
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
@@ -24,23 +23,8 @@ class Producer(models.Model):
             self.image.delete()
         super().delete()
     
-    def get_avg_score(self):
-        p = Product.objects.filter(brand__producer__slug=self.slug)
-        avg = p.annotate(avg_score=Avg('reviews__score')).aggregate(
-            avg_score_brand=Avg(F('avg_score')))['avg_score_brand']
-        return round(avg, 1) if avg else 0
-
-    def get_reviews_amount(self):
-        p = Product.objects.filter(brand__producer__slug=self.slug)
-        n = p.annotate(rev_amount=Count('reviews')).aggregate(
-            rev_amount_brand=Sum(F('rev_amount')))['rev_amount_brand']
-        return n
-
-    def get_score_amount(self):
-        p = Product.objects.filter(brand__slug=self.slug)
-        n = p.annotate(score_amount=Count('reviews__score')).aggregate(
-            score_amount_brand=Sum(F('score_amount')))['score_amount_brand']
-        return n
+    class Meta:
+        ordering = ['id']
 
 
 class Brand(models.Model):
@@ -63,23 +47,8 @@ class Brand(models.Model):
             self.image.delete()
         super().delete()
 
-    def get_avg_score(self):
-        p = Product.objects.filter(brand__slug=self.slug)
-        avg = p.annotate(avg_score=Avg('reviews__score')).aggregate(
-            avg_score_brand=Avg(F('avg_score')))['avg_score_brand']
-        return round(avg, 1) if avg else 0
-
-    def get_reviews_amount(self):
-        p = Product.objects.filter(brand__slug=self.slug)
-        n = p.annotate(rev_amount=Count('reviews')).aggregate(
-            rev_amount_brand=Sum(F('rev_amount')))['rev_amount_brand']
-        return n
-
-    def get_score_amount(self):
-        p = Product.objects.filter(brand__slug=self.slug)
-        n = p.annotate(score_amount=Count('reviews__score')).aggregate(
-            score_amount_brand=Sum(F('score_amount')))['score_amount_brand']
-        return n
+    class Meta:
+        ordering = ['id']
 
 
 class Flavor(models.Model):
@@ -118,7 +87,6 @@ class Product(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-
     def __str__(self):
         return f'{self.brand} {self.name}'
     
@@ -126,19 +94,6 @@ class Product(models.Model):
         if self.image.name != 'placeholder.jpg':
             self.image.delete()
         super().delete()
-    
-    def get_avg_score(self):
-        p = Product.objects.get(id=self.id)
-        avg_score = p.reviews.all().aggregate(Avg('score'))['score__avg']
-        return round(avg_score, 1) if avg_score else 0
-
-    def get_reviews_amount(self):
-        p = Product.objects.get(id=self.id)
-        return p.reviews.exclude(text__exact='').count()
-
-    def get_score_amount(self):
-        p = Product.objects.get(id=self.id)
-        return p.reviews.all().count()
 
 
 class Review(models.Model):
@@ -150,12 +105,6 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.product} {self.author}'s review"
-
-    def likes_count(self):
-        return Reaction.objects.filter(review=self.pk).filter(like=True).count()
-
-    def dislikes_count(self):
-        return Reaction.objects.filter(review=self.pk).filter(like=False).count()
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['author', 'product'], name='unique_review')]

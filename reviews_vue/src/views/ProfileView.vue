@@ -9,7 +9,7 @@
           <a @click="activeTab = 'reviews'">Отзывы и оценки</a>
         </li>
         <li :class="[activeTab === 'bookmarks' ? 'is-active' : '']">
-          <a @click="activeTab = 'bookmarks'">Закладки</a>
+          <a @click="activeTab = 'bookmarks'">Закладки ({{ bookmarksCount }})</a>
         </li>
       </ul>
     </div>
@@ -64,7 +64,11 @@
         :score_amount="bookmark.get_score_amount"
         @deleted="deleteBookmark"
       />
-      <a class="button is-success" :class="{'disabled': !nextBookmarks}" @click="getBookmarks()">Показать ещё</a>
+      <a
+        class="button is-success"
+        @click="getNextBookmarks()"
+        v-if="nextBookmarks && bookmarksCount > 10"
+      >Показать ещё</a>
     </div>
 
     <div class="modal" :class="{ 'is-active': showEdit }">
@@ -167,7 +171,7 @@ export default {
       reviews: null,
       userInfo: null,
       bookmarks: [],
-      bookmarksAmount: null,
+      bookmarksCount: null,
       nextBookmarks: null,
       profileData: {
         avatar: null,
@@ -255,22 +259,15 @@ export default {
 
     async getBookmarks() {
       this.$store.commit('setIsLoading', true)
-      console.log(this.nextBookmarks);
 
       const username = this.$store.state.username
-      if (!this.nextBookmarks){
-        var url = `/products/?bookmarks_author=${username}&ordering=-bookmarks__created_at`
-      } else {
-        var url = this.nextBookmarks;
-      }
 
       await axios
-        .get(url)
+        .get(`/products/?bookmarks_author=${username}&ordering=-bookmarks__created_at`)
         .then(response => {
             this.bookmarks.push(...response.data.results);
             this.nextBookmarks = response.data.next;
-            this.bookmarksAmount = response.data.count;
-            console.log(this.nextBookmarks);
+            this.bookmarksCount = response.data.count;
         })
         .catch(error => {
           console.log(error)
@@ -279,10 +276,23 @@ export default {
       this.$store.commit('setIsLoading', false)
     },
 
+    async getNextBookmarks() {
+      await axios
+        .get(this.nextBookmarks)
+        .then(response => {
+            this.bookmarks.push(...response.data.results);
+            this.nextBookmarks = response.data.next;
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
     deleteBookmark(id) {
       for (var i in this.bookmarks) {
         if (this.bookmarks[i].id == id) {
-          this.bookmarks.splice(i, 1)
+          this.bookmarks.splice(i, 1);
+          this.bookmarksCount -= 1;
         }
       }
     },

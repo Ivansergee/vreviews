@@ -9,4 +9,5 @@ urlpatterns = [
     path('api/', include('djoser.urls.authtoken')),
     path('api/', include('products.urls')),
     path('api/admin/', include('admin.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

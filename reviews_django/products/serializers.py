@@ -51,7 +51,9 @@ class ProductSerializer(serializers.ModelSerializer):
         )
     image_url = serializers.SerializerMethodField()
     user_bookmark = serializers.SerializerMethodField()
-    avg_score = serializers.FloatField(read_only=True)
+    avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
+    reviews_count = serializers.IntegerField(read_only=True)
+    score_count = serializers.IntegerField(read_only=True)
 
     def get_image_url(self, obj):
         request = self.context.get('request')
@@ -81,9 +83,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'image_url',
             'user_bookmark',
             'avg_score',
-
-            'get_reviews_amount',
-            'get_score_amount'
+            'reviews_count',
+            'score_count',
         ]
         read_only_fields = ['slug']
 
@@ -96,6 +97,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class BrandSerializer(serializers.ModelSerializer):
     producer = ProducerShortSerializer(read_only=True)
+    avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
+    reviews_count = serializers.IntegerField(read_only=True)
+    score_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Brand
@@ -107,9 +111,9 @@ class BrandSerializer(serializers.ModelSerializer):
             'producer',
             'image',
 
-            'get_reviews_amount',
-            'get_avg_score',
-            'get_score_amount',
+            'avg_score',
+            'reviews_count',
+            'score_count',
         ]
 
     def to_representation(self, instance):
@@ -120,6 +124,9 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class ProducerSerializer(serializers.ModelSerializer):
+    avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
+    reviews_count = serializers.IntegerField(read_only=True)
+    score_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Brand
@@ -130,9 +137,9 @@ class ProducerSerializer(serializers.ModelSerializer):
             'slug',
             'image',
 
-            'get_reviews_amount',
-            'get_avg_score',
-            'get_score_amount',
+            'avg_score',
+            'reviews_count',
+            'score_count',
         ]
 
     def to_representation(self, instance):
@@ -170,12 +177,28 @@ class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()
     product = ProductInfo(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
-    user_reaction = serializers.NullBooleanField(read_only=True)
+    likes_count = serializers.IntegerField(read_only=True)
+    dislikes_count = serializers.IntegerField(read_only=True)
+    user_reaction = serializers.SerializerMethodField()
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.filter(is_published=True),
         source='product',
         write_only=True
         )
+    
+    def get_user_reaction(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            qs = Reaction.objects.filter(author=user, review=obj.id)
+            if qs:
+                return qs[0].like
+        return None
+
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.context['request'].user.is_authenticated:
+           self.fields.pop('user_reaction')
 
     class Meta:
         model = Review

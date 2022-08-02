@@ -11,7 +11,7 @@ for i in range(1, 6):
     Flavor.objects.create(name=f'flavor{i}')
     Nicotine.objects.create(amount=f'{i}')
 
-for i in range(1, 12):
+for i in range(1, 6):
     Producer.objects.create(
         name=f'producer{i}',
         country=f'country{i}',
@@ -20,7 +20,7 @@ for i in range(1, 12):
     )
 
 for producer in Producer.objects.all():
-    for i in range(1, 12):
+    for i in range(1, 6):
         Brand.objects.create(
             name=f'{producer} brand{i}',
             description=f"{producer}'s brand{i} description",
@@ -66,7 +66,7 @@ for product in Product.objects.all():
         )
 
 for review in Review.objects.all():
-    for i in range(1, 6):
+    for i in range(1, random.randint(2, 5)):
         Comment.objects.create(
             author=random.choice(list(User.objects.all())),
             review=review,
@@ -78,5 +78,5 @@ for user in User.objects.all():
     for product in products:
         Bookmark.objects.create(
             author=user,
-            product=product,            
+            product=product,
         )

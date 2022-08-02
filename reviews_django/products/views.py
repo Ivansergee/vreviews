@@ -10,7 +10,7 @@ from rest_framework.exceptions import APIException
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from django.db.models import Avg, OuterRef, Subquery
+from django.db.models import Avg, Sum, Count, Case, When, Prefetch
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -27,7 +27,12 @@ from .pagination import CustomPagination
 
 class ProductListCreate(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
-    queryset = Product.objects.filter(is_published=True).annotate(avg_score=Avg('reviews__score'))
+    queryset = Product.objects.filter(is_published=True) \
+            .annotate(avg_score=Avg('reviews__score')) \
+            .annotate(reviews_count=Count(Case(When(reviews__text='', then=0), default=1))) \
+            .annotate(score_count=Count(('reviews'))) \
+            .select_related('brand', 'brand__producer') \
+            .prefetch_related('flavors', 'nic_content')
     parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = ProductFilter
@@ -45,7 +50,10 @@ class ProductDetail(generics.RetrieveAPIView):
 
 class BrandList(generics.ListAPIView):
     serializer_class = BrandSerializer
-    queryset = Brand.objects.all()
+    queryset = Brand.objects.select_related('producer') \
+                .annotate(avg_score=Avg('products__reviews__score')) \
+                .annotate(reviews_count=Count(Case(When(products__reviews__text='', then=0), default=1))) \
+                .annotate(score_count=Count(('products__reviews')))
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['producer__slug']
     search_fields = ['name']
@@ -61,7 +69,9 @@ class BrandDetail(generics.RetrieveAPIView):
 
 class ProducerList(generics.ListAPIView):
     serializer_class = ProducerSerializer
-    queryset = Producer.objects.all()
+    queryset = Producer.objects.annotate(avg_score=Avg('brands__products__reviews__score')) \
+                .annotate(reviews_count=Count(Case(When(brands__products__reviews__text='', then=0), default=1))) \
+                .annotate(score_count=Count(('brands__products__reviews')))
     filter_backends = [SearchFilter]
     search_fields = ['name']
     pagination_class = CustomPagination
@@ -81,14 +91,28 @@ class ReviewListCreate(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = ReviewFilter
     pagination_class = CustomPagination
+    queryset = Review.objects.all()\
+            .annotate(likes_count=Count(Case(When(reactions__like=True, then=1)))) \
+            .annotate(dislikes_count=Count(Case(When(reactions__like=False, then=1)))) \
+            .prefetch_related('comments__author') \
+            .select_related('author', 'product') \
+            .only(
+                'score',
+                'text',
+                'created_at',
+                'author__username',
+                'product__name',
+                'product__slug',
+                'product__image')
 
-    def get_queryset(self):
-        if self.request.method == 'GET':
-            if self.request.user.is_authenticated:
-                user_reactions = Reaction.objects.filter(review=OuterRef('pk'), author=self.request.user)
-                queryset = Review.objects.annotate(user_reaction=Subquery(user_reactions.values('like')[:1]))
-                return queryset
-        return Review.objects.all()
+    # def get_queryset(self):
+    #     if self.request.method == 'GET':
+    #         if self.request.user.is_authenticated:
+    #             user_reactions = Reaction.objects.filter(review=OuterRef('pk'), author=self.request.user)
+    #             queryset = Review.objects.annotate(user_reaction=Subquery(user_reactions.values('like')[:1])) \
+    #                         .select_related('product')
+    #             return queryset
+    #     return Review.objects.all()
     
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
