@@ -105,15 +105,6 @@ class ReviewListCreate(generics.ListCreateAPIView):
                 'product__slug',
                 'product__image')
 
-    # def get_queryset(self):
-    #     if self.request.method == 'GET':
-    #         if self.request.user.is_authenticated:
-    #             user_reactions = Reaction.objects.filter(review=OuterRef('pk'), author=self.request.user)
-    #             queryset = Review.objects.annotate(user_reaction=Subquery(user_reactions.values('like')[:1])) \
-    #                         .select_related('product')
-    #             return queryset
-    #     return Review.objects.all()
-    
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
 
@@ -214,14 +205,6 @@ class FlavorsListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
     queryset = Flavor.objects.order_by('name')
-
-
-class AdminProductListCreate(generics.ListCreateAPIView):
-    serializer_class = ProductSerializer
-    queryset = Product.objects.all()
-    parser_classes = [MultiPartParser, FormParser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['brand__slug', 'is_published']
 
 
 class UserView(generics.RetrieveUpdateDestroyAPIView):

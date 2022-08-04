@@ -74,8 +74,8 @@
             <span class="tag"><i class="bi bi-star-fill"></i></span>
             <span class="tag is-primary">{{ product.avg_score ? product.avg_score : '-'}}</span>
           </div>
-          <p><strong>Отзывов: </strong>{{ product.get_reviews_amount }}</p>
-          <p><strong>Оценок: </strong>{{ product.get_score_amount }}</p>
+          <p><strong>Отзывов: </strong>{{ product.reviews_count }}</p>
+          <p><strong>Оценок: </strong>{{ product.score_count }}</p>
         </div>
       </div>
     </div>

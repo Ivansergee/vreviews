@@ -60,8 +60,8 @@
         :slug="bookmark.slug"
         :avg_score="bookmark.avg_score"
         :flavors="bookmark.flavors"
-        :reviews_amount="bookmark.get_reviews_amount"
-        :score_amount="bookmark.get_score_amount"
+        :reviews_amount="bookmark.reviews_count"
+        :score_amount="bookmark.score_count"
         @deleted="deleteBookmark"
       />
       <a

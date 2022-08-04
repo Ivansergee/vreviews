@@ -26,14 +26,23 @@
       >
         <div class="navbar-start">
           <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
-            >Жидкости</router-link>
+            >Жидкости</router-link
+          >
           <router-link class="navbar-item" to="/">Одноразки</router-link>
           <router-link class="navbar-item" :to="{ name: 'add-liquid' }"
-            >Добавить</router-link>
+            >Добавить</router-link
+          >
+          <a class="navbar-item" @click="showSearch = !showSearch" :class="{ active: showSearch }">
+            <i class="fa-solid fa-magnifying-glass fa-lg" :class="{ active: showSearch }"></i>
+          </a>
         </div>
 
         <div class="navbar-end" v-if="$store.state.isAuthenticated">
-          <router-link class="navbar-item" :to="{ name: 'admin' }" v-if="$store.state.isAdmin">
+          <router-link
+            class="navbar-item"
+            :to="{ name: 'admin' }"
+            v-if="$store.state.isAdmin"
+          >
             Администрирование
           </router-link>
           <router-link class="navbar-item profile" :to="{ name: 'profile' }">
@@ -52,12 +61,24 @@
         <div class="navbar-end" v-else>
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-blue" @click="showLogIn = true"
-                >Вход</a>
+              <a class="button is-blue" @click="showLogIn = true">Вход</a>
               <a class="button is-success" @click="showSignUp = true"
-                >Регистрация</a>
+                >Регистрация</a
+              >
             </div>
           </div>
+        </div>
+      </div>
+    </nav>
+    <nav class="navbar is-dark" v-if="showSearch">
+      <div class="navbar-item is-flex-grow-1">
+        <div class="field has-addons is-flex-grow-1 mx-6">
+          <p class="control is-flex-grow-1">
+            <input class="input" type="text" placeholder="Название продукта, бренда или производителя" />
+          </p>
+          <p class="control is-flex-grow-0">
+            <button class="button">Найти</button>
+          </p>
         </div>
       </div>
     </nav>
@@ -68,24 +89,18 @@
     >
       <div class="lds-dual-ring"></div>
     </div>
-    
+
     <div class="modal" :class="{ 'is-active': showLogIn }">
       <div class="modal-background" @click="showLogIn = false"></div>
       <div class="modal-content">
-        <LogIn
-          @logged="showLogIn = false"
-          @showRegister="showSignUp = true"
-        />
+        <LogIn @logged="showLogIn = false" @showRegister="showSignUp = true" />
       </div>
     </div>
 
     <div class="modal" :class="{ 'is-active': showSignUp }">
       <div class="modal-background" @click="showSignUp = false"></div>
       <div class="modal-content">
-        <SignUp
-          @signed="showSignUp = false"
-          @showLogin="showLogIn = true"
-        />
+        <SignUp @signed="showSignUp = false" @showLogin="showLogIn = true" />
       </div>
     </div>
 
@@ -103,19 +118,20 @@
 import axios from "axios";
 import { toast } from "bulma-toast";
 
-import LogIn from './components/LogIn.vue';
-import SignUp from './components/SignUp.vue';
+import LogIn from "./components/LogIn.vue";
+import SignUp from "./components/SignUp.vue";
 
 export default {
   components: {
     LogIn,
-    SignUp
+    SignUp,
   },
   data() {
     return {
       showMobileMenu: false,
       showLogIn: false,
       showSignUp: false,
+      showSearch : false,
     };
   },
   beforeCreate() {
@@ -137,7 +153,6 @@ export default {
       localStorage.removeItem("username");
       localStorage.removeItem("userid");
       localStorage.removeItem("isAdmin");
-
 
       this.$store.commit("removeToken");
       this.$router.push("/");
@@ -219,4 +234,16 @@ body,
   }
 }
 
+.search {
+  flex-grow: 1;
+}
+
+p.control {
+  display: flex;
+}
+
+.active {
+  color: #00d1b2;
+  background-color: #292929;
+}
 </style>
