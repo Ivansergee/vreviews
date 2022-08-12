@@ -1,11 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import BrandView from '../views/BrandView.vue'
-import LiquidsView from '../views/LiquidsView.vue'
-import ProductView from '../views/ProductView.vue'
-import CreateProduct from '../views/CreateProduct'
-import AdminView from '../views/AdminView'
-import ProfileView from '../views/ProfileView'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import BrandView from '../views/BrandView.vue';
+import LiquidsView from '../views/LiquidsView.vue';
+import ProductView from '../views/ProductView.vue';
+import CreateProduct from '../views/CreateProduct.vue';
+import AdminView from '../views/AdminView.vue';
+import ProfileView from '../views/ProfileView.vue';
+import ActivateView from '../views/ActivateView.vue';
+import ResetPasswordView from '../views/ResetPasswordView.vue';
 
 const routes = [
   {
@@ -42,6 +44,16 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: ProfileView
+  },
+  {
+    path: '/activate/:uid/:token',
+    name: 'activate',
+    component: ActivateView
+  },
+  {
+    path: '/password-reset/:uid/:token',
+    name: 'reset-password',
+    component: ResetPasswordView
   },
 ]
 

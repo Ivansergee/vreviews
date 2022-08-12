@@ -1,0 +1,16 @@
+{% load i18n %}
+
+{% block subject %}
+VReviews - имя пользователя было изменено!
+{% endblock %}
+
+{% block text_body %}
+
+{% endblock text_body %}
+
+{% block html_body %}
+<p>Ваше имя пользователя было изменено.</p>
+<p>Новый логин - {{ user.username }}</p>
+
+<p>{% blocktrans %}Команда VReviews{% endblocktrans %}</p>
+{% endblock html_body %}

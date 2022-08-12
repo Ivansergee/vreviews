@@ -30,6 +30,12 @@
 
             <div class="level">
                 <div class="level-left">
+                    <a @click="close(); $emit('showResetPassword')">Не помню пароль</a>
+                </div>
+            </div>
+
+            <div class="level">
+                <div class="level-left">
                     <button
                       class="button is-dark"
                       :class="{'is-loading': isLoading}"

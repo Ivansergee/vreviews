@@ -112,11 +112,10 @@ export default {
                 .post('/users/', formData)
                 .then(() => {
                     toast({
-                        message: 'Вы успешно зарегистрированы!',
+                        message: 'Вы зарегистрированы! Пройдите по ссылке в письме на почте для активации аккаунта.',
                         type: 'is-success',
                         dismissible: true,
                         pauseOnHover: true,
-                        duration: 2000,
                         position: 'top-center',
                     })
 

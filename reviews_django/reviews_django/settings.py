@@ -160,13 +160,22 @@ REST_FRAMEWORK = {
     )
 }
 
+DOMAIN = 'localhost:8080'
+SITE_NAME = 'VReviews'
 DJOSER = {
     'SERIALIZERS': {
         'current_user': 'products.serializers.CustomUserSerializer'
     },
-    'LOGIN_FIELD': 'email',
     'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True, 
     'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_ACTIVATION_EMAIL': True,
+    'EMAIL': {
+        'username_changed_confirmation': 'products.email.UsernameChangedConfirmation'
+    },
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -32,8 +32,15 @@
           <router-link class="navbar-item" :to="{ name: 'add-liquid' }"
             >Добавить</router-link
           >
-          <a class="navbar-item" @click="showSearch = !showSearch" :class="{ active: showSearch }">
-            <i class="fa-solid fa-magnifying-glass fa-lg" :class="{ active: showSearch }"></i>
+          <a
+            class="navbar-item"
+            @click="showSearch = !showSearch"
+            :class="{ active: showSearch }"
+          >
+            <i
+              class="fa-solid fa-magnifying-glass fa-lg"
+              :class="{ active: showSearch }"
+            ></i>
           </a>
         </div>
 
@@ -74,7 +81,11 @@
       <div class="navbar-item is-flex-grow-1">
         <div class="field has-addons is-flex-grow-1 mx-6">
           <p class="control is-flex-grow-1">
-            <input class="input" type="text" placeholder="Название продукта, бренда или производителя" />
+            <input
+              class="input"
+              type="text"
+              placeholder="Название продукта, бренда или производителя"
+            />
           </p>
           <p class="control is-flex-grow-0">
             <button class="button">Найти</button>
@@ -93,7 +104,11 @@
     <div class="modal" :class="{ 'is-active': showLogIn }">
       <div class="modal-background" @click="showLogIn = false"></div>
       <div class="modal-content">
-        <LogIn @logged="showLogIn = false" @showRegister="showSignUp = true" />
+        <LogIn
+          @logged="showLogIn = false"
+          @showRegister="showSignUp = true"
+          @showResetPassword="showResetPassword = true"
+        />
       </div>
     </div>
 
@@ -101,6 +116,45 @@
       <div class="modal-background" @click="showSignUp = false"></div>
       <div class="modal-content">
         <SignUp @signed="showSignUp = false" @showLogin="showLogIn = true" />
+      </div>
+    </div>
+
+    <div class="modal" :class="{ 'is-active': showResetPassword }">
+      <div class="modal-background" @click="showResetPassword=false"></div>
+      <div class="modal-content">
+        <div class="box">
+          <div class="level">
+            <div class="level-left">
+              <h1 class="title">Сбросить пароль</h1>
+            </div>
+            <div class="level-right">
+              <button
+                class="delete is-medium"
+                aria-label="close"
+                @click="showResetPassword=false"
+              ></button>
+            </div>
+          </div>
+
+          <form @submit.prevent="resetPassword()">
+            <div class="field">
+              <label>Email</label>
+              <div class="control">
+                <input type="email" class="input" v-model="email">
+              </div>
+              <p class="help">
+                Введите email, указанный при регистрации. На него будет отправлена ссылка для сброса пароля.
+              </p>
+            </div>
+
+            <div class="level">
+              <div class="level-left">
+                <button class="button is-dark">Отправить</button>
+              </div>
+            </div>
+
+          </form>
+        </div>
       </div>
     </div>
 
@@ -131,7 +185,9 @@ export default {
       showMobileMenu: false,
       showLogIn: false,
       showSignUp: false,
-      showSearch : false,
+      showSearch: false,
+      showResetPassword: false,
+      email:'',
     };
   },
   beforeCreate() {
@@ -156,6 +212,24 @@ export default {
 
       this.$store.commit("removeToken");
       this.$router.push("/");
+    },
+    async resetPassword() {
+      await axios
+      .post('users/reset_password/', {'email': this.email})
+      .then(()=>{
+        toast({
+          message: 'На указанную почту направлена ссылка для сброса пароля.',
+          type: 'is-success',
+          dismissible: true,
+          pauseOnHover: true,
+          position: 'top-center',
+        });
+        this.email = '';
+        this.showResetPassword = false;
+      })
+      .catch((error)=>{
+        console.log(error.response.data);
+      });
     },
     showLoginRequired() {
       toast({
