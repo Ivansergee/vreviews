@@ -261,7 +261,7 @@ class CustomUserSerializer(UserSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['about', 'avatar', 'birthday', 'vk', 'yt', 'tg']
+        fields = ['about', 'avatar', 'city', 'birthday', 'vk', 'yt', 'tg']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -270,6 +270,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'profile']
+        read_only_fields = ['username']
+    
+    def update(self, instance, validated_data):
+        if 'profile' in validated_data:
+            nested_serializer = self.fields['profile']
+            nested_instance = instance.profile
+            nested_data = validated_data.pop('profile')
+            nested_serializer.update(nested_instance, nested_data)
+
+        return super().update(instance, validated_data)
 
 
 class BookmarkSerializer(serializers.ModelSerializer):

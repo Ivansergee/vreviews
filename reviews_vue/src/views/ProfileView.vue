@@ -18,11 +18,10 @@
         <figure class="avatar image is-1by1">
           <img :src="userInfo.profile.avatar">
         </figure>
-        <a class="button" @click="showEdit = true">Редактировать</a>
+        <a class="button" @click="showEditUserInfo = true">Редактировать</a>
       </div>
       <div class="column is-8">
         <p><strong class="title is-6">Имя </strong><span>{{ userInfo.username }}</span></p>
-        <p v-if="userInfo.email"><strong class="title is-6">Email </strong><span>{{ userInfo.email }}</span></p>
         <p><strong class="title is-6">Возраст </strong><span>{{ getAge(userInfo.profile.birthday) || '-' }}</span></p>
         <p><strong class="title is-6">Город </strong><span>{{ userInfo.profile.city || '-' }}</span></p>
         <p><strong class="title is-6">Telegram </strong><span>{{ userInfo.profile.tg || '-' }}</span></p>
@@ -71,75 +70,18 @@
       >Показать ещё</a>
     </div>
 
-    <div class="modal" :class="{ 'is-active': showEdit }">
-      <div class="modal-background" @click="showEdit = false"></div>
-      <div class="modal-content">
-        <div class="box">
-        <div class="level">
-            <div class="level-left">
-                <h1 class="title">Изменение информации профиля</h1>
-            </div>
-            <div class="level-right">
-                <button class="delete is-medium" aria-label="close" @click="showEdit = false"></button>
-            </div>
-        </div>
+    <UserInfoForm
+      v-if="showEditUserInfo && userInfo"
+      :birthday=userInfo.profile.birthday
+      :city=userInfo.profile.city
+      :tg=userInfo.profile.tg
+      :vk=userInfo.profile.vk
+      :yt=userInfo.profile.yt
+      :about=userInfo.profile.about
+      @changedUserInfo="getUserInfo(); showEditUserInfo=false"
+      @close="showEditUserInfo=false"
+    />
 
-        <div>
-            <div class="field">
-                <label>Дата рождения</label>
-                <div class="control">
-                    <input type="date" class="input" v-model="profileData.birthday">
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Город</label>
-                <div class="control">
-                    <input type="text" class="input" v-model="profileData.city">
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Telegram</label>
-                <div class="control">
-                    <input type="text" class="input" v-model="profileData.tg">
-                </div>
-            </div>
-
-            <div class="field">
-                <label>VK</label>
-                <div class="control">
-                    <input type="text" class="input" v-model="profileData.vk">
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Youtube</label>
-                <div class="control">
-                    <input type="text" class="input" v-model="profileData.yt">
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Обо мне</label>
-                <div class="control">
-                    <textarea class="textarea" v-model="profileData.about"></textarea>
-                </div>
-            </div>
-
-            <div class="level">
-                <div class="level-left">
-                    <button
-                      class="button is-dark"
-                      :class="{ 'is-loading': isLoading }"
-                      @click="editUserInfo()"
-                    >Сохранить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -157,32 +99,24 @@ import moment from 'moment';
 
 import Bookmark from '../components/Bookmark.vue';
 import ProfileReview from '../components/ProfileReview.vue';
+import UserInfoForm from '../components/UserInfoForm.vue';
 
 
 export default {
   components: {
     Bookmark,
     ProfileReview,
+    UserInfoForm,
   },
   data() {
     return {
       activeTab: 'profile',
-      showEdit: false,
+      showEditUserInfo: false,
       reviews: null,
       userInfo: null,
       bookmarks: [],
       bookmarksCount: null,
       nextBookmarks: null,
-      profileData: {
-        avatar: null,
-        birthday: null,
-        city: null,
-        tg: null,
-        vk: null,
-        yt: null,
-        about: null,
-      },
-      isLoading: false,
     }
   },
   mounted() {
@@ -221,40 +155,12 @@ export default {
         .get(`/user/${username}/`)
         .then(response => {
             this.userInfo = response.data;
-            this.profileData.avatar = response.data.profile.avatar;
-            this.profileData.birthday = response.data.profile.birthday;
-            this.profileData.tg = response.data.profile.tg;
-            this.profileData.vk = response.data.profile.vk;
-            this.profileData.yt = response.data.profile.yt;
-            this.profileData.about = response.data.profile.about;
         })
         .catch(error => {
           console.log(error)
         })
       
       this.$store.commit('setIsLoading', false)
-    },
-
-    async editUserInfo(){
-
-      const username = this.$store.state.username;
-
-      const formData = {
-        profile__birthday: this.profileData.birthday,
-        profile__about: this.profileData.about,
-        profile__tg: this.profileData.tg,
-        profile__vk: this.profileData.vk,
-        profile__yt: this.profileData.yt,
-      };
-
-      await axios
-        .patch(`/user/${username}/`, formData)
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-          console.log(error)
-        })
     },
 
     async getBookmarks() {
