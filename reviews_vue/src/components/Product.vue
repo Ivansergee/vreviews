@@ -13,9 +13,9 @@
         </div>
         <div class="column is-2">
           <span
-            ><i class="bi bi-chat-left-text"></i> {{ reviews_amount }}
+            ><i class="bi bi-chat-left-text"></i> {{ reviews_count }}
           </span>
-          <span><i class="bi bi-star-fill"></i> {{ score_amount }}</span>
+          <span><i class="bi bi-star-fill"></i> {{ score_count }}</span>
         </div>
         <div class="column">
           <p class="tags">
@@ -47,8 +47,8 @@ export default {
     "name",
     "image",
     "slug",
-    "reviews_amount",
-    "score_amount",
+    "reviews_count",
+    "score_count",
     "flavors",
     "avg_score",
   ],

@@ -43,7 +43,12 @@ class ProductListCreate(generics.ListCreateAPIView):
 
 class ProductDetail(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
-    queryset = Product.objects.filter(is_published=True).annotate(avg_score=Avg('reviews__score'))
+    queryset = Product.objects.filter(is_published=True) \
+            .annotate(avg_score=Avg('reviews__score')) \
+            .annotate(reviews_count=Count(Case(When(reviews__text='', then=0), default=1))) \
+            .annotate(score_count=Count(('reviews'))) \
+            .select_related('brand', 'brand__producer') \
+            .prefetch_related('flavors', 'nic_content')
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 
@@ -62,7 +67,10 @@ class BrandList(generics.ListAPIView):
 
 class BrandDetail(generics.RetrieveAPIView):
     serializer_class = BrandSerializer
-    queryset = Brand.objects.all()
+    queryset = Brand.objects.select_related('producer') \
+                .annotate(avg_score=Avg('products__reviews__score')) \
+                .annotate(reviews_count=Count(Case(When(products__reviews__text='', then=0), default=1))) \
+                .annotate(score_count=Count(('products__reviews')))
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 
@@ -79,7 +87,9 @@ class ProducerList(generics.ListAPIView):
 
 class ProducerDetail(generics.RetrieveAPIView):
     serializer_class = ProducerSerializer
-    queryset = Producer.objects.all()
+    queryset = Producer.objects.annotate(avg_score=Avg('brands__products__reviews__score')) \
+                .annotate(reviews_count=Count(Case(When(brands__products__reviews__text='', then=0), default=1))) \
+                .annotate(score_count=Count(('brands__products__reviews')))
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 

@@ -9,8 +9,8 @@
         :slug="product.slug"
         :avg_score="product.avg_score ? product.avg_score : '-'"
         :flavors="product.flavors"
-        :reviews_amount="product.get_reviews_amount"
-        :score_amount="product.get_score_amount"
+        :reviews_сount="product.reviews_count"
+        :score_сount="product.score_count"
       />
     </div>
 </template>

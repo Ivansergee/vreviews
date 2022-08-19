@@ -100,6 +100,7 @@ class BrandSerializer(serializers.ModelSerializer):
     avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
     reviews_count = serializers.IntegerField(read_only=True)
     score_count = serializers.IntegerField(read_only=True)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Brand
@@ -110,23 +111,29 @@ class BrandSerializer(serializers.ModelSerializer):
             'slug',
             'producer',
             'image',
+            'image_url',
 
             'avg_score',
             'reviews_count',
             'score_count',
         ]
+    
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        url = obj.image.url
+        return request.build_absolute_uri(url)
 
-    def to_representation(self, instance):
-        response = super(BrandSerializer, self).to_representation(instance)
-        if instance.image:
-            response['image'] = instance.image.url
-        return response
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.context['request'].method == 'GET':
+           self.fields.pop('image')
 
 
 class ProducerSerializer(serializers.ModelSerializer):
     avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
     reviews_count = serializers.IntegerField(read_only=True)
     score_count = serializers.IntegerField(read_only=True)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Brand
@@ -136,17 +143,22 @@ class ProducerSerializer(serializers.ModelSerializer):
             'description',
             'slug',
             'image',
+            'image_url',
 
             'avg_score',
             'reviews_count',
             'score_count',
         ]
 
-    def to_representation(self, instance):
-        response = super(ProducerSerializer, self).to_representation(instance)
-        if instance.image:
-            response['image'] = instance.image.url
-        return response
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        url = obj.image.url
+        return request.build_absolute_uri(url)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.context['request'].method == 'GET':
+           self.fields.pop('image')
 
 
 class CommentSerializer(serializers.ModelSerializer):
