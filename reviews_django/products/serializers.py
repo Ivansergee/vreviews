@@ -51,9 +51,6 @@ class ProductSerializer(serializers.ModelSerializer):
         )
     image_url = serializers.SerializerMethodField()
     user_bookmark = serializers.SerializerMethodField()
-    avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
-    reviews_count = serializers.IntegerField(read_only=True)
-    score_count = serializers.IntegerField(read_only=True)
 
     def get_image_url(self, obj):
         request = self.context.get('request')

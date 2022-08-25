@@ -28,9 +28,6 @@ from .pagination import CustomPagination
 class ProductListCreate(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(is_published=True) \
-            .annotate(avg_score=Avg('reviews__score')) \
-            .annotate(reviews_count=Count(Case(When(reviews__text='', then=0), default=1))) \
-            .annotate(score_count=Count(('reviews'))) \
             .select_related('brand', 'brand__producer') \
             .prefetch_related('flavors', 'nic_content')
     parser_classes = [MultiPartParser, FormParser]
@@ -44,9 +41,6 @@ class ProductListCreate(generics.ListCreateAPIView):
 class ProductDetail(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(is_published=True) \
-            .annotate(avg_score=Avg('reviews__score')) \
-            .annotate(reviews_count=Count(Case(When(reviews__text='', then=0), default=1))) \
-            .annotate(score_count=Count(('reviews'))) \
             .select_related('brand', 'brand__producer') \
             .prefetch_related('flavors', 'nic_content')
     lookup_field = 'slug'
@@ -127,20 +121,20 @@ class ReviewUpdate(generics.UpdateAPIView):
     queryset = Review.objects.all()
     lookup_url_kwarg = 'id'
 
-    def perform_update(self, serializer):
-        obj = self.get_object()
-        text = self.request.data.get('text')
-        if text and obj.text != text:
-            created_at = obj.created_at
-            delta = timedelta(minutes=30)
-            now = timezone.now()
-            if created_at + delta < now:
-                raise APIException('Редактирование отзыва доступно только в течении 30 минут после создания')
-        serializer.save()
+    # def perform_update(self, serializer):
+    #     obj = self.get_object()
+    #     text = self.request.data.get('text')
+    #     if text and obj.text and obj.text != text:
+    #         created_at = obj.created_at
+    #         delta = timedelta(minutes=30)
+    #         now = timezone.now()
+    #         if created_at + delta < now:
+    #             raise APIException('Редактирование отзыва доступно только в течении 30 минут после создания')
+    #     serializer.save()
 
 
 class ReviewDelete(generics.DestroyAPIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [AuthorCanDelete]
     authentication_classes = [TokenAuthentication]
     queryset = Review.objects.all()
     lookup_field = 'id'

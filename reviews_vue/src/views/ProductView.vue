@@ -72,7 +72,9 @@
           <p class="title is-4">Оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">{{ product.avg_score ? product.avg_score : '-'}}</span>
+            <span class="tag is-primary">{{
+              product.avg_score ? product.avg_score : "-"
+            }}</span>
           </div>
           <p><strong>Отзывов: </strong>{{ product.reviews_count }}</p>
           <p><strong>Оценок: </strong>{{ product.score_count }}</p>
@@ -109,7 +111,14 @@
             </div>
             <div class="field">
               <p class="control">
-                <button class="button" :class="{'is-loading': isLoading}" @click="addReview()">Отправить</button>
+                <button
+                  class="button"
+                  :class="{ 'is-loading': isLoading }"
+                  :disabled="!new_user_review"
+                  @click="addReview()"
+                >
+                  Отправить
+                </button>
               </p>
             </div>
           </div>
@@ -128,12 +137,16 @@
           >
             Редактировать
           </button>
+          <button class="button is-danger" @click="showDeleteConfirm = true">
+            Удалить
+          </button>
         </div>
       </div>
     </section>
 
     <section class="reviews">
       <p class="title is-3">Отзывы</p>
+      <p v-if="!reviews">Отзывов пока нет</p>
       <Review
         v-for="review in reviews"
         :key="review.id"
@@ -153,6 +166,31 @@
         @deleted="removeReview"
       />
     </section>
+
+    <div class="modal" :class="{ 'is-active': showDeleteConfirm }">
+      <div class="modal-background" @click="showDeleteConfirm = false"></div>
+      <div class="modal-content">
+        <div class="box">
+          <div class="level">
+            <div class="level-left">
+              <h1 class="title">Вы уверены?</h1>
+            </div>
+            <div class="level-right">
+              <button
+                class="delete is-medium"
+                aria-label="close"
+                @click="showDeleteConfirm = false"
+              ></button>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="button is-danger" @click="deleteReview()" :class="{ 'is-loading': isLoadingDelete }">Удалить</button>
+            <button class="button is-info" @click="showDeleteConfirm = false">Отмена</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -202,6 +240,8 @@ export default {
       commentingPostId: 0,
       activeModal: false,
       isLoading: false,
+      showDeleteConfirm: false,
+      isLoadingDelete: false,
     };
   },
   mounted() {
@@ -215,21 +255,23 @@ export default {
 
     async toggleBookmark() {
       if (this.$store.state.isAuthenticated) {
-        const data = {product: this.product.id};
+        const data = { product: this.product.id };
         if (!this.product.user_bookmark) {
           await axios
-          .post('/bookmarks/', data)
-          .then(this.product.user_bookmark = true)
-          .catch((error) => {
-            console.log(error);
-          });
+            .post("/bookmarks/", data)
+            .then((this.product.user_bookmark = true))
+            .catch((error) => {
+              console.log(error);
+            });
         } else {
           await axios
-          .delete('/bookmarks/', {data: data})
-          .then(()=>{this.product.user_bookmark = null})
-          .catch((error) => {
-            console.log(error);
-          });
+            .delete("/bookmarks/", { data: data })
+            .then(() => {
+              this.product.user_bookmark = null;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
       } else {
         this.$root.showLogIn = true;
@@ -316,7 +358,7 @@ export default {
     async addReview() {
       if (!this.$store.state.isAuthenticated) {
         this.$root.showLogIn = true;
-        return null
+        return null;
       }
 
       const formData = {
@@ -363,17 +405,39 @@ export default {
     removeReview(id) {
       for (var i in this.reviews) {
         if (this.reviews[i].id == id) {
-          this.reviews.splice(i, 1)
+          this.reviews.splice(i, 1);
         }
+      }
+    },
+
+    async deleteReview() {
+      if (this.user_review_id) {
+        this.isLoadingDelete = true;
+        await axios
+          .delete(`reviews/${this.user_review_id}/delete/`)
+          .then(() => {
+            this.user_score = null;
+            this.score = 0;
+            this.user_review = '';
+            this.new_user_review = '';
+            this.showDeleteConfirm = false;
+            this.removeReview(this.user_review_id);
+          })
+          .catch((error) => {
+            console.log(error.response.message);
+          });
+        this.isLoadingDelete = false;
       }
     },
 
     async setScore() {
       if (!this.$store.state.isAuthenticated) {
         this.$root.showLogIn = true;
-        return null
+        return null;
       }
-      
+
+      this.user_score = this.score;
+
       const formData = {
         product_id: this.product.id,
         score: this.review_id ? this.user_score : this.score,
@@ -387,7 +451,7 @@ export default {
             this.user_review_id = response.data.id;
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.message);
           });
       } else {
         await axios
@@ -396,7 +460,7 @@ export default {
             this.user_score = response.data.score;
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.message);
           });
       }
     },

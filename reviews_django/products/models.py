@@ -84,7 +84,9 @@ class Product(models.Model):
     flavors = models.ManyToManyField(Flavor, related_name='products')
     slug = models.SlugField(blank=True, null=True, db_index=True, unique=True, default=None)
     is_published = models.BooleanField(default=False)
-
+    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, default=None)
+    score_count = models.IntegerField(null=True, default=None)
+    reviews_count = models.IntegerField(null=True, default=None)
 
     class Meta:
         ordering = ['-created_at']
@@ -102,11 +104,17 @@ class Review(models.Model):
     author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE, blank=False)
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE, blank=False)
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=0)
-    text = models.TextField(blank=True)
+    text = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.product} {self.author}'s review"
+    
+    def save(self, *args, **kwargs):
+        from products.logic import set_product_rating
+        super().save(*args, **kwargs)
+        set_product_rating(self.product)
+        
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['author', 'product'], name='unique_review')]
