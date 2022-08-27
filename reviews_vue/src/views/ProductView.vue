@@ -32,7 +32,7 @@
       <div class="column is-4">
         <div class="content">
           <p>
-            <strong>Бренд:</strong>
+            <strong>Бренд: </strong>
             <router-link
               :to="{
                 name: 'brand-list',
@@ -41,10 +41,10 @@
               >{{ product.brand.name }}</router-link
             >
           </p>
-          <p><strong>Название:</strong> {{ product.name }}</p>
-          <p><strong>Страна:</strong> {{ product.brand.producer.country }}</p>
+          <p><strong>Название: </strong> {{ product.name }}</p>
+          <p><strong>Страна: </strong> {{ product.brand.producer.country }}</p>
           <p>
-            <strong>Производитель:</strong> {{ product.brand.producer.name }}
+            <strong>Производитель: </strong> {{ product.brand.producer.name }}
           </p>
           <p><strong>Вкусы:</strong></p>
           <p class="tags">
@@ -57,13 +57,18 @@
           </p>
           <p><strong>Содержание никотина:</strong></p>
           <p class="tags">
-            <a
+            <span
               class="tag is-warning"
               v-for="amount in product.nic_content"
               :key="amount.id"
-              >{{ amount }}</a
-            >
+              >{{ amount }}</span>
           </p>
+          <p><strong>VG/PG: </strong>{{ product.vg+'/'}}{{ 100-product.vg }}</p>
+          <p>
+            <strong>Объем: </strong>
+            <span>{{ listVolumes }}</span>
+          </p>
+          <p><strong>Описание:</strong></p>
           <p>{{ product.description }}</p>
         </div>
       </div>
@@ -76,8 +81,8 @@
               product.avg_score ? product.avg_score : "-"
             }}</span>
           </div>
-          <p><strong>Отзывов: </strong>{{ product.reviews_count }}</p>
-          <p><strong>Оценок: </strong>{{ product.score_count }}</p>
+          <p><strong>Отзывов: </strong>{{ product.reviews_count ? product.reviews_count : 0 }}</p>
+          <p><strong>Оценок: </strong>{{ product.score_count ? product.score_count : 0 }}</p>
         </div>
       </div>
     </div>
@@ -185,7 +190,7 @@
           </div>
 
           <div class="controls">
-            <button class="button is-danger" @click="deleteReview()" :class="{ 'is-loading': isLoadingDelete }">Удалить</button>
+            <button class="button is-danger mr-3" @click="deleteReview()" :class="{ 'is-loading': isLoadingDelete }">Удалить</button>
             <button class="button is-info" @click="showDeleteConfirm = false">Отмена</button>
           </div>
         </div>
@@ -247,6 +252,11 @@ export default {
   mounted() {
     this.getProductData();
     this.getReviews();
+  },
+  computed: {
+    listVolumes(){
+      return this.product.volume.join(', ');
+    }
   },
   methods: {
     setCommentingPostId(id) {

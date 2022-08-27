@@ -32,6 +32,7 @@ class ProductSerializer(serializers.ModelSerializer):
     brand = BrandShortSerializer(read_only=True)
     flavors = serializers.StringRelatedField(many=True, read_only=True)
     nic_content = serializers.StringRelatedField(many=True)
+    volume = serializers.StringRelatedField(many=True)
     brand_id = serializers.PrimaryKeyRelatedField(
         queryset=Brand.objects.all(),
         source='brand',
@@ -67,10 +68,13 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'short_desc',
             'description',
             'slug',
             'brand',
             'brand_id',
+            'vg',
+            'volume',
             'flavors',
             'flavor_id',
             'nic_content',
@@ -83,7 +87,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'reviews_count',
             'score_count',
         ]
-        read_only_fields = ['slug']
+        read_only_fields = ['slug', 'avg_score', 'reviews_count', 'score_count']
 
 
     def __init__(self, *args, **kwargs):

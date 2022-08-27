@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Brand, Producer, Flavor, Review, Reaction, Comment, Nicotine, Profile, Bookmark
+from .models import Product, Brand, Producer, Flavor, Review, Reaction, Comment, Nicotine, Profile, Bookmark, Volume
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -16,5 +16,6 @@ admin.site.register(Flavor)
 admin.site.register(Nicotine)
 admin.site.register(Profile)
 admin.site.register(Bookmark)
+admin.site.register(Volume)
 
 

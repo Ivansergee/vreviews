@@ -64,7 +64,7 @@
         </div>
         <div class="field">
           <p class="control">
-            <button class="button" @click="addComment()">Отправить</button>
+            <button class="button" :disabled="!commentText" @click="addComment()">Отправить</button>
           </p>
         </div>
       </div>

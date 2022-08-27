@@ -16,6 +16,9 @@ class Producer(models.Model):
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True)
+    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
+    score_count = models.IntegerField(null=True, blank=True, default=None)
+    reviews_count = models.IntegerField(null=True, blank=True, default=None)
 
     def __str__(self):
         return self.name
@@ -40,6 +43,9 @@ class Brand(models.Model):
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True, unique=True)
+    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
+    score_count = models.IntegerField(null=True, blank=True, default=None)
+    reviews_count = models.IntegerField(null=True, blank=True, default=None)
 
     def __str__(self):
         return self.name
@@ -67,6 +73,13 @@ class Nicotine(models.Model):
         return self.amount
 
 
+class Volume(models.Model):
+    volume = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return str(self.volume) + ' мл'
+
+
 class Product(models.Model):
 
     def image_path(instance, filename):
@@ -77,16 +90,19 @@ class Product(models.Model):
     name = models.CharField('Название', max_length=100)
     brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
+    short_desc = models.CharField(max_length=150, blank=True, null=True, default=None)
     description = models.TextField(blank=True)
     nic_content = models.ManyToManyField(Nicotine, related_name='products')
+    vg = models.IntegerField()
+    volume = models.ManyToManyField(Volume, related_name='products')
     is_salt = models.BooleanField()
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')
     slug = models.SlugField(blank=True, null=True, db_index=True, unique=True, default=None)
     is_published = models.BooleanField(default=False)
-    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, default=None)
-    score_count = models.IntegerField(null=True, default=None)
-    reviews_count = models.IntegerField(null=True, default=None)
+    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
+    score_count = models.IntegerField(null=True, blank=True, default=None)
+    reviews_count = models.IntegerField(null=True, blank=True, default=None)
 
     class Meta:
         ordering = ['-created_at']
@@ -111,9 +127,11 @@ class Review(models.Model):
         return f"{self.product} {self.author}'s review"
     
     def save(self, *args, **kwargs):
-        from products.logic import set_product_rating
+        from products.logic import set_product_rating, set_brand_rating, set_producer_rating
         super().save(*args, **kwargs)
         set_product_rating(self.product)
+        set_brand_rating(self.product.brand)
+        set_producer_rating(self.product.brand.producer)
         
 
     class Meta:

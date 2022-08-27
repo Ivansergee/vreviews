@@ -49,10 +49,7 @@ class ProductDetail(generics.RetrieveAPIView):
 
 class BrandList(generics.ListAPIView):
     serializer_class = BrandSerializer
-    queryset = Brand.objects.select_related('producer') \
-                .annotate(avg_score=Avg('products__reviews__score')) \
-                .annotate(reviews_count=Count(Case(When(products__reviews__text='', then=0), default=1))) \
-                .annotate(score_count=Count(('products__reviews')))
+    queryset = Brand.objects.select_related('producer')
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['producer__slug']
     search_fields = ['name']
@@ -61,19 +58,14 @@ class BrandList(generics.ListAPIView):
 
 class BrandDetail(generics.RetrieveAPIView):
     serializer_class = BrandSerializer
-    queryset = Brand.objects.select_related('producer') \
-                .annotate(avg_score=Avg('products__reviews__score')) \
-                .annotate(reviews_count=Count(Case(When(products__reviews__text='', then=0), default=1))) \
-                .annotate(score_count=Count(('products__reviews')))
+    queryset = Brand.objects.select_related('producer')
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 
 
 class ProducerList(generics.ListAPIView):
     serializer_class = ProducerSerializer
-    queryset = Producer.objects.annotate(avg_score=Avg('brands__products__reviews__score')) \
-                .annotate(reviews_count=Count(Case(When(brands__products__reviews__text='', then=0), default=1))) \
-                .annotate(score_count=Count(('brands__products__reviews')))
+    queryset = Producer.objects.all()
     filter_backends = [SearchFilter]
     search_fields = ['name']
     pagination_class = CustomPagination
@@ -81,9 +73,7 @@ class ProducerList(generics.ListAPIView):
 
 class ProducerDetail(generics.RetrieveAPIView):
     serializer_class = ProducerSerializer
-    queryset = Producer.objects.annotate(avg_score=Avg('brands__products__reviews__score')) \
-                .annotate(reviews_count=Count(Case(When(brands__products__reviews__text='', then=0), default=1))) \
-                .annotate(score_count=Count(('brands__products__reviews')))
+    queryset = Producer.objects.all()
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 
@@ -181,12 +171,6 @@ class ReactionView(mixins.CreateModelMixin, mixins.UpdateModelMixin,
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
-# class ReviewDelete(generics.DestroyAPIView):
-#     serializer_class = ReviewSerializer
-#     permission_classes = [IsAdminUser]
-#     authentication_classes = [TokenAuthentication]
-#     queryset = Review.objects.all()
-#     lookup_url_kwarg = 'id'
 
 class ProductOptions(generics.ListAPIView):
 
