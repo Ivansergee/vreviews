@@ -10,7 +10,7 @@ from rest_framework.exceptions import APIException
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from django.db.models import Avg, Sum, Count, Case, When, Prefetch
+from django.db.models import Count, Case, When
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -18,7 +18,7 @@ from django.utils import timezone
 from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
-    BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer)
+    BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer)
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter
@@ -172,15 +172,17 @@ class ReactionView(mixins.CreateModelMixin, mixins.UpdateModelMixin,
         return self.partial_update(request, *args, **kwargs)
 
 
-class ProductOptions(generics.ListAPIView):
+class ProductOptions(generics.GenericAPIView):
 
-    def list(self, request):
+    def get(self, request):
         qs = Flavor.objects.order_by('name')
         flavors = FlavorsSerializer(qs, many=True).data
         qs = Brand.objects.order_by('name')
         brands = BrandNamesSerializer(qs, many=True).data
         qs = Nicotine.objects.all()
         nic_content = NicotineSerializer(qs, many=True).data
+        qs = Volume.objects.all()
+        nic_content = VolumeSerializer(qs, many=True).data
         return Response({
             'brands': brands,
             'flavors': flavors,
