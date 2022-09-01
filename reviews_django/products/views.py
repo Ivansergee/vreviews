@@ -19,7 +19,7 @@ from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
     BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer)
-from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile
+from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter
 from .pagination import CustomPagination
@@ -100,7 +100,7 @@ class ReviewListCreate(generics.ListCreateAPIView):
                 'product__image')
 
     def perform_create(self, serializer):
-        return serializer.save(author=self.request.user)
+        serializer.save(author=self.request.user)
 
 
 class ReviewUpdate(generics.UpdateAPIView):
@@ -182,11 +182,12 @@ class ProductOptions(generics.GenericAPIView):
         qs = Nicotine.objects.all()
         nic_content = NicotineSerializer(qs, many=True).data
         qs = Volume.objects.all()
-        nic_content = VolumeSerializer(qs, many=True).data
+        volumes = VolumeSerializer(qs, many=True).data
         return Response({
             'brands': brands,
             'flavors': flavors,
-            'nic_content': nic_content
+            'nic_content': nic_content,
+            'volumes': volumes,
             })
 
 
@@ -197,12 +198,18 @@ class FlavorsListCreate(generics.ListCreateAPIView):
     queryset = Flavor.objects.order_by('name')
 
 
-class UserView(generics.RetrieveUpdateDestroyAPIView):
+class UserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsOwnerOrReadOnly]
     queryset = User.objects.all()
     lookup_field = 'username'
+
+
+class EditUserProfile(generics.UpdateAPIView):
+    serializer_class = ProfileSerializer
+    
+    def get_object(self):
+        lookup_field = self.kwargs["username"]
+        return get_object_or_404(Profile, user__username=lookup_field)
 
 
 class BookmarkView(mixins.CreateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):

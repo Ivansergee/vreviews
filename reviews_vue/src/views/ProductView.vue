@@ -10,7 +10,7 @@
     <div class="columns">
       <div class="column is-4">
         <figure class="image is-1by1">
-          <img :src="product.image_url" />
+          <img id="product-image" :src="product.thumbnail_url" @click="showImage=true"/>
         </figure>
         <a
           class="button mt-3"
@@ -61,9 +61,10 @@
               class="tag is-warning"
               v-for="amount in product.nic_content"
               :key="amount.id"
-              >{{ amount }}</span>
+              >{{ amount }}</span
+            >
           </p>
-          <p><strong>VG/PG: </strong>{{ product.vg+'/'}}{{ 100-product.vg }}</p>
+          <p><strong>VG/PG: </strong>{{ product.vg }}/{{ 100 - product.vg }}</p>
           <p>
             <strong>Объем: </strong>
             <span>{{ listVolumes }}</span>
@@ -81,8 +82,14 @@
               product.avg_score ? product.avg_score : "-"
             }}</span>
           </div>
-          <p><strong>Отзывов: </strong>{{ product.reviews_count ? product.reviews_count : 0 }}</p>
-          <p><strong>Оценок: </strong>{{ product.score_count ? product.score_count : 0 }}</p>
+          <p>
+            <strong>Отзывов: </strong
+            >{{ product.reviews_count ? product.reviews_count : 0 }}
+          </p>
+          <p>
+            <strong>Оценок: </strong
+            >{{ product.score_count ? product.score_count : 0 }}
+          </p>
         </div>
       </div>
     </div>
@@ -172,6 +179,16 @@
       />
     </section>
 
+    <div class="modal" :class="{ 'is-active': showImage }">
+      <div class="modal-background" @click="showImage = false"></div>
+      <div class="modal-content">
+        <p class="image">
+          <img :src="product.image_url">
+        </p>
+      </div>
+      <button class="modal-close is-large" aria-label="close" @click="showImage = false"></button>
+    </div>
+
     <div class="modal" :class="{ 'is-active': showDeleteConfirm }">
       <div class="modal-background" @click="showDeleteConfirm = false"></div>
       <div class="modal-content">
@@ -190,8 +207,16 @@
           </div>
 
           <div class="controls">
-            <button class="button is-danger mr-3" @click="deleteReview()" :class="{ 'is-loading': isLoadingDelete }">Удалить</button>
-            <button class="button is-info" @click="showDeleteConfirm = false">Отмена</button>
+            <button
+              class="button is-danger mr-3"
+              @click="deleteReview()"
+              :class="{ 'is-loading': isLoadingDelete }"
+            >
+              Удалить
+            </button>
+            <button class="button is-info" @click="showDeleteConfirm = false">
+              Отмена
+            </button>
           </div>
         </div>
       </div>
@@ -200,9 +225,12 @@
 </template>
 
 <style scoped>
-img {
+#product-image {
   max-width: 300px;
   max-height: 300px;
+}
+#product-image:hover {
+  cursor: pointer;
 }
 .user-review {
   border-top: 2px solid rgb(90, 90, 90);
@@ -247,6 +275,7 @@ export default {
       isLoading: false,
       showDeleteConfirm: false,
       isLoadingDelete: false,
+      showImage: false,
     };
   },
   mounted() {
@@ -254,9 +283,9 @@ export default {
     this.getReviews();
   },
   computed: {
-    listVolumes(){
-      return this.product.volume.join(', ');
-    }
+    listVolumes() {
+      return this.product.volume.join(", ");
+    },
   },
   methods: {
     setCommentingPostId(id) {
@@ -428,8 +457,8 @@ export default {
           .then(() => {
             this.user_score = null;
             this.score = 0;
-            this.user_review = '';
-            this.new_user_review = '';
+            this.user_review = "";
+            this.new_user_review = "";
             this.showDeleteConfirm = false;
             this.removeReview(this.user_review_id);
           })

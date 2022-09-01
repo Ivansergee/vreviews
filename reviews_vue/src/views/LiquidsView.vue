@@ -5,7 +5,7 @@
         v-for="product in products"
         :key="product.id"
         :name="product.name"
-        :image="product.image_url"
+        :image="product.thumbnail_url"
         :slug="product.slug"
         :avg_score="product.avg_score ? product.avg_score : '-'"
         :flavors="product.flavors"

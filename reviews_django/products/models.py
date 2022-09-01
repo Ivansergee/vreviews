@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from slugify import slugify
 
 
 User._meta.get_field('email')._unique = True
@@ -84,19 +85,23 @@ class Product(models.Model):
 
     def image_path(instance, filename):
         ext = filename.split('.')[-1]
-        return f'products/{instance.brand}/{instance.name}.{ext}'
+        return f'products/img/{instance.brand}/{instance.name}.{ext}'
+    
+    def thumbnail_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'products/thumb/{instance.brand}/{instance.name}.{ext}'
 
 
     name = models.CharField('Название', max_length=100)
     brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
-    short_desc = models.CharField(max_length=150, blank=True, null=True, default=None)
     description = models.TextField(blank=True)
     nic_content = models.ManyToManyField(Nicotine, related_name='products')
     vg = models.IntegerField()
     volume = models.ManyToManyField(Volume, related_name='products')
     is_salt = models.BooleanField()
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
+    thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')
     slug = models.SlugField(blank=True, null=True, db_index=True, unique=True, default=None)
     is_published = models.BooleanField(default=False)
@@ -110,6 +115,11 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.brand} {self.name}'
     
+    def save(self, *args, **kwargs):
+        slug_str = self.brand.name + ' ' + self.name
+        self.slug = slugify(slug_str.replace("'", ""))
+        super().save(*args, **kwargs)
+
     def delete(self):
         if self.image.name != 'placeholder.jpg':
             self.image.delete()

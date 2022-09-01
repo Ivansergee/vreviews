@@ -46,6 +46,7 @@ export default {
   props: [
     "name",
     "image",
+    "thumbnail",
     "slug",
     "reviews_count",
     "score_count",

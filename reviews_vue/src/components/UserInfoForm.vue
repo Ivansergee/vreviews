@@ -138,20 +138,17 @@ export default {
 
         const username = this.$store.state.username;
 
-        const formData = {
-          profile: {
-            birthday: this.birthday,
-            about: this.about,
-            city: this.city,
-            tg: this.tg,
-            vk: this.vk,
-            yt: this.yt,
-          }
-        };
+        const formData = new FormData();
+        if (this.birthday) formData.append('birthday', this.birthday);
+        if (this.about) formData.append('about', this.about);
+        if (this.city) formData.append('city', this.city);
+        if (this.tg) formData.append('tg', this.tg);
+        if (this.vk) formData.append('vk', this.vk);
+        if (this.yt) formData.append('yt', this.yt);
 
         this.isLoading = true;
         await axios
-        .patch(`/user/${username}/`, formData)
+        .patch(`/user/${username}/edit/`, formData)
         .then(() => {
           toast({
             message: "Информация изменена",

@@ -4,6 +4,7 @@
       <div class="column is-6 is-offset-3">
         <h1 class="title">Добавление жидкости</h1>
         <form @submit.prevent="submitForm">
+
           <div class="field">
             <label><span class="subtitle">Название</span></label>
             <div class="control">
@@ -72,6 +73,29 @@
             </div>
           </div>
 
+          <div class="field" v-if="options">
+            <label><span class="subtitle">Объем</span></label>
+            <br />
+            <div class="select is-multiple">
+              <select multiple size="5" v-model="productData.volumes">
+                <option
+                  v-for="vol in options.volumes"
+                  :key="vol.id"
+                  :value="vol.id"
+                >
+                  {{ vol.volume }} мл
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label><span class="subtitle">VG/PG</span></label>
+            <div class="control">
+              <input type="number" class="input" v-model="productData.vg" />
+            </div>
+          </div>
+
           <div class="field">
             <div class="control">
               <label class="checkbox">
@@ -98,6 +122,7 @@
                   height: 300,
                 }"
                 image-restriction="stencil"
+                @change="change"
               />
             </div>
           </div>
@@ -167,6 +192,8 @@ export default {
         src: null,
         type: null,
         name: null,
+        file: null,
+        thumbnail: null,
       },
       errors: [],
       productData: {
@@ -174,6 +201,8 @@ export default {
         description: "",
         nic_content: [],
         flavors: [],
+        volumes: [],
+        vg: 50,
         brand: "",
         is_salt: false,
       },
@@ -186,51 +215,60 @@ export default {
     addTag (newTag) {
       const tag = {
         name: newTag,
-      }
-      this.options.flavors.push(tag)
-      this.productData.flavors.push(tag)
+      };
+      this.options.flavors.push(tag);
+      this.productData.flavors.push(tag);
+    },
+    change({ coordinates, canvas }) {
+      canvas.toBlob((blob) => {
+        this.image.thumbnail = blob
+      }, this.image.type);
     },
     submitForm() {
       const formData = new FormData();
+      for (var i of this.productData.flavors) {
+        formData.append("flavor_id", i);
+      }
+      for (var i of this.productData.nic_content) {
+        formData.append("nic_content_id", i);
+      }
+      for (var i of this.productData.volumes) {
+        formData.append("volume_id", i);
+      }
+      formData.append("image", this.image.file);
+      formData.append("thumbnail", this.image.thumbnail, this.image.name);
+      formData.append("name", this.productData.name);
+      formData.append("vg", this.productData.vg);
+      formData.append("description", this.productData.description);
+      formData.append("brand_id", this.productData.brand);
+      formData.append("is_salt", this.productData.is_salt);
 
-      const result = this.$refs.cropper.getResult();
-      result.canvas.toBlob((blob) => {
-        for (var i of this.productData.flavors) {
-          formData.append("flavor_id", i);
-        }
-        for (var i of this.productData.nic_content) {
-          formData.append("nic_content_id", i);
-        }
-        formData.append("image", blob, this.image.name);
-        formData.append("name", this.productData.name);
-        formData.append("description", this.productData.description);
-        formData.append("brand_id", this.productData.brand);
-        formData.append("is_salt", this.productData.is_salt);
-
-        axios
-          .post("products/", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          })
-          .then((response) => {
-            this.showSuccess();
-            this.productData = {
-              name: "",
-              description: "",
-              nic_content: [],
-              flavors: [],
-              brand: "",
-              is_salt: false,
-            };
-            this.image = {
-              src: null,
-              type: null,
-              name: null,
-            };
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }, this.image.type);
+      axios
+        .post("products/", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then(() => {
+          this.showSuccess();
+          this.productData = {
+            name: "",
+            description: "",
+            nic_content: [],
+            flavors: [],
+            brand: "",
+            vg: 50,
+            is_salt: false,
+          };
+          this.image = {
+            src: null,
+            type: null,
+            name: null,
+            file: null,
+            thumbnail: null,
+          };
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     uploadImage(event) {
@@ -240,19 +278,12 @@ export default {
           URL.revokeObjectURL(this.image.src);
         }
         const src = URL.createObjectURL(files[0]);
-        this.image = {
-          src: src,
-          type: files[0].type,
-          name: files[0].name,
-        };
-      }
-    },
 
-    cropImage() {
-      const result = this.$refs.cropper.getResult();
-      result.canvas.toBlob((blob) => {
-        console.log(blob);
-      }, this.image.type);
+        this.image.src = src;
+        this.image.type = files[0].type;
+        this.image.name = files[0].name;
+        this.image.file = files[0];
+      }
     },
 
     async getOptions() {

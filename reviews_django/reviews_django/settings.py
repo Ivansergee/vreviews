@@ -165,8 +165,10 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_RETYPE': True, 
     'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
     'SEND_ACTIVATION_EMAIL': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'EMAIL': {
-        'username_changed_confirmation': 'products.email.UsernameChangedConfirmation'
+        'username_changed_confirmation': 'products.email.UsernameChangedConfirmation',
+        'password_changed_confirmation': 'products.email.PasswordChangedConfirmation',
     },
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',

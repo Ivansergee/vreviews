@@ -9,8 +9,8 @@
       <div class="media-content">
         <div class="content">
           <p>
-            <router-link :to="{ name: 'product-detail', params: {product_slug: productSlug} }"
-            >{{ product }}</router-link>
+            <strong class="mr-2"><router-link :to="{ name: 'product-detail', params: {product_slug: productSlug} }"
+            >{{ product }}</router-link></strong>
             <small>{{ formatTime(created_at) }}</small>
             <br />
             <strong>Оценка:</strong> {{ score }}
@@ -25,18 +25,20 @@
               <span>
                 <i class="fa-thumbs-down fa-regular"></i>
               </span>
-              <small>{{ dislikesCount }}</small>
+              <small>{{ dislikesCount }}</small> ·
+              <span><a @click="showComments=!showComments">Комментарии ({{ comments.length }})</a></span>
             </small>
           </p>
         </div>
-
-        <Comment
-          v-for="comment in comments"
-          :key="comment.id"
-          :author="comment.author"
-          :text="comment.text"
-          :created_at="comment.created_at"
-        />
+        <div class="comments" v-if="showComments">
+          <Comment
+            v-for="comment in comments"
+            :key="comment.id"
+            :author="comment.author"
+            :text="comment.text"
+            :created_at="comment.created_at"
+          />
+        </div>
       </div>
     </article>
 
@@ -78,6 +80,11 @@ export default {
     "likesCount",
     "dislikesCount",
   ],
+  data() {
+    return {
+      showComments: false,
+    }
+  },
   methods: {
     formatTime(time) {
       return moment(time).format('DD.MM.YYYY HH:mm')

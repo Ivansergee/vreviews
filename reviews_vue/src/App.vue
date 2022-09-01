@@ -52,7 +52,7 @@
           >
             Администрирование
           </router-link>
-          <router-link class="navbar-item profile" :to="{ name: 'profile' }">
+          <router-link class="navbar-item profile" :to="{ name: 'profile', params: {username: $store.state.username} }">
             <span class="icon-text">
               <span class="icon">
                 <i class="fa-solid fa-user-large fa-lg"></i>

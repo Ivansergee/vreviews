@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (ProductListCreate, ProductDetail, BrandList, BrandDetail, ProducerList,
                     ProducerDetail, ReviewListCreate, ReviewUpdate, ReviewDelete, CommentCreate, ReactionView,
-                    ProductOptions, UserView, BookmarkView)
+                    ProductOptions, UserView, BookmarkView, EditUserProfile)
 
 
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('product-options/', ProductOptions.as_view(), name='product-options'),
 
     path('user/<str:username>/', UserView.as_view(), name='user'),
+    path('user/<str:username>/edit/', EditUserProfile.as_view(), name='user_edit'),
 
     path('bookmarks/', BookmarkView.as_view(), name='bookmark'),
 ]

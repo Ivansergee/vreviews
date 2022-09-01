@@ -9,7 +9,7 @@
       <div class="media-content">
         <div class="content">
           <p>
-            <strong>{{ author }}</strong> <small>{{ formatTime(created_at) }}</small>
+            <strong><router-link :to="{ name: 'profile', params: {username: author} }">{{ author }}</router-link></strong> <small>{{ formatTime(created_at) }}</small>
             <br />
             <strong>Оценка:</strong> {{ score }}
             <br />

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from djoser.serializers import UserSerializer
 
-from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark
+from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume
 
 
 class ProducerShortSerializer(serializers.ModelSerializer):
@@ -25,7 +25,15 @@ class FlavorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flavor
         fields = ['id', 'name']
-        read_only_fields = 'name'
+        read_only_fields = ['name']
+
+
+class VolumeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Volume
+        fields = ['id', 'volume']
+        read_only_fields = ['volume']
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -50,12 +58,24 @@ class ProductSerializer(serializers.ModelSerializer):
         many=True,
         write_only=True
         )
+    volume_id = serializers.PrimaryKeyRelatedField(
+        queryset=Volume.objects.all(),
+        source='volume',
+        many=True,
+        write_only=True
+        )
     image_url = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
     user_bookmark = serializers.SerializerMethodField()
 
     def get_image_url(self, obj):
         request = self.context.get('request')
         url = obj.image.url
+        return request.build_absolute_uri(url)
+    
+    def get_thumbnail_url(self, obj):
+        request = self.context.get('request')
+        url = obj.thumbnail.url
         return request.build_absolute_uri(url)
 
     def get_user_bookmark(self, obj):
@@ -68,13 +88,14 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'short_desc',
             'description',
             'slug',
             'brand',
             'brand_id',
             'vg',
             'volume',
+            'volume_id',
+            'vg',
             'flavors',
             'flavor_id',
             'nic_content',
@@ -82,6 +103,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'is_salt',
             'image',
             'image_url',
+            'thumbnail',
+            'thumbnail_url',
             'user_bookmark',
             'avg_score',
             'reviews_count',
@@ -94,6 +117,7 @@ class ProductSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         if self.context['request'].method == 'GET':
            self.fields.pop('image')
+           self.fields.pop('thumbnail')
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -174,17 +198,16 @@ class CommentSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
 
     class ProductInfo(serializers.ModelSerializer):
-        image_url = serializers.SerializerMethodField()
+        thumbnail_url = serializers.SerializerMethodField()
 
-        def get_image_url(self, obj):
+        def get_thumbnail_url(self, obj):
             request = self.context.get('request')
-            url = obj.image.url
+            url = obj.thumbnail.url
             return request.build_absolute_uri(url)
 
         class Meta:
             model = Product
-            fields = ['name', 'slug', 'image_url']
-            read_only_fields = ['name', 'slug']
+            fields = ['name', 'slug', 'thumbnail_url']
 
 
     author = serializers.StringRelatedField()
@@ -284,15 +307,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'profile']
         read_only_fields = ['username']
-    
-    def update(self, instance, validated_data):
-        if 'profile' in validated_data:
-            nested_serializer = self.fields['profile']
-            nested_instance = instance.profile
-            nested_data = validated_data.pop('profile')
-            nested_serializer.update(nested_instance, nested_data)
-
-        return super().update(instance, validated_data)
 
 
 class BookmarkSerializer(serializers.ModelSerializer):
