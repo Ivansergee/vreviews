@@ -3,7 +3,7 @@
     <nav class="navbar is-dark">
       <div class="navbar-brand">
         <router-link class="navbar-item" to="/"
-          ><strong>VReviews</strong></router-link
+          ><strong>VapeRate</strong></router-link
         >
 
         <a
@@ -85,10 +85,11 @@
               class="input"
               type="text"
               placeholder="Название продукта, бренда или производителя"
+              v-model="searchQuery"
             />
           </p>
           <p class="control is-flex-grow-0">
-            <button class="button">Найти</button>
+            <button class="button" @click="search()">Найти</button>
           </p>
         </div>
       </div>
@@ -188,6 +189,7 @@ export default {
       showSearch: false,
       showResetPassword: false,
       email:'',
+      searchQuery: '',
     };
   },
   beforeCreate() {
@@ -213,6 +215,7 @@ export default {
       this.$store.commit("removeToken");
       this.$router.push("/");
     },
+
     async resetPassword() {
       await axios
       .post('users/reset_password/', {'email': this.email})
@@ -231,6 +234,7 @@ export default {
         console.log(error.response.data);
       });
     },
+
     showLoginRequired() {
       toast({
         message: "Необходимо авторизоваться!",
@@ -241,6 +245,12 @@ export default {
         position: "top-center",
       });
     },
+
+    search() {
+      if (this.searchQuery) {
+        this.$router.push({name: 'search', params: {'query': this.searchQuery} });
+      }
+    }
   },
   mounted() {},
 };

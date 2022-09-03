@@ -115,8 +115,9 @@ export default {
                         message: 'Вы зарегистрированы! Пройдите по ссылке в письме на почте для активации аккаунта.',
                         type: 'is-success',
                         dismissible: true,
-                        pauseOnHover: true,
                         position: 'top-center',
+                        closeOnClick: 'false',
+                        duration: 10000,
                     })
 
                     this.close();

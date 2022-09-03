@@ -307,6 +307,7 @@ export default {
         .get(`/user/${username}/`)
         .then((response) => {
           this.userInfo = response.data;
+          this.setTitle(this.userInfo.username);
         })
         .catch((error) => {
           console.log(error);
@@ -357,6 +358,10 @@ export default {
         }
       }
     },
+
+    setTitle(title) {
+      document.title = `Профиль ${title} | VapeRate`;
+    }
   },
 };
 </script>

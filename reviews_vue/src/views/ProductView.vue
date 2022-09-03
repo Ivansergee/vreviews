@@ -35,16 +35,21 @@
             <strong>Бренд: </strong>
             <router-link
               :to="{
-                name: 'brand-list',
+                name: 'brand-detail',
                 params: { brand_slug: product.brand.slug },
               }"
-              >{{ product.brand.name }}</router-link
-            >
+              >{{ product.brand.name }}</router-link>
           </p>
           <p><strong>Название: </strong> {{ product.name }}</p>
           <p><strong>Страна: </strong> {{ product.brand.producer.country }}</p>
           <p>
-            <strong>Производитель: </strong> {{ product.brand.producer.name }}
+            <strong>Производитель: </strong> 
+            <router-link
+              :to="{
+                name: 'producer-detail',
+                params: { producer_slug: product.brand.producer.slug },
+              }"
+              >{{ product.brand.producer.name }}</router-link>
           </p>
           <p><strong>Вкусы:</strong></p>
           <p class="tags">
@@ -357,6 +362,7 @@ export default {
         .get(`/products/${product_slug}/`)
         .then((response) => {
           this.product = response.data;
+          this.setTitle(this.product.name);
         })
         .catch((error) => {
           console.log(error);
@@ -503,6 +509,10 @@ export default {
           });
       }
     },
+
+    setTitle(title) {
+      document.title = `${title} | VapeRate`;
+    }
   },
 };
 </script>

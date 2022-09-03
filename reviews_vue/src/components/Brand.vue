@@ -7,7 +7,7 @@
         </div>
         <div class="column is-3">
           <p class="title is-5">
-            <router-link :to="{ name: 'product-detail', params: {product_slug: slug} }"
+            <router-link :to="{ name: 'brand-detail', params: {brand_slug: slug} }"
             >{{ name }}</router-link>
           </p>
         </div>
@@ -16,16 +16,6 @@
             ><i class="bi bi-chat-left-text"></i> {{ reviews_count }}
           </span>
           <span><i class="bi bi-star-fill"></i> {{ score_count }}</span>
-        </div>
-        <div class="column">
-          <p class="tags">
-            <span
-              class="tag is-info"
-              v-for="flavor in flavors"
-              :key="flavor.id"
-              >{{ flavor }}</span
-            >
-          </p>
         </div>
         <div class="column">
           <span class="tag is-primary is-large"
@@ -49,7 +39,6 @@ export default {
     "slug",
     "reviews_count",
     "score_count",
-    "flavors",
     "avg_score",
   ],
 };

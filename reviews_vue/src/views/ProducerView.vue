@@ -1,24 +1,24 @@
 <template>
-  <div class="container" v-if="brand">
+  <div class="container" v-if="producer">
     <div class="level">
       <div class="level-left">
-        <h1 class="title level-item">{{ brand.name }}</h1>
+        <h1 class="title level-item">{{ producer.name }}</h1>
       </div>
     </div>
     <div class="columns head">
       <div class="column is-4">
         <figure class="image is-1by1">
           <img
-            :src=brand.image_url
+            :src=producer.image_url
           />
         </figure>
       </div>
       <div class="column is-4">
         <div class="content">
-          <p><strong>Страна:</strong> {{brand.producer.country}} </p>
-          <p><strong>Производитель:</strong> {{brand.producer.name}}  </p>
+          <p><strong>Страна:</strong> {{producer.country}} </p>
 
-          <p>{{ brand.description }}</p>
+          <p><strong>Описание:</strong> {{producer.country}} </p>
+          <p>{{ producer.description }}</p>
         </div>
       </div>
       <div class="column is-4">
@@ -26,26 +26,26 @@
           <p class="title is-4">Средняя оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">{{ brand.avg_score }}</span>
+            <span class="tag is-primary">{{ producer.avg_score }}</span>
           </div>
-          <p><strong>Отзывов:</strong> {{ brand.reviews_count || 0 }}</p>
-          <p><strong>Оценок:</strong> {{ brand.score_count || 0 }}</p>
+          <p><strong>Отзывов:</strong> {{ producer.reviews_count || 0 }}</p>
+          <p><strong>Оценок:</strong> {{ producer.score_count || 0 }}</p>
         </div>
       </div>
     </div>
 
-    <div class="products" v-if="products">
-      <p class="title">Все вкусы {{ brand.name }}</p>
-      <Product
-        v-for="product in products"
-        :key="product.id"
-        :name="product.name"
-        :image="product.image_url"
-        :slug="product.slug"
-        :avg_score="product.avg_score"
-        :flavors="product.flavors"
-        :reviews_count="product.reviews_count"
-        :score_count="product.score_count"
+    <div class="products" v-if="brands">
+      <p class="title">Все линейки {{ producer.name }}</p>
+      <Brand
+        v-for="brand in brands"
+        :key="brand.id"
+        :name="brand.name"
+        :image="brand.thumbnail_url"
+        :slug="brand.slug"
+        :avg_score="brand.avg_score"
+        :flavors="brand.flavors"
+        :reviews_count="brand.reviews_count"
+        :score_count="brand.score_count"
       />
     </div>
   </div>
@@ -72,36 +72,34 @@ img {
 
 <script>
 import axios from 'axios'
-import Product from '../components/Product.vue'
+import Brand from '../components/Brand.vue'
+
 
 export default {
   components: {
-    Product
+    Brand
   },
   data() {
     return {
-      brand: null,
-      products: null,
+      producer: null,
+      brands: null,
     }
   },
   created() {
-    this.getBrandData();
-    this.getProducts();
-  },
-  mounted() {
-    
+    this.getProducerData();
+    this.getBrands();
   },
   methods: {
-    async getBrandData(){
+    async getProducerData(){
       this.$store.commit('setIsLoading', true)
 
-      const brand_slug = this.$route.params.brand_slug;
+      const producerSlug = this.$route.params.producer_slug;
 
       await axios
-        .get(`/brands/${brand_slug}/`)
+        .get(`/producers/${producerSlug}/`)
         .then(response => {
-          this.brand = response.data;
-          this.setTitle(this.brand.name);
+          this.producer = response.data;
+          this.setTitle(this.producer.name);
         })
         .catch(error => {
           console.log(error);
@@ -110,15 +108,15 @@ export default {
       this.$store.commit('setIsLoading', false)
     },
 
-    async getProducts(){
+    async getBrands(){
       this.$store.commit('setIsLoading', true);
 
-      const brand_slug = this.$route.params.brand_slug;
+      const producerSlug = this.$route.params.producer_slug;
 
       await axios
-        .get(`/products/?brand=${brand_slug}`)
+        .get(`/brands/?producer=${producerSlug}`)
         .then(response => {
-          this.products = response.data.results;
+          this.brands = response.data.results;
         })
         .catch(error => {
           console.log(error);
