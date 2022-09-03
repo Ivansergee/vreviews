@@ -17,7 +17,7 @@
         <div class="content">
           <p><strong>Страна:</strong> {{brand.producer.country}} </p>
           <p><strong>Производитель:</strong> {{brand.producer.name}}  </p>
-
+          <p><strong>Описание:</strong></p>
           <p>{{ brand.description }}</p>
         </div>
       </div>
@@ -40,7 +40,7 @@
         v-for="product in products"
         :key="product.id"
         :name="product.name"
-        :image="product.image_url"
+        :image="product.thumbnail_url"
         :slug="product.slug"
         :avg_score="product.avg_score"
         :flavors="product.flavors"

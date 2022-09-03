@@ -154,8 +154,8 @@ REST_FRAMEWORK = {
     )
 }
 
-DOMAIN = 'localhost:8080'
-SITE_NAME = 'VReviews'
+DOMAIN = 'vaperate.ru'
+SITE_NAME = 'VapeRate'
 DJOSER = {
     'SERIALIZERS': {
         'current_user': 'products.serializers.CustomUserSerializer'
@@ -179,7 +179,7 @@ MEDIA_URL = '/media/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = 465
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
