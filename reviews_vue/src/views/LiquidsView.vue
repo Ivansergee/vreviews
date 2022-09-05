@@ -1,12 +1,14 @@
 <template>
-    <div class="products" v-if="products">
+    <div class="products container" v-if="products">
       <p class="title">Топ жидкостей</p>
       <Product
         v-for="product in products"
         :key="product.id"
         :name="product.name"
+        :brand="product.brand.name"
         :image="product.thumbnail_url"
-        :slug="product.slug"
+        :product_slug="product.slug"
+        :brand_slug="product.brand.slug"
         :avg_score="product.avg_score ? product.avg_score : '-'"
         :flavors="product.flavors"
         :reviews_count="product.reviews_count ? product.reviews_count : '0'"

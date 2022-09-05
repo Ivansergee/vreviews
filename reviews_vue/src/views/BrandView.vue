@@ -16,7 +16,13 @@
       <div class="column is-4">
         <div class="content">
           <p><strong>Страна:</strong> {{brand.producer.country}} </p>
-          <p><strong>Производитель:</strong> {{brand.producer.name}}  </p>
+          <p><strong>Производитель:</strong>   
+          <router-link
+              :to="{
+                name: 'producer-detail',
+                params: { producer_slug: brand.producer.slug },
+              }"
+              >{{ brand.producer.name }}</router-link> </p>
           <p><strong>Описание:</strong></p>
           <p>{{ brand.description }}</p>
         </div>
@@ -40,8 +46,10 @@
         v-for="product in products"
         :key="product.id"
         :name="product.name"
+        :brand="product.brand.name"
         :image="product.thumbnail_url"
-        :slug="product.slug"
+        :product_slug="product.slug"
+        :brand_slug="product.brand.slug"
         :avg_score="product.avg_score"
         :flavors="product.flavors"
         :reviews_count="product.reviews_count"

@@ -10,6 +10,8 @@ import ProfileView from '../views/ProfileView.vue';
 import ActivateView from '../views/ActivateView.vue';
 import ResetPasswordView from '../views/ResetPasswordView.vue';
 import SearchView from '../views/SearchView.vue';
+import ContactsView from '../views/ContactsView.vue';
+import DisposablesView from '../views/DisposablesView.vue';
 
 const routes = [
   {
@@ -87,6 +89,22 @@ const routes = [
       title: 'Поиск'
     },
     component: SearchView
+  },
+  {
+    path: '/contacts',
+    name: 'contacts',
+    meta: {
+      title: 'Контакты'
+    },
+    component: ContactsView
+  },
+  {
+    path: '/disposables',
+    name: 'disposables',
+    meta: {
+      title: 'Топ одноразок'
+    },
+    component: DisposablesView
   },
 ]
 

@@ -126,6 +126,7 @@ class BrandSerializer(serializers.ModelSerializer):
     reviews_count = serializers.IntegerField(read_only=True)
     score_count = serializers.IntegerField(read_only=True)
     image_url = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Brand
@@ -137,6 +138,7 @@ class BrandSerializer(serializers.ModelSerializer):
             'producer',
             'image',
             'image_url',
+            'thumbnail_url',
 
             'avg_score',
             'reviews_count',
@@ -146,6 +148,11 @@ class BrandSerializer(serializers.ModelSerializer):
     def get_image_url(self, obj):
         request = self.context.get('request')
         url = obj.image.url
+        return request.build_absolute_uri(url)
+    
+    def get_thumbnail_url(self, obj):
+        request = self.context.get('request')
+        url = obj.thumbnail.url
         return request.build_absolute_uri(url)
 
     def __init__(self, *args, **kwargs):
@@ -159,6 +166,7 @@ class ProducerSerializer(serializers.ModelSerializer):
     reviews_count = serializers.IntegerField(read_only=True)
     score_count = serializers.IntegerField(read_only=True)
     image_url = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Brand
@@ -169,6 +177,7 @@ class ProducerSerializer(serializers.ModelSerializer):
             'slug',
             'image',
             'image_url',
+            'thumbnail_url',
 
             'avg_score',
             'reviews_count',
@@ -178,6 +187,11 @@ class ProducerSerializer(serializers.ModelSerializer):
     def get_image_url(self, obj):
         request = self.context.get('request')
         url = obj.image.url
+        return request.build_absolute_uri(url)
+    
+    def get_thumbnail_url(self, obj):
+        request = self.context.get('request')
+        url = obj.thumbnail.url
         return request.build_absolute_uri(url)
 
     def __init__(self, *args, **kwargs):

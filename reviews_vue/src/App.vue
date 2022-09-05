@@ -28,10 +28,10 @@
           <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
             >Жидкости</router-link
           >
-          <router-link class="navbar-item" to="/">Одноразки</router-link>
+          <router-link class="navbar-item" :to="{ name: 'disposables'}">Одноразки</router-link>
           <router-link class="navbar-item" :to="{ name: 'add-liquid' }"
-            >Добавить</router-link
-          >
+            >Добавить</router-link>
+          <router-link class="navbar-item" :to="{ name: 'contacts'}">Контакты</router-link>
           <a
             class="navbar-item"
             @click="showSearch = !showSearch"
@@ -85,11 +85,12 @@
               class="input"
               type="text"
               placeholder="Название продукта, бренда или производителя"
+              @keydown.enter="search"
               v-model="searchQuery"
             />
           </p>
           <p class="control is-flex-grow-0">
-            <button class="button" @click="search()">Найти</button>
+            <button class="button" @click="search">Найти</button>
           </p>
         </div>
       </div>
@@ -164,7 +165,7 @@
     </main>
 
     <footer class="footer">
-      <p class="has-text-centered">VReviews 2022</p>
+      <p class="has-text-centered">VapeRate 2022</p>
     </footer>
   </div>
 </template>

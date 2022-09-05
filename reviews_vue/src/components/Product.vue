@@ -1,14 +1,16 @@
 <template>
       <div class="columns box is-vcentered my-5">
         <div class="column is-2">
-          <figure class="image is-1by1">
-            <img :src="image" />
-          </figure>
+          <img class="image" :src="image" />
         </div>
         <div class="column is-3">
-          <p class="title is-5">
-            <router-link :to="{ name: 'product-detail', params: {product_slug: slug} }"
+          <p class="title is-5 mb-1">
+            <router-link :to="{ name: 'product-detail', params: {product_slug: product_slug} }"
             >{{ name }}</router-link>
+          </p>
+          <p class="mb-1">
+            <router-link :to="{ name: 'brand-detail', params: {brand_slug: brand_slug} }"
+            >{{ brand }}</router-link>
           </p>
         </div>
         <div class="column is-2">
@@ -39,14 +41,20 @@
 .box {
   padding: 0;
 }
+.image {
+  max-height: 200px;
+  max-width: 200px;
+}
 </style>
 
 <script>
 export default {
   props: [
     "name",
+    "brand",
     "image",
-    "slug",
+    "product_slug",
+    "brand_slug",
     "reviews_count",
     "score_count",
     "flavors",

@@ -10,12 +10,17 @@ class Producer(models.Model):
 
     def image_path(instance, filename):
         ext = filename.split('.')[-1]
-        return f'producers/{instance.name}.{ext}'
+        return f'producers/img/{instance.name}.{ext}'
+    
+    def thumbnail_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'producers/thumb/{instance.brand}/{instance.name}.{ext}'
 
     name = models.CharField(max_length=100, unique=True)
     country = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
+    thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True)
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
     score_count = models.IntegerField(null=True, blank=True, default=None)
@@ -24,9 +29,16 @@ class Producer(models.Model):
     def __str__(self):
         return self.name
     
+    def save(self, *args, **kwargs):
+        slug_str = self.brand.name + ' ' + self.name
+        self.slug = slugify(slug_str.replace("'", ""))
+        super().save(*args, **kwargs)
+    
     def delete(self):
         if self.image.name != 'placeholder.jpg':
             self.image.delete()
+        if self.thumbnail.name != 'placeholder.jpg':
+            self.thumbnail.delete()
         super().delete()
     
     class Meta:
@@ -37,12 +49,17 @@ class Brand(models.Model):
 
     def image_path(instance, filename):
         ext = filename.split('.')[-1]
-        return f'brands/{instance.name}.{ext}'
+        return f'brands/img/{instance.name}.{ext}'
+    
+    def thumbnail_path(instance, filename):
+        ext = filename.split('.')[-1]
+        return f'brands/thumb/{instance.brand}/{instance.name}.{ext}'
 
     name = models.CharField(max_length=100, unique=True)
     producer = models.ForeignKey(Producer, related_name='brands', on_delete=models.PROTECT)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
+    thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True, unique=True)
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
     score_count = models.IntegerField(null=True, blank=True, default=None)
@@ -50,10 +67,17 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        slug_str = self.brand.name + ' ' + self.name
+        self.slug = slugify(slug_str.replace("'", ""))
+        super().save(*args, **kwargs)
 
     def delete(self):
         if self.image.name != 'placeholder.jpg':
             self.image.delete()
+        if self.thumbnail.name != 'placeholder.jpg':
+            self.thumbnail.delete()
         super().delete()
 
     class Meta:
@@ -123,6 +147,8 @@ class Product(models.Model):
     def delete(self):
         if self.image.name != 'placeholder.jpg':
             self.image.delete()
+        if self.thumbnail.name != 'placeholder.jpg':
+            self.thumbnail.delete()
         super().delete()
 
 
@@ -201,6 +227,6 @@ class Profile(models.Model):
         return f'{self.user} profile'
 
     def delete(self):
-        if self.image.name != 'default_avatar.png':
-            self.image.delete()
+        if self.avatar.name != 'default_avatar.png':
+            self.avatar.delete()
         super().delete()

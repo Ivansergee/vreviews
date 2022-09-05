@@ -21,7 +21,8 @@
         :key="product.id"
         :name="product.name"
         :image="product.thumbnail_url"
-        :slug="product.slug"
+        :product_slug="product.slug"
+        :brand_slug="product.brand.slug"
         :avg_score="product.avg_score ? product.avg_score : '-'"
         :flavors="product.flavors"
         :reviews_count="product.reviews_count ? product.reviews_count : '0'"
@@ -55,7 +56,7 @@
 
     <div class="producers" v-if="activeTab == 'producers'">
       <p v-if="producers.length === 0">Нет совпадений</p>
-      <!-- <Producer
+      <Producer
         v-for="producer in producers"
         :key="producer.id"
         :name="producer.name"
@@ -64,7 +65,7 @@
         :avg_score="producer.avg_score ? producer.avg_score : '-'"
         :reviews_count="producer.reviews_count ? producer.reviews_count : '0'"
         :score_count="producer.score_count ? producer.score_count : '0'"
-      /> -->
+      />
       <!-- <a
         class="button is-success"
         @click="getNextBookmarks()"
