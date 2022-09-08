@@ -12,6 +12,7 @@ import ResetPasswordView from '../views/ResetPasswordView.vue';
 import SearchView from '../views/SearchView.vue';
 import ContactsView from '../views/ContactsView.vue';
 import DisposablesView from '../views/DisposablesView.vue';
+import NotFoundView from '../views/NotFoundView.vue';
 
 const routes = [
   {
@@ -105,6 +106,14 @@ const routes = [
       title: 'Топ одноразок'
     },
     component: DisposablesView
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    meta: {
+      title: 'Страница не найдена'
+    },
+    name: 'not-found',
+    component: NotFoundView,
   },
 ]
 

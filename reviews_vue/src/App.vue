@@ -110,6 +110,7 @@
           @logged="showLogIn = false"
           @showRegister="showSignUp = true"
           @showResetPassword="showResetPassword = true"
+          @showResendActivation="showResendActivation = true"
         />
       </div>
     </div>
@@ -138,7 +139,7 @@
             </div>
           </div>
 
-          <form @submit.prevent="resetPassword()">
+          <form @submit.prevent="resetPassword">
             <div class="field">
               <label>Email</label>
               <div class="control">
@@ -147,6 +148,49 @@
               <p class="help">
                 Введите email, указанный при регистрации. На него будет отправлена ссылка для сброса пароля.
               </p>
+            </div>
+
+            <div class="level">
+              <div class="level-left">
+                <button class="button is-dark">Отправить</button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" :class="{ 'is-active': showResendActivation }">
+      <div class="modal-background" @click="showResendActivation=false"></div>
+      <div class="modal-content">
+        <div class="box">
+          <div class="level">
+            <div class="level-left">
+              <h1 class="title">Активация аккаунта</h1>
+            </div>
+            <div class="level-right">
+              <button
+                class="delete is-medium"
+                aria-label="close"
+                @click="showResetPassword=false"
+              ></button>
+            </div>
+          </div>
+
+          <form @submit.prevent="resendActivation">
+            <div class="field">
+              <label>Email</label>
+              <div class="control">
+                <input type="email" class="input" v-model="email">
+              </div>
+              <p class="help">
+                Введите email, указанный при регистрации.
+              </p>
+            </div>
+
+            <div class="notification is-danger" v-if="errors.length">
+              <p v-for="error in errors" :key="error">{{ error }}</p>
             </div>
 
             <div class="level">
@@ -189,8 +233,10 @@ export default {
       showSignUp: false,
       showSearch: false,
       showResetPassword: false,
+      showResendActivation: false,
       email:'',
       searchQuery: '',
+      errors: [],
     };
   },
   beforeCreate() {
@@ -245,6 +291,26 @@ export default {
         pauseOnHover: true,
         position: "top-center",
       });
+    },
+
+    async resendActivation() {
+      this.errors = [];
+      await axios
+      .post('/users/resend_activation/', {'email': this.email})
+      .then(() => {
+        toast({
+          message: 'На указанную почту направлена ссылка для активации.',
+          type: 'is-success',
+          dismissible: true,
+          pauseOnHover: true,
+          position: 'top-center',
+        });
+        this.showResendActivation = false;
+        this.email = '';
+      })
+      .catch((error) => {
+        this.errors.push(error.response.data[0])
+      })
     },
 
     search() {

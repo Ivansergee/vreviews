@@ -92,6 +92,10 @@
       v-if="showEditPassword"
       @close="showEditPassword=false"
     />
+    <ChangeEmail
+      v-if="showEditEmail"
+      @close="showEditEmail=false"
+    />
 
   </div>
 </template>

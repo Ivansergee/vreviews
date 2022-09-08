@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import sys
 
 from dotenv import load_dotenv
 
@@ -18,6 +17,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv('DEBUG')))
+
 
 ALLOWED_HOSTS = ['188.68.223.142', 'localhost', '127.0.0.1']
 
@@ -158,7 +158,8 @@ DOMAIN = 'vaperate.ru'
 SITE_NAME = 'VapeRate'
 DJOSER = {
     'SERIALIZERS': {
-        'current_user': 'products.serializers.CustomUserSerializer'
+        'current_user': 'products.serializers.CustomUserSerializer',
+        'token_create': 'products.serializers.CustomTokenCreateSerializer',
     },
     'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,

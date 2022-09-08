@@ -1,6 +1,9 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from djoser.serializers import UserSerializer
+from django.core.exceptions import ValidationError
+from djoser.conf import settings
+from djoser.serializers import UserSerializer, TokenCreateSerializer
 
 from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume
 
@@ -323,9 +326,41 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['username']
 
 
+class EmailSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+    
+    def update(self, instance, validated_data):
+        if instance.check_password(validated_data.get('password')):
+            validated_data.pop('password')
+            instance.email = validated_data.get('email', instance.email)
+            return super().update(instance, validated_data)
+        raise ValidationError('Wrong password')
+
 class BookmarkSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()
 
     class Meta:
         model = Bookmark
         fields = ['id', 'product', 'created_at', 'author']
+
+
+class CustomTokenCreateSerializer(TokenCreateSerializer):
+    def validate(self, attrs):
+        password = attrs.get("password")
+        params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
+        self.user = authenticate(
+            request=self.context.get("request"), **params, password=password
+        )
+        if not self.user:
+            self.user = User.objects.filter(**params).first()
+            if self.user and not self.user.check_password(password):
+                self.fail("invalid_credentials")
+        if not self.user.is_active:
+            raise ValidationError('User is not active')
+        if self.user and self.user.is_active:
+            return attrs
+        self.fail("invalid_credentials")

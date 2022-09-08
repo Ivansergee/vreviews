@@ -18,7 +18,8 @@ from django.utils import timezone
 from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
-    BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer)
+    BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer,
+    EmailSerializer)
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter
@@ -206,10 +207,20 @@ class UserView(generics.RetrieveAPIView):
 
 class EditUserProfile(generics.UpdateAPIView):
     serializer_class = ProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get_object(self):
         lookup_field = self.kwargs["username"]
         return get_object_or_404(Profile, user__username=lookup_field)
+
+
+class EditEmail(generics.UpdateAPIView):
+    serializer_class = EmailSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'username'
+    queryset = User.objects.all()
 
 
 class BookmarkView(mixins.CreateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):

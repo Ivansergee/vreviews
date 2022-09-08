@@ -5,7 +5,7 @@
       <div class="box">
         <div class="level">
           <div class="level-left">
-            <h1 class="title">Изменение пароля</h1>
+            <h1 class="title">Изменение почты</h1>
           </div>
           <div class="level-right">
             <button
@@ -32,30 +32,16 @@
           </div>
 
           <div class="field">
-            <label>Новый пароль</label>
+            <label>Новый email</label>
             <div class="control">
               <input
-                type="password"
+                type="email"
                 class="input"
-                v-model="new_password"
+                v-model="email"
               />
             </div>
-            <p class="help is-danger" v-if="errors.new_password">
-              {{ errors.new_password[0] }}
-            </p>
-          </div>
-
-          <div class="field">
-            <label>Подтвердите пароль</label>
-            <div class="control">
-              <input
-                type="password"
-                class="input"
-                v-model="re_new_password"
-              />
-            </div>
-            <p class="help is-danger" v-if="errors.re_new_password">
-              {{ errors.re_new_password[0] }}
+            <p class="help is-danger" v-if="errors.new_email">
+              {{ errors.email[0] }}
             </p>
           </div>
 
@@ -88,45 +74,48 @@ export default {
   data() {
     return {
       current_password: '',
-      new_password: '',
-      re_new_password: '',
+      email: '',
 
-      errors: {},
+      errors: [],
       isLoading: false,
     };
   },
   methods: {
     async submitForm() {
-      this.errors = {};
-      if (Object.keys(this.errors).length == 0) {
+      if (this.errors.length == 0) {
         const username = this.$store.state.username;
 
         const formData = {
-          new_password: this.new_password,
-          current_password: this.current_password,
-          re_new_password: this.re_new_password,
+          password: this.current_password,
+          email: this.email,
         };
 
         this.isLoading = true;
         await axios
-          .post("/users/set_password/", formData)
+          .patch(`/user/${username}/edit-email/`, formData)
           .then(() => {
             toast({
-              message: "Пароль изменен. Войдите с новыми данными.",
+              message: "Email изменен.",
               type: "is-success",
               dismissible: true,
               pauseOnHover: true,
               duration: 10000,
               position: "top-center",
             });
-            this.$root.logout();
           })
           .catch((error) => {
             this.errors = error.response.data;
           });
         this.isLoading = false;
+        this.close()
       }
     },
+    close(){
+      this.email = '';
+      this.current_password = '';
+      this.errors = [];
+      this.$emit('close');
+    }
   },
 };
 </script>
