@@ -28,7 +28,6 @@ class FlavorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flavor
         fields = ['id', 'name']
-        read_only_fields = ['name']
 
 
 class VolumeSerializer(serializers.ModelSerializer):

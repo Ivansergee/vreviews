@@ -30,7 +30,7 @@ class Producer(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        slug_str = self.brand.name + ' ' + self.name
+        slug_str = self.name
         self.slug = slugify(slug_str.replace("'", ""))
         super().save(*args, **kwargs)
     
@@ -69,7 +69,7 @@ class Brand(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        slug_str = self.brand.name + ' ' + self.name
+        slug_str = self.name
         self.slug = slugify(slug_str.replace("'", ""))
         super().save(*args, **kwargs)
 
@@ -141,6 +141,8 @@ class Product(models.Model):
     
     def save(self, *args, **kwargs):
         slug_str = self.brand.name + ' ' + self.name
+        if self.is_salt == True:
+            slug_str += ' salt'
         self.slug = slugify(slug_str.replace("'", ""))
         super().save(*args, **kwargs)
 
@@ -164,10 +166,13 @@ class Review(models.Model):
     
     def save(self, *args, **kwargs):
         from products.logic import set_product_rating, set_brand_rating, set_producer_rating
+        old_rating = self.score
         super().save(*args, **kwargs)
-        set_product_rating(self.product)
-        set_brand_rating(self.product.brand)
-        set_producer_rating(self.product.brand.producer)
+        new_rating = self.score
+        if old_rating and old_rating != new_rating :
+            set_product_rating(self.product)
+            set_brand_rating(self.product.brand)
+            set_producer_rating(self.product.brand.producer)
         
 
     class Meta:

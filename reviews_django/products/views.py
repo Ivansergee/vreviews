@@ -192,11 +192,10 @@ class ProductOptions(generics.GenericAPIView):
             })
 
 
-class FlavorsListCreate(generics.ListCreateAPIView):
+class FlavorCreate(generics.CreateAPIView):
     serializer_class = FlavorsSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    queryset = Flavor.objects.order_by('name')
 
 
 class UserView(generics.RetrieveAPIView):
@@ -245,4 +244,3 @@ class BookmarkView(mixins.CreateModelMixin, mixins.DestroyModelMixin, generics.G
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
