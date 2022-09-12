@@ -14,7 +14,7 @@ class Producer(models.Model):
     
     def thumbnail_path(instance, filename):
         ext = filename.split('.')[-1]
-        return f'producers/thumb/{instance.brand}/{instance.name}.{ext}'
+        return f'producers/thumb/{instance.name}.{ext}'
 
     name = models.CharField(max_length=100, unique=True)
     country = models.CharField(max_length=100)
@@ -53,7 +53,7 @@ class Brand(models.Model):
     
     def thumbnail_path(instance, filename):
         ext = filename.split('.')[-1]
-        return f'brands/thumb/{instance.brand}/{instance.name}.{ext}'
+        return f'brands/thumb/{instance.name}.{ext}'
 
     name = models.CharField(max_length=100, unique=True)
     producer = models.ForeignKey(Producer, related_name='brands', on_delete=models.PROTECT)
