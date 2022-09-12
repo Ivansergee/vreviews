@@ -10,6 +10,7 @@
             <div class="control">
               <input type="text" class="input" v-model="productData.name" />
             </div>
+            <p class="help">Название жидкости без названия бренда</p>
           </div>
 
           <div class="field" v-if="options">
@@ -26,6 +27,7 @@
                 </option>
               </select>
             </div>
+            <p class="help">Выберите бренд. Если его нет в списке свяжитесь с администрацией.</p>
           </div>
 
           <div class="field">
@@ -39,22 +41,25 @@
               >
               </textarea>
             </div>
+            <p class="help">Описание вкуса</p>
           </div>
 
           <div class="field" v-if="options.flavors">
             <label><span class="subtitle">Вкусы</span></label>
-            <br />
-            <VueMultiselect
-              v-model="productData.flavors"
-              :options="options.flavors"
-              :multiple="true"
-              :taggable="true"
-              @tag="addTag"
-              tag-placeholder="Add this as new tag"
-              placeholder="Type to search or add tag"
-              label="name"
-              track-by="id"
-            />
+            <div class="control">
+              <VueMultiselect
+                v-model="productData.flavors"
+                :options="options.flavors"
+                :multiple="true"
+                selectLabel="Выбрать"
+                selectedLabel="Выбрано"
+                deselectLabel="Удалить"
+                placeholder="Выберите вкусы"
+                label="name"
+                track-by="id"
+              />
+            </div>
+            <p class="help">Для поиска начните набирать название</p>
           </div>
 
           <div class="field" v-if="options">
@@ -125,6 +130,7 @@
                 @change="change"
               />
             </div>
+            <p class="help">Добавьте фото жидкости и выберите участок, который будет использован для превью. Для зума используйте колесико мыши или стандартный жест на смартфоне.</p>
           </div>
 
           <div class="file has-name">
@@ -150,7 +156,7 @@
             <p v-for="error in errors" :key="error">{{ error }}</p>
           </div>
 
-          <div class="field">
+          <div class="field mt-4">
             <div class="control">
               <button class="button is-dark">Отправить</button>
             </div>
