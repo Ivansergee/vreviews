@@ -233,7 +233,7 @@ export default {
     submitForm() {
       const formData = new FormData();
       for (var i of this.productData.flavors) {
-        formData.append("flavor_id", i);
+        formData.append("flavor_id", i.id);
       }
       for (var i of this.productData.nic_content) {
         formData.append("nic_content_id", i);

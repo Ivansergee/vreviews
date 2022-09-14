@@ -204,11 +204,18 @@ class ProducerSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()
+    author_avatar = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'author', 'review', 'text', 'created_at']
+        fields = ['id', 'author', 'author_avatar','review', 'text', 'created_at']
         read_only_fields = ['review']
+    
+
+    def get_author_avatar(self, obj):
+        request = self.context.get('request')
+        url = obj.author.profile.avatar.url
+        return request.build_absolute_uri(url)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -227,6 +234,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
     author = serializers.StringRelatedField()
+    author_avatar = serializers.SerializerMethodField()
     product = ProductInfo(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     likes_count = serializers.IntegerField(read_only=True)
@@ -245,7 +253,11 @@ class ReviewSerializer(serializers.ModelSerializer):
             if qs:
                 return qs[0].like
         return None
-
+    
+    def get_author_avatar(self, obj):
+        request = self.context.get('request')
+        url = obj.author.profile.avatar.url
+        return request.build_absolute_uri(url)
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -257,6 +269,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'author',
+            'author_avatar',
             'product',
             'product_id',
             'score',

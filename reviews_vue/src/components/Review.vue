@@ -3,7 +3,7 @@
     <article class="media">
       <figure class="media-left">
         <p class="image is-64x64">
-          <img src="http://localhost:8000/media/placeholder.jpg" />
+          <img :src="authorAvatar" />
         </p>
       </figure>
       <div class="media-content">
@@ -45,6 +45,7 @@
           v-for="comment in comments"
           :key="comment.id"
           :author="comment.author"
+          :authorAvatar="comment.author_avatar"
           :text="comment.text"
           :created_at="comment.created_at"
         />
@@ -124,6 +125,7 @@ export default {
   props: [
     "id",
     "author",
+    "authorAvatar",
     "score",
     "text",
     "created_at",
