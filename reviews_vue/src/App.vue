@@ -29,7 +29,7 @@
             >Жидкости</router-link
           >
           <router-link class="navbar-item" :to="{ name: 'disposables'}">Одноразки</router-link>
-          <router-link class="navbar-item" :to="{ name: 'add-liquid' }"
+          <router-link class="navbar-item" :to="{ name: 'add-liquid' }" v-if="$store.state.isAuthenticated"
             >Добавить</router-link>
           <router-link class="navbar-item" :to="{ name: 'contacts'}">Контакты</router-link>
           <a
