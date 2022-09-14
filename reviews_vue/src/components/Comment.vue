@@ -1,8 +1,8 @@
 <template>
   <article class="media">
     <figure class="media-left">
-      <p class="image is-64x64">
-        <img src="http://localhost:8000/media/placeholder.jpg" />
+      <p class="image">
+        <img :src="authorAvatar" />
       </p>
     </figure>
     <div class="media-content">
@@ -18,12 +18,19 @@
   </article>
 </template>
 
+<style scoped>
+.image>img {
+  max-width: 64px;
+  max-height: 64px;
+}
+</style>
+
 <script>
 import moment from 'moment';
 
 
 export default {
-  props: ["author", "text", "created_at"],
+  props: ["author", "authorAvatar", "text", "created_at"],
   methods: {
     formatTime(time) {
       return moment(time).format('DD.MM.YYYY HH:mm')

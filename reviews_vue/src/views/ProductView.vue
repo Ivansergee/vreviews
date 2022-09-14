@@ -169,6 +169,7 @@
         :key="review.id"
         :id="review.id"
         :author="review.author"
+        :authorAvatar="review.author_avatar"
         :score="review.score"
         :text="review.text"
         :created_at="review.created_at"
