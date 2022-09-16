@@ -1,7 +1,9 @@
 <template>
       <div class="columns box is-vcentered my-5">
         <div class="column is-2">
-          <img class="image" :src="image" />
+          <figure class="image">
+            <img :src="image" />
+          </figure>
         </div>
         <div class="column is-3">
           <p class="title is-5 mb-1">

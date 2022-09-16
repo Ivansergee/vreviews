@@ -98,8 +98,19 @@ export default {
       activeTab: 'products',
       products: [],
       brands: [],
-      producers: []
+      producers: [],
     }
+  },
+  watch: { 
+      '$route.params.query': {
+          handler: function() {
+            this.getProducts();
+            this.getBrands();
+            this.getProducers();
+          },
+          deep: true,
+          immediate: true
+        }
   },
   mounted() {
     this.getProducts();

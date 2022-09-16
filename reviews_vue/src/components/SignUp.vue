@@ -140,8 +140,7 @@ export default {
                 `${property}: ${error.response.data[property]}`
               );
             }
-            console.log(JSON.stringify(error.response.data));
-          } else if (error.message) {
+          } else {
             this.errors.push("Что-то пошло не так. Попробуйте ещё раз.");
 
             console.log(JSON.stringify(error));
@@ -156,6 +155,7 @@ export default {
       this.email = "";
       this.password1 = "";
       this.password2 = "";
+      this.errors = [];
       this.$emit("signed");
     },
   },
