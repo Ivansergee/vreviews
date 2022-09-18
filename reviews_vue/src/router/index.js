@@ -4,7 +4,7 @@ import BrandView from '../views/BrandView.vue';
 import ProducerView from '../views/ProducerView.vue';
 import LiquidsView from '../views/LiquidsView.vue';
 import ProductView from '../views/ProductView.vue';
-import CreateProduct from '../views/CreateProduct.vue';
+import AddView from '../views/AddView.vue';
 import AdminView from '../views/AdminView.vue';
 import ProfileView from '../views/ProfileView.vue';
 import ActivateView from '../views/ActivateView.vue';
@@ -47,12 +47,12 @@ const routes = [
     component: ProductView
   },
   {
-    path: '/add-liquid',
-    name: 'add-liquid',
+    path: '/add/:type?',
+    name: 'add',
     meta: {
-      title: 'Добавление продукта'
+      title: 'Добавить'
     },
-    component: CreateProduct
+    component: AddView
   },
   {
     path: '/admin',

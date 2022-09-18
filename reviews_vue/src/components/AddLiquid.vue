@@ -1,8 +1,7 @@
 <template>
-  <div class="add-product">
-    <div class="columns">
+    <div class="columns add-liquid">
       <div class="column is-6 is-offset-3">
-        <h1 class="title">Добавление жидкости</h1>
+        <h1 class="title is-4">Добавление новой жидкости</h1>
         <form @submit.prevent="submitForm">
 
           <div class="field">
@@ -13,21 +12,22 @@
             <p class="help">Название жидкости без названия бренда</p>
           </div>
 
-          <div class="field" v-if="options">
+          <div class="field" v-if="options.brands">
             <label><span class="subtitle">Бренд</span></label>
-            <br />
-            <div class="select">
-              <select v-model="productData.brand">
-                <option
-                  v-for="brand in options.brands"
-                  :key="brand.id"
-                  :value="brand.id"
-                >
-                  {{ brand.name }}
-                </option>
-              </select>
+            <div class="control">
+              <VueMultiselect
+                v-model="productData.brand"
+                :options="options.brands"
+                :multiple="false"
+                selectLabel="Выбрать"
+                selectedLabel="Выбрано"
+                deselectLabel="Удалить"
+                placeholder="Выберите бренд"
+                label="name"
+                track-by="id"
+              />
             </div>
-            <p class="help">Выберите бренд. Если его нет в списке свяжитесь с администрацией.</p>
+            <p class="help">Выберите бренд. Для поиска начните набирать название</p>
           </div>
 
           <div class="field">
@@ -164,7 +164,7 @@
         </form>
       </div>
     </div>
-  </div>
+
 </template>
 
 <style scoped>
@@ -193,6 +193,7 @@ export default {
   },
   data() {
     return {
+      activeTab: 'addLiquid',
       options: [],
       image: {
         src: null,
@@ -218,13 +219,6 @@ export default {
     this.getOptions();
   },
   methods: {
-    addTag (newTag) {
-      const tag = {
-        name: newTag,
-      };
-      this.options.flavors.push(tag);
-      this.productData.flavors.push(tag);
-    },
     change({ coordinates, canvas }) {
       canvas.toBlob((blob) => {
         this.image.thumbnail = blob
@@ -241,12 +235,16 @@ export default {
       for (var i of this.productData.volumes) {
         formData.append("volume_id", i);
       }
-      formData.append("image", this.image.file);
-      formData.append("thumbnail", this.image.thumbnail, this.image.name);
+      if (this.image.file){
+        formData.append("image", this.image.file);
+      }
+      if (this.image.thumbnail){
+        formData.append("thumbnail", this.image.thumbnail, this.image.name);
+      }
       formData.append("name", this.productData.name);
       formData.append("vg", this.productData.vg);
       formData.append("description", this.productData.description);
-      formData.append("brand_id", this.productData.brand);
+      formData.append("brand_id", this.productData.brand.id);
       formData.append("is_salt", this.productData.is_salt);
 
       axios
