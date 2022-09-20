@@ -28,10 +28,18 @@
           <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
             >Жидкости</router-link
           >
-          <router-link class="navbar-item" :to="{ name: 'disposables'}">Одноразки</router-link>
-          <router-link class="navbar-item" :to="{ name: 'add' }" v-if="$store.state.isAuthenticated"
-            >Добавить</router-link>
-          <router-link class="navbar-item" :to="{ name: 'contacts'}">Контакты</router-link>
+          <router-link class="navbar-item" :to="{ name: 'disposables' }"
+            >Одноразки</router-link
+          >
+          <router-link
+            class="navbar-item"
+            :to="{ name: 'add' }"
+            v-if="$store.state.isAuthenticated"
+            >Добавить</router-link
+          >
+          <router-link class="navbar-item" :to="{ name: 'contacts' }"
+            >Контакты</router-link
+          >
           <a
             class="navbar-item"
             @click="showSearch = !showSearch"
@@ -52,7 +60,13 @@
           >
             Администрирование
           </router-link>
-          <router-link class="navbar-item profile" :to="{ name: 'profile', params: {username: $store.state.username} }">
+          <router-link
+            class="navbar-item profile"
+            :to="{
+              name: 'profile',
+              params: { username: $store.state.username },
+            }"
+          >
             <span class="icon-text">
               <span class="icon">
                 <i class="fa-solid fa-user-large fa-lg"></i>
@@ -96,115 +110,111 @@
       </div>
     </nav>
 
-    <div
-      class="is-loading-bar has-text-centered"
-      :class="{ 'is-loading': $store.state.isLoading }"
-    >
-      <div class="lds-dual-ring"></div>
+    <div class="loading" v-if="$store.state.isLoading">
+      <PulseLoader :loading="$store.state.isLoading" :size="loaderSize" />
     </div>
 
-    <div class="modal" :class="{ 'is-active': showLogIn }">
-      <div class="modal-background" @click="showLogIn = false"></div>
-      <div class="modal-content">
-        <LogIn
-          @logged="showLogIn = false"
-          @showRegister="showSignUp = true"
-          @showResetPassword="showResetPassword = true"
-          @showResendActivation="showResendActivation = true"
-        />
-      </div>
-    </div>
-
-    <div class="modal" :class="{ 'is-active': showSignUp }">
-      <div class="modal-background" @click="showSignUp = false"></div>
-      <div class="modal-content">
-        <SignUp @signed="showSignUp = false" @showLogin="showLogIn = true" />
-      </div>
-    </div>
-
-    <div class="modal" :class="{ 'is-active': showResetPassword }">
-      <div class="modal-background" @click="showResetPassword=false"></div>
-      <div class="modal-content">
-        <div class="box">
-          <div class="level">
-            <div class="level-left">
-              <h1 class="title">Сбросить пароль</h1>
-            </div>
-            <div class="level-right">
-              <button
-                class="delete is-medium"
-                aria-label="close"
-                @click="showResetPassword=false"
-              ></button>
-            </div>
-          </div>
-
-          <form @submit.prevent="resetPassword">
-            <div class="field">
-              <label>Email</label>
-              <div class="control">
-                <input type="email" class="input" v-model="email">
-              </div>
-              <p class="help">
-                Введите email, указанный при регистрации. На него будет отправлена ссылка для сброса пароля.
-              </p>
-            </div>
-
-            <div class="level">
-              <div class="level-left">
-                <button class="button is-dark">Отправить</button>
-              </div>
-            </div>
-
-          </form>
+    <main class="section main-content">
+      <div class="modal" :class="{ 'is-active': showLogIn }">
+        <div class="modal-background" @click="showLogIn = false"></div>
+        <div class="modal-content">
+          <LogIn
+            @logged="showLogIn = false"
+            @showRegister="showSignUp = true"
+            @showResetPassword="showResetPassword = true"
+            @showResendActivation="showResendActivation = true"
+          />
         </div>
       </div>
-    </div>
 
-    <div class="modal" :class="{ 'is-active': showResendActivation }">
-      <div class="modal-background" @click="showResendActivation=false"></div>
-      <div class="modal-content">
-        <div class="box">
-          <div class="level">
-            <div class="level-left">
-              <h1 class="title">Активация аккаунта</h1>
-            </div>
-            <div class="level-right">
-              <button
-                class="delete is-medium"
-                aria-label="close"
-                @click="showResetPassword=false"
-              ></button>
-            </div>
-          </div>
-
-          <form @submit.prevent="resendActivation">
-            <div class="field">
-              <label>Email</label>
-              <div class="control">
-                <input type="email" class="input" v-model="email">
-              </div>
-              <p class="help">
-                Введите email, указанный при регистрации.
-              </p>
-            </div>
-
-            <div class="notification is-danger" v-if="errors.length">
-              <p v-for="error in errors" :key="error">{{ error }}</p>
-            </div>
-
-            <div class="level">
-              <div class="level-left">
-                <button class="button is-dark">Отправить</button>
-              </div>
-            </div>
-
-          </form>
+      <div class="modal" :class="{ 'is-active': showSignUp }">
+        <div class="modal-background" @click="showSignUp = false"></div>
+        <div class="modal-content">
+          <SignUp @signed="showSignUp = false" @showLogin="showLogIn = true" />
         </div>
       </div>
-    </div>
 
-    <main class="section">
+      <div class="modal" :class="{ 'is-active': showResetPassword }">
+        <div class="modal-background" @click="showResetPassword = false"></div>
+        <div class="modal-content">
+          <div class="box">
+            <div class="level">
+              <div class="level-left">
+                <h1 class="title">Сбросить пароль</h1>
+              </div>
+              <div class="level-right">
+                <button
+                  class="delete is-medium"
+                  aria-label="close"
+                  @click="showResetPassword = false"
+                ></button>
+              </div>
+            </div>
+
+            <form @submit.prevent="resetPassword">
+              <div class="field">
+                <label>Email</label>
+                <div class="control">
+                  <input type="email" class="input" v-model="email" />
+                </div>
+                <p class="help">
+                  Введите email, указанный при регистрации. На него будет
+                  отправлена ссылка для сброса пароля.
+                </p>
+              </div>
+
+              <div class="level">
+                <div class="level-left">
+                  <button class="button is-dark">Отправить</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" :class="{ 'is-active': showResendActivation }">
+        <div
+          class="modal-background"
+          @click="showResendActivation = false"
+        ></div>
+        <div class="modal-content">
+          <div class="box">
+            <div class="level">
+              <div class="level-left">
+                <h1 class="title">Активация аккаунта</h1>
+              </div>
+              <div class="level-right">
+                <button
+                  class="delete is-medium"
+                  aria-label="close"
+                  @click="showResetPassword = false"
+                ></button>
+              </div>
+            </div>
+
+            <form @submit.prevent="resendActivation">
+              <div class="field">
+                <label>Email</label>
+                <div class="control">
+                  <input type="email" class="input" v-model="email" />
+                </div>
+                <p class="help">Введите email, указанный при регистрации.</p>
+              </div>
+
+              <div class="notification is-danger" v-if="errors.length">
+                <p v-for="error in errors" :key="error">{{ error }}</p>
+              </div>
+
+              <div class="level">
+                <div class="level-left">
+                  <button class="button is-dark">Отправить</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
       <router-view />
     </main>
 
@@ -220,11 +230,13 @@ import { toast } from "bulma-toast";
 
 import LogIn from "./components/LogIn.vue";
 import SignUp from "./components/SignUp.vue";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
 export default {
   components: {
     LogIn,
     SignUp,
+    PulseLoader,
   },
   data() {
     return {
@@ -234,9 +246,10 @@ export default {
       showSearch: false,
       showResetPassword: false,
       showResendActivation: false,
-      email:'',
-      searchQuery: '',
+      email: "",
+      searchQuery: "",
       errors: [],
+      loaderSize: "25px",
     };
   },
   beforeCreate() {
@@ -265,21 +278,21 @@ export default {
 
     async resetPassword() {
       await axios
-      .post('users/reset_password/', {'email': this.email})
-      .then(()=>{
-        toast({
-          message: 'На указанную почту направлена ссылка для сброса пароля.',
-          type: 'is-success',
-          dismissible: true,
-          pauseOnHover: true,
-          position: 'top-center',
+        .post("users/reset_password/", { email: this.email })
+        .then(() => {
+          toast({
+            message: "На указанную почту направлена ссылка для сброса пароля.",
+            type: "is-success",
+            dismissible: true,
+            pauseOnHover: true,
+            position: "top-center",
+          });
+          this.email = "";
+          this.showResetPassword = false;
+        })
+        .catch((error) => {
+          console.log(error.response.data);
         });
-        this.email = '';
-        this.showResetPassword = false;
-      })
-      .catch((error)=>{
-        console.log(error.response.data);
-      });
     },
 
     showLoginRequired() {
@@ -296,28 +309,31 @@ export default {
     async resendActivation() {
       this.errors = [];
       await axios
-      .post('/users/resend_activation/', {'email': this.email})
-      .then(() => {
-        toast({
-          message: 'На указанную почту направлена ссылка для активации.',
-          type: 'is-success',
-          dismissible: true,
-          pauseOnHover: true,
-          position: 'top-center',
+        .post("/users/resend_activation/", { email: this.email })
+        .then(() => {
+          toast({
+            message: "На указанную почту направлена ссылка для активации.",
+            type: "is-success",
+            dismissible: true,
+            pauseOnHover: true,
+            position: "top-center",
+          });
+          this.showResendActivation = false;
+          this.email = "";
+        })
+        .catch((error) => {
+          this.errors.push(error.response.data[0]);
         });
-        this.showResendActivation = false;
-        this.email = '';
-      })
-      .catch((error) => {
-        this.errors.push(error.response.data[0])
-      })
     },
 
     search() {
       if (this.searchQuery) {
-        this.$router.push({name: 'search', params: {'query': this.searchQuery} });
+        this.$router.push({
+          name: "search",
+          params: { query: this.searchQuery },
+        });
       }
-    }
+    },
   },
   mounted() {},
 };
@@ -339,6 +355,29 @@ body,
   margin: 0;
 }
 
+#wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.loading {
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-content {
+  min-height: 70vh;
+  display: flex;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .logout .profile {
   text-decoration: underline;
 }
@@ -349,40 +388,6 @@ body,
 
 .icon-text {
   text-decoration: underline;
-}
-
-.lds-dual-ring {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-}
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border-radius: 50%;
-  border: 6px solid #ccc;
-  border-color: #ccc transparent #ccc transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-@keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-.is-loading-bar {
-  height: 0;
-  overflow: hidden;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  &.is-loading {
-    height: 80px;
-  }
 }
 
 .search {

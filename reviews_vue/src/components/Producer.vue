@@ -7,7 +7,7 @@
         </div>
         <div class="column is-3">
           <p class="title is-5">
-            <router-link :to="{ name: 'brand-detail', params: {brand_slug: slug} }"
+            <router-link :to="{ name: 'producer-detail', params: {producer_slug: slug} }"
             >{{ name }}</router-link>
           </p>
         </div>

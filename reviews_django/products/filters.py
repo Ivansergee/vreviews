@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from .models import Product, Review
+from .models import Product, Review, Brand
 
 
 class ProductFilter(filters.FilterSet):
@@ -10,6 +10,14 @@ class ProductFilter(filters.FilterSet):
     class Meta:
         model = Product
         fields = ['brand__slug', 'bookmarks__author__username']
+
+
+class BrandFilter(filters.FilterSet):
+    producer = filters.CharFilter(field_name='producer__slug')
+
+    class Meta:
+        model = Brand
+        fields = ['producer__slug']
 
 
 class ReviewFilter(filters.FilterSet):

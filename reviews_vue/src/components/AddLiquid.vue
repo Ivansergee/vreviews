@@ -12,12 +12,12 @@
             <p class="help">Название жидкости без названия бренда</p>
           </div>
 
-          <div class="field" v-if="options.brands">
+          <div class="field">
             <label><span class="subtitle">Бренд</span></label>
             <div class="control">
               <VueMultiselect
                 v-model="productData.brand"
-                :options="options.brands"
+                :options="brands"
                 :multiple="false"
                 selectLabel="Выбрать"
                 selectedLabel="Выбрано"
@@ -44,12 +44,12 @@
             <p class="help">Описание вкуса</p>
           </div>
 
-          <div class="field" v-if="options.flavors">
+          <div class="field">
             <label><span class="subtitle">Вкусы</span></label>
             <div class="control">
               <VueMultiselect
                 v-model="productData.flavors"
-                :options="options.flavors"
+                :options="flavors"
                 :multiple="true"
                 selectLabel="Выбрать"
                 selectedLabel="Выбрано"
@@ -62,13 +62,13 @@
             <p class="help">Для поиска начните набирать название</p>
           </div>
 
-          <div class="field" v-if="options">
+          <div class="field">
             <label><span class="subtitle">Содержание никотина</span></label>
             <br />
             <div class="select is-multiple">
               <select multiple size="5" v-model="productData.nic_content">
                 <option
-                  v-for="amount in options.nic_content"
+                  v-for="amount in nic_content"
                   :key="amount.id"
                   :value="amount.id"
                 >
@@ -78,13 +78,13 @@
             </div>
           </div>
 
-          <div class="field" v-if="options">
+          <div class="field">
             <label><span class="subtitle">Объем</span></label>
             <br />
             <div class="select is-multiple">
               <select multiple size="5" v-model="productData.volumes">
                 <option
-                  v-for="vol in options.volumes"
+                  v-for="vol in volumes"
                   :key="vol.id"
                   :value="vol.id"
                 >
@@ -97,7 +97,7 @@
           <div class="field">
             <label><span class="subtitle">VG/PG</span></label>
             <div class="control">
-              <input type="number" class="input" v-model="productData.vg" />
+              <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
             </div>
           </div>
 
@@ -176,6 +176,9 @@
 .cropper:hover {
   cursor: move;
 }
+.vg {
+  width: 8ch;
+}
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
@@ -191,10 +194,14 @@ export default {
     Cropper,
     VueMultiselect,
   },
+  props: [
+    "brands",
+    "flavors",
+    "nic_content",
+    "volumes",
+  ],
   data() {
     return {
-      activeTab: 'addLiquid',
-      options: [],
       image: {
         src: null,
         type: null,
@@ -215,8 +222,10 @@ export default {
       },
     };
   },
-  mounted() {
-    this.getOptions();
+  computed: {
+    pg() {
+      return 100 - this.productData.vg
+    }
   },
   methods: {
     change({ coordinates, canvas }) {
@@ -288,17 +297,6 @@ export default {
         this.image.name = files[0].name;
         this.image.file = files[0];
       }
-    },
-
-    async getOptions() {
-      await axios
-        .get("product-options/")
-        .then((response) => {
-          this.options = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
 
     showSuccess() {

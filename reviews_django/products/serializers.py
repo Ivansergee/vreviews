@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from djoser.conf import settings
 from djoser.serializers import UserSerializer, TokenCreateSerializer
 
-from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume
+from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume, Country
 
 
 class ProducerShortSerializer(serializers.ModelSerializer):
@@ -27,6 +27,13 @@ class FlavorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Flavor
+        fields = ['id', 'name']
+
+
+class CountrySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Country
         fields = ['id', 'name']
 
 
@@ -129,6 +136,11 @@ class BrandSerializer(serializers.ModelSerializer):
     score_count = serializers.IntegerField(read_only=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
+    producer_id = serializers.PrimaryKeyRelatedField(
+        queryset=Producer.objects.all(),
+        source='producer',
+        write_only=True
+        )
 
     class Meta:
         model = Brand
@@ -138,7 +150,9 @@ class BrandSerializer(serializers.ModelSerializer):
             'description',
             'slug',
             'producer',
+            'producer_id',
             'image',
+            'thumbnail',
             'image_url',
             'thumbnail_url',
 
@@ -169,15 +183,23 @@ class ProducerSerializer(serializers.ModelSerializer):
     score_count = serializers.IntegerField(read_only=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
+    country_id = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(),
+        source='country',
+        write_only=True
+        )
 
     class Meta:
-        model = Brand
+        model = Producer
         fields = [
             'id',
             'name',
             'description',
+            'country',
+            'country_id',
             'slug',
             'image',
+            'thumbnail',
             'image_url',
             'thumbnail_url',
 
@@ -185,6 +207,7 @@ class ProducerSerializer(serializers.ModelSerializer):
             'reviews_count',
             'score_count',
         ]
+        read_only_fields = ['country']
 
     def get_image_url(self, obj):
         request = self.context.get('request')
@@ -302,6 +325,13 @@ class BrandNamesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
+        fields = ['id', 'name']
+
+
+class ProducerNamesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Producer
         fields = ['id', 'name']
 
 

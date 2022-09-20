@@ -19,10 +19,10 @@ from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
     BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer,
-    EmailSerializer)
-from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume
+    EmailSerializer, ProducerNamesSerializer, CountrySerializer)
+from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
-from .filters import ProductFilter, ReviewFilter
+from .filters import ProductFilter, ReviewFilter, BrandFilter
 from .pagination import CustomPagination
 
 
@@ -33,6 +33,8 @@ class ProductListCreate(generics.ListCreateAPIView):
             .prefetch_related('flavors', 'nic_content')
     parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
     filterset_class = ProductFilter
     ordering_fields = ['avg_score', 'bookmarks__created_at']
     search_fields = ['name']
@@ -48,11 +50,13 @@ class ProductDetail(generics.RetrieveAPIView):
     lookup_url_kwarg = 'slug'
 
 
-class BrandList(generics.ListAPIView):
+class BrandListCreate(generics.ListCreateAPIView):
     serializer_class = BrandSerializer
     queryset = Brand.objects.select_related('producer')
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['producer__slug']
+    filterset_class = BrandFilter
     search_fields = ['name']
     pagination_class = CustomPagination
 
@@ -64,9 +68,11 @@ class BrandDetail(generics.RetrieveAPIView):
     lookup_url_kwarg = 'slug'
 
 
-class ProducerList(generics.ListAPIView):
+class ProducerListCreate(generics.ListCreateAPIView):
     serializer_class = ProducerSerializer
     queryset = Producer.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
     filter_backends = [SearchFilter]
     search_fields = ['name']
     pagination_class = CustomPagination
@@ -173,29 +179,29 @@ class ReactionView(mixins.CreateModelMixin, mixins.UpdateModelMixin,
         return self.partial_update(request, *args, **kwargs)
 
 
-class ProductOptions(generics.GenericAPIView):
+class CreateOptions(generics.GenericAPIView):
 
     def get(self, request):
         qs = Flavor.objects.order_by('name')
         flavors = FlavorsSerializer(qs, many=True).data
         qs = Brand.objects.order_by('name')
         brands = BrandNamesSerializer(qs, many=True).data
+        qs = Producer.objects.order_by('name')
+        producers = ProducerNamesSerializer(qs, many=True).data
         qs = Nicotine.objects.all()
         nic_content = NicotineSerializer(qs, many=True).data
         qs = Volume.objects.all()
         volumes = VolumeSerializer(qs, many=True).data
+        qs = Country.objects.order_by('name')
+        countries = CountrySerializer(qs, many=True).data
         return Response({
             'brands': brands,
             'flavors': flavors,
             'nic_content': nic_content,
             'volumes': volumes,
+            'producers': producers,
+            'countries': countries,
             })
-
-
-class FlavorCreate(generics.CreateAPIView):
-    serializer_class = FlavorsSerializer
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
 
 
 class UserView(generics.RetrieveAPIView):

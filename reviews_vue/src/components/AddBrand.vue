@@ -8,17 +8,17 @@
         <div class="field">
           <label><span class="subtitle">Название</span></label>
           <div class="control">
-            <input type="text" class="input" v-model="productData.name" />
+            <input type="text" class="input" v-model="brandData.name" />
           </div>
           <p class="help">Название бренда. Добавляйте к названию "Salt", если у производителя есть аналогичная линейка вкусов на классическом никотине.</p>
         </div>
 
-        <div class="field" v-if="options.brands">
+        <div class="field" v-if="producers">
           <label><span class="subtitle">Производитель</span></label>
           <div class="control">
             <VueMultiselect
-              v-model="productData.brand"
-              :options="options.brands"
+              v-model="brandData.producer"
+              :options="producers"
               :multiple="false"
               selectLabel="Выбрать"
               selectedLabel="Выбрано"
@@ -38,7 +38,7 @@
               class="textarea"
               cols="100"
               rows="5"
-              v-model="productData.description"
+              v-model="brandData.description"
             >
             </textarea>
           </div>
@@ -126,10 +126,12 @@ export default {
     Cropper,
     VueMultiselect,
   },
+  props: [
+    "producers"
+  ],
+  emits: ["added"],
   data() {
     return {
-      activeTab: 'addLiquid',
-      options: [],
       image: {
         src: null,
         type: null,
@@ -138,20 +140,12 @@ export default {
         thumbnail: null,
       },
       errors: [],
-      productData: {
+      brandData: {
         name: "",
         description: "",
-        nic_content: [],
-        flavors: [],
-        volumes: [],
-        vg: 50,
-        brand: "",
-        is_salt: false,
+        producer: "",
       },
     };
-  },
-  mounted() {
-    this.getOptions();
   },
   methods: {
     change({ coordinates, canvas }) {
@@ -161,41 +155,28 @@ export default {
     },
     submitForm() {
       const formData = new FormData();
-      for (var i of this.productData.flavors) {
-        formData.append("flavor_id", i.id);
-      }
-      for (var i of this.productData.nic_content) {
-        formData.append("nic_content_id", i);
-      }
-      for (var i of this.productData.volumes) {
-        formData.append("volume_id", i);
-      }
+
       if (this.image.file){
         formData.append("image", this.image.file);
       }
       if (this.image.thumbnail){
         formData.append("thumbnail", this.image.thumbnail, this.image.name);
       }
-      formData.append("name", this.productData.name);
-      formData.append("vg", this.productData.vg);
-      formData.append("description", this.productData.description);
-      formData.append("brand_id", this.productData.brand.id);
-      formData.append("is_salt", this.productData.is_salt);
+      formData.append("name", this.brandData.name);
+      formData.append("description", this.brandData.description);
+      formData.append("producer_id", this.brandData.producer.id);
 
       axios
-        .post("products/", formData, {
+        .post("brands/", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then(() => {
           this.showSuccess();
-          this.productData = {
+          this.$emit("added");
+          this.brandtData = {
             name: "",
             description: "",
-            nic_content: [],
-            flavors: [],
-            brand: "",
-            vg: 50,
-            is_salt: false,
+            producer: "",
           };
           this.image = {
             src: null,
@@ -225,20 +206,9 @@ export default {
       }
     },
 
-    async getOptions() {
-      await axios
-        .get("product-options/")
-        .then((response) => {
-          this.options = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
     showSuccess() {
       toast({
-        message: "Спасибо! Информация отправлена на проверку и скоро будет опубликована на сайте.",
+        message: "Бренд успешно создан!",
         type: "is-success",
         dismissible: true,
         duration: 10000,

@@ -1,6 +1,8 @@
 <template>
-
-  <div class="columns add-disposable">
+  <div>
+    <h1 class="title">Раздел в разработке</h1>
+  </div>
+  <!-- <div class="columns add-disposable">
     <div class="column is-6 is-offset-3">
       <h1 class="title is-4">Добавление нового одноразового устройства</h1>
       <form @submit.prevent="submitForm">
@@ -48,7 +50,7 @@
         <div class="field" v-if="options.flavors">
           <label><span class="subtitle">Вкусы</span></label>
           <div class="control">
-            <!-- <VueMultiselect
+            <VueMultiselect
               v-model=""
               :options="options.flavors"
               :multiple="true"
@@ -58,7 +60,7 @@
               placeholder="Выберите вкусы"
               label="name"
               track-by="id"
-            /> -->
+            />
           </div>
           <p class="help">Для поиска начните набирать название</p>
         </div>
@@ -125,7 +127,7 @@
         </div>
       </form>
     </div>
-  </div>
+  </div> -->
 
 </template>
 
@@ -176,9 +178,6 @@ export default {
         is_salt: false,
       },
     };
-  },
-  mounted() {
-    this.getOptions();
   },
   methods: {
     change({ coordinates, canvas }) {
@@ -250,17 +249,6 @@ export default {
         this.image.name = files[0].name;
         this.image.file = files[0];
       }
-    },
-
-    async getOptions() {
-      await axios
-        .get("product-options/")
-        .then((response) => {
-          this.options = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
 
     showSuccess() {

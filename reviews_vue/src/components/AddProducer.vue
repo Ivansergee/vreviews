@@ -8,22 +8,22 @@
         <div class="field">
           <label><span class="subtitle">Название</span></label>
           <div class="control">
-            <input type="text" class="input" v-model="productData.name" />
+            <input type="text" class="input" v-model="producerData.name" />
           </div>
           <p class="help">Название производителя</p>
         </div>
 
-        <div class="field" v-if="options.brands">
+        <div class="field" v-if="countries">
           <label><span class="subtitle">Страна</span></label>
           <div class="control">
             <VueMultiselect
-              v-model="productData.brand"
-              :options="options.brands"
+              v-model="producerData.country"
+              :options="countries"
               :multiple="false"
               selectLabel="Выбрать"
               selectedLabel="Выбрано"
               deselectLabel="Удалить"
-              placeholder="Выберите бренд"
+              placeholder="Выберите страну"
               label="name"
               track-by="id"
             />
@@ -38,7 +38,7 @@
               class="textarea"
               cols="100"
               rows="5"
-              v-model="productData.description"
+              v-model="producerData.description"
             >
             </textarea>
           </div>
@@ -126,10 +126,10 @@ export default {
     Cropper,
     VueMultiselect,
   },
+  props: ['countries'],
+  emits: ["added"],
   data() {
     return {
-      activeTab: 'addLiquid',
-      options: [],
       image: {
         src: null,
         type: null,
@@ -138,20 +138,12 @@ export default {
         thumbnail: null,
       },
       errors: [],
-      productData: {
+      producerData: {
         name: "",
         description: "",
-        nic_content: [],
-        flavors: [],
-        volumes: [],
-        vg: 50,
-        brand: "",
-        is_salt: false,
+        country: "",
       },
     };
-  },
-  mounted() {
-    this.getOptions();
   },
   methods: {
     change({ coordinates, canvas }) {
@@ -161,41 +153,28 @@ export default {
     },
     submitForm() {
       const formData = new FormData();
-      for (var i of this.productData.flavors) {
-        formData.append("flavor_id", i.id);
-      }
-      for (var i of this.productData.nic_content) {
-        formData.append("nic_content_id", i);
-      }
-      for (var i of this.productData.volumes) {
-        formData.append("volume_id", i);
-      }
+
       if (this.image.file){
         formData.append("image", this.image.file);
       }
       if (this.image.thumbnail){
         formData.append("thumbnail", this.image.thumbnail, this.image.name);
       }
-      formData.append("name", this.productData.name);
-      formData.append("vg", this.productData.vg);
-      formData.append("description", this.productData.description);
-      formData.append("brand_id", this.productData.brand.id);
-      formData.append("is_salt", this.productData.is_salt);
+      formData.append("name", this.producerData.name);
+      formData.append("description", this.producerData.description);
+      formData.append("country_id", this.producerData.country.id);
 
       axios
-        .post("products/", formData, {
+        .post("producers/", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then(() => {
+          this.$emit("added");
           this.showSuccess();
-          this.productData = {
+          this.producerData = {
             name: "",
             description: "",
-            nic_content: [],
-            flavors: [],
-            brand: "",
-            vg: 50,
-            is_salt: false,
+            country: "",
           };
           this.image = {
             src: null,
@@ -225,20 +204,9 @@ export default {
       }
     },
 
-    async getOptions() {
-      await axios
-        .get("product-options/")
-        .then((response) => {
-          this.options = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
     showSuccess() {
       toast({
-        message: "Спасибо! Информация отправлена на проверку и скоро будет опубликована на сайте.",
+        message: "Производитель добавлен!",
         type: "is-success",
         dismissible: true,
         duration: 10000,

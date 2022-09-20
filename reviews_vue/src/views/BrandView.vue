@@ -8,9 +8,7 @@
     <div class="columns head">
       <div class="column is-4">
         <figure class="image is-1by1">
-          <img
-            :src=brand.image_url
-          />
+          <img id="brand-image" :src="brand.thumbnail_url" @click="showImage=true" />
         </figure>
       </div>
       <div class="column is-4">
@@ -40,6 +38,16 @@
       </div>
     </div>
 
+    <div class="modal" :class="{ 'is-active': showImage }">
+      <div class="modal-background" @click="showImage = false"></div>
+      <div class="modal-content">
+        <p class="image">
+          <img :src="brand.image_url">
+        </p>
+      </div>
+      <button class="modal-close is-large" aria-label="close" @click="showImage = false"></button>
+    </div>
+
     <div class="products" v-if="products">
       <p class="title">Все вкусы {{ brand.name }}</p>
       <Product
@@ -60,9 +68,12 @@
 </template>
 
 <style scoped>
-img {
+#brand-image {
   max-width: 300px;
   max-height: 300px;
+}
+#brand-image:hover {
+  cursor: pointer;
 }
 
 .head {
@@ -90,6 +101,7 @@ export default {
     return {
       brand: null,
       products: null,
+      showImage: false,
     }
   },
   created() {

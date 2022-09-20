@@ -17,7 +17,7 @@
         <div class="content">
           <p><strong>Страна:</strong> {{producer.country}} </p>
 
-          <p><strong>Описание:</strong> {{producer.country}} </p>
+          <p><strong>Описание:</strong></p>
           <p>{{ producer.description }}</p>
         </div>
       </div>

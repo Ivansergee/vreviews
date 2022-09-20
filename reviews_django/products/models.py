@@ -6,6 +6,14 @@ from slugify import slugify
 
 User._meta.get_field('email')._unique = True
 
+
+class Country(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Producer(models.Model):
 
     def image_path(instance, filename):
@@ -17,7 +25,7 @@ class Producer(models.Model):
         return f'producers/thumb/{instance.name}.{ext}'
 
     name = models.CharField(max_length=100, unique=True)
-    country = models.CharField(max_length=100)
+    country = models.ForeignKey(Country, related_name='producers', on_delete=models.PROTECT)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
