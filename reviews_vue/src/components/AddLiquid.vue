@@ -267,6 +267,7 @@ export default {
             description: "",
             nic_content: [],
             flavors: [],
+            volumes: [],
             brand: "",
             vg: 50,
             is_salt: false,
