@@ -61,7 +61,7 @@
                 width: 300,
                 height: 300,
               }"
-              image-restriction="stencil"
+              image-restriction="none"
               @change="change"
             />
           </div>
