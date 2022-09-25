@@ -41,7 +41,7 @@ class ProductListCreate(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
 
-class ProductDetail(generics.RetrieveAPIView):
+class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(is_published=True) \
             .select_related('brand', 'brand__producer') \
@@ -61,7 +61,7 @@ class BrandListCreate(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
 
-class BrandDetail(generics.RetrieveAPIView):
+class BrandDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BrandSerializer
     queryset = Brand.objects.select_related('producer')
     lookup_field = 'slug'
@@ -78,7 +78,7 @@ class ProducerListCreate(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
 
-class ProducerDetail(generics.RetrieveAPIView):
+class ProducerDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProducerSerializer
     queryset = Producer.objects.all()
     lookup_field = 'slug'

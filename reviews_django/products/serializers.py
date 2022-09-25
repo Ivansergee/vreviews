@@ -202,6 +202,10 @@ class ProducerSerializer(serializers.ModelSerializer):
             'thumbnail',
             'image_url',
             'thumbnail_url',
+            'website',
+            'tg',
+            'vk',
+            'ig',
 
             'avg_score',
             'reviews_count',
