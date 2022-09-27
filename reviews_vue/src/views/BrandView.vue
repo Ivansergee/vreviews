@@ -4,6 +4,9 @@
       <div class="level-left">
         <h1 class="title level-item">{{ brand.name }}</h1>
       </div>
+      <div class="level-right" v-if="$store.state.isAdmin">
+        <button class="button is-success level-item" @click="showEdit = true">Редактировать</button>
+      </div>
     </div>
     <div class="columns head">
       <div class="column is-4">
@@ -48,6 +51,21 @@
       <button class="modal-close is-large" aria-label="close" @click="showImage = false"></button>
     </div>
 
+    <div class="modal" :class="{ 'is-active': showEdit }" v-if="brand.producer">
+      <div class="modal-background" @click="showEdit = false"></div>
+      <div class="modal-content">
+        <div class="box">
+        <EditBrand
+          :name="brand.name"
+          :description="brand.description"
+          :producer="{name: brand.producer.name, id: brand.producer.id}"
+          :imageURL="brand.image_url"
+        />
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close" @click="showEdit = false"></button>
+    </div>
+
     <div class="products" v-if="products">
       <p class="title">Все вкусы {{ brand.name }}</p>
       <Product
@@ -90,18 +108,22 @@
 </style>
 
 <script>
-import axios from 'axios'
-import Product from '../components/Product.vue'
+import axios from 'axios';
+import Product from '../components/Product.vue';
+import EditBrand from '../components/EditBrand.vue';
 
 export default {
   components: {
-    Product
+    Product,
+    EditBrand,
+
   },
   data() {
     return {
       brand: null,
       products: null,
       showImage: false,
+      showEdit: false,
     }
   },
   created() {

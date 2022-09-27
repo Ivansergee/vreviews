@@ -12,7 +12,7 @@ class ProducerShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Producer
-        fields = ['name', 'slug', 'country']
+        fields = ['id','name', 'slug', 'country']
 
 
 class BrandShortSerializer(serializers.ModelSerializer):

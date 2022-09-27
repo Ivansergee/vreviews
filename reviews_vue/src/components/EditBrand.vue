@@ -2,7 +2,7 @@
 
   <div class="columns add-brand">
     <div class="column is-6 is-offset-3">
-      <h1 class="title is-4">Добавление нового бренда</h1>
+      <h1 class="title is-4">Редактирование бренда</h1>
       <form @submit.prevent="submitForm">
 
         <div class="field">
@@ -127,7 +127,11 @@ export default {
     VueMultiselect,
   },
   props: [
-    "producers"
+    "producers",
+    "producer",
+    "name",
+    "description",
+    "imageURL"
   ],
   emits: ["added"],
   data() {
@@ -146,6 +150,12 @@ export default {
         producer: "",
       },
     };
+  },
+  mounted() {
+    this.brandData.producer = this.producer;
+    this.brandData.name = this.name;
+    this.brandData.description = this.description;
+
   },
   methods: {
     change({ coordinates, canvas }) {
