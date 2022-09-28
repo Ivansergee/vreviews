@@ -16,6 +16,10 @@
       <div class="column is-4">
         <div class="content">
           <p><strong>Страна:</strong> {{producer.country}} </p>
+          <p v-if="producer.website"><strong>Сайт:</strong> <a :href="producer.website">{{producer.website}}</a></p>
+          <p v-if="producer.vk"><strong>VK:</strong> <a :href="producer.vk">{{producer.vk}}</a> </p>
+          <p v-if="producer.tg"><strong>Telegram:</strong> <a :href="producer.tg">{{producer.tg}}</a> </p>
+          <p v-if="producer.ig"><strong>Instagram:</strong> <a :href="producer.ig">{{producer.ig}}</a> </p>
 
           <p><strong>Описание:</strong></p>
           <p>{{ producer.description }}</p>

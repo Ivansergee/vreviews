@@ -46,6 +46,38 @@
         </div>
 
         <div class="field">
+          <label><span class="subtitle">Вебсайт</span></label>
+          <div class="control">
+            <input type="text" class="input" v-model="producerData.website" />
+          </div>
+          <p class="help">Сайт производителя (не обязательно)</p>
+        </div>
+
+        <div class="field">
+          <label><span class="subtitle">Telegram</span></label>
+          <div class="control">
+            <input type="text" class="input" v-model="producerData.tg" />
+          </div>
+          <p class="help">Telegram производителя (не обязательно)</p>
+        </div>
+
+        <div class="field">
+          <label><span class="subtitle">VK</span></label>
+          <div class="control">
+            <input type="text" class="input" v-model="producerData.vk" />
+          </div>
+          <p class="help">Вконтакте производителя (не обязательно)</p>
+        </div>
+
+        <div class="field">
+          <label><span class="subtitle">Instagram</span></label>
+          <div class="control">
+            <input type="text" class="input" v-model="producerData.ig" />
+          </div>
+          <p class="help">Instagram производителя (не обязательно)</p>
+        </div>
+
+        <div class="field">
           <label><span class="subtitle">Изображение</span></label>
           <div class="control" v-if="image.src">
             <cropper
@@ -142,6 +174,10 @@ export default {
         name: "",
         description: "",
         country: "",
+        website: "",
+        tg: "",
+        vk: "",
+        ig: ""
       },
     };
   },
@@ -163,6 +199,10 @@ export default {
       formData.append("name", this.producerData.name);
       formData.append("description", this.producerData.description);
       formData.append("country_id", this.producerData.country.id);
+      formData.append("website", this.producerData.website);
+      formData.append("tg", this.producerData.tg);
+      formData.append("vk", this.producerData.vk);
+      formData.append("ig", this.producerData.ig);
 
       axios
         .post("producers/", formData, {
@@ -175,6 +215,10 @@ export default {
             name: "",
             description: "",
             country: "",
+            website: "",
+            tg: "",
+            vk: "",
+            ig: ""
           };
           this.image = {
             src: null,
