@@ -10,6 +10,8 @@ from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor,
 
 class ProducerShortSerializer(serializers.ModelSerializer):
 
+    country = serializers.StringRelatedField()
+
     class Meta:
         model = Producer
         fields = ['id','name', 'slug', 'country']
@@ -183,6 +185,7 @@ class ProducerSerializer(serializers.ModelSerializer):
     score_count = serializers.IntegerField(read_only=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
+    country = serializers.StringRelatedField()
     country_id = serializers.PrimaryKeyRelatedField(
         queryset=Country.objects.all(),
         source='country',

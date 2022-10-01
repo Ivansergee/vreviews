@@ -6,7 +6,7 @@
           <a @click="activeTab = 'profile'">Профиль</a>
         </li>
         <li :class="[activeTab === 'reviews' ? 'is-active' : '']">
-          <a @click="activeTab = 'reviews'">Отзывы и оценки</a>
+          <a @click="activeTab = 'reviews'">Отзывы и оценки ({{ reviewsCount }})</a>
         </li>
         <li :class="[activeTab === 'bookmarks' ? 'is-active' : '']" v-if="$store.state.username === $route.params.username">
           <a @click="activeTab = 'bookmarks'"
@@ -215,6 +215,8 @@ export default {
       bookmarks: [],
       bookmarksCount: null,
       nextBookmarks: null,
+      reviewsCount: null,
+      nextReviews: null,
       changeAvatarLoading: false,
     };
   },
@@ -290,6 +292,8 @@ export default {
         .get(`/reviews/?author=${username}`)
         .then((response) => {
           this.reviews = response.data.results;
+          this.nextReviews = response.data.next;
+          this.reviewsCount = response.data.count;
         })
         .catch((error) => {
           console.log(error);
@@ -344,6 +348,18 @@ export default {
         .then((response) => {
           this.bookmarks.push(...response.data.results);
           this.nextBookmarks = response.data.next;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    async getNextReviews() {
+      await axios
+        .get(this.nextReviews)
+        .then((response) => {
+          this.reviews.push(...response.data.results);
+          this.nextReviews = response.data.next;
         })
         .catch((error) => {
           console.log(error);

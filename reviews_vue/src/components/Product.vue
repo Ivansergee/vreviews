@@ -17,9 +17,9 @@
         </div>
         <div class="column is-2">
           <span
-            ><i class="bi bi-chat-left-text"></i> {{ reviews_count }}
+            ><i class="bi bi-chat-left-text"></i> {{ reviews_count || 0 }}
           </span>
-          <span><i class="bi bi-star-fill"></i> {{ score_count }}</span>
+          <span><i class="bi bi-star-fill"></i> {{ score_count || 0 }}</span>
         </div>
         <div class="column">
           <p class="tags">
@@ -33,7 +33,7 @@
         </div>
         <div class="column">
           <span class="tag is-primary is-large"
-            ><i class="bi bi-star-fill"></i> {{ avg_score }}</span
+            ><i class="bi bi-star-fill"></i> {{ avg_score || '-' }}</span
           >
         </div>
       </div>

@@ -67,7 +67,7 @@
     </div>
 
     <div class="products" v-if="products">
-      <p class="title">Все вкусы {{ brand.name }}</p>
+      <p class="title">Все вкусы {{ brand.name }} ({{ productsCount }})</p>
       <Product
         v-for="product in products"
         :key="product.id"
@@ -81,6 +81,13 @@
         :reviews_count="product.reviews_count"
         :score_count="product.score_count"
       />
+      <div class="loadButton">
+        <a
+        class="button is-success"
+        @click="getNextProducts"
+        v-if="nextProducts"
+        >Показать ещё</a>
+      </div>
     </div>
   </div>
 </template>
@@ -104,6 +111,10 @@
   height: 100%;
   background-color: white;
 }
+.loadButton {
+  display: flex;
+  justify-content: center;
+}
 
 </style>
 
@@ -122,6 +133,8 @@ export default {
     return {
       brand: null,
       products: null,
+      productsCount: null,
+      nextProducts: null,
       showImage: false,
       showEdit: false,
     }
@@ -161,12 +174,26 @@ export default {
         .get(`/products/?brand=${brand_slug}`)
         .then(response => {
           this.products = response.data.results;
+          this.nextProducts = response.data.next;
+          this.productsCount = response.data.count;
         })
         .catch(error => {
           console.log(error);
         });
 
       this.$store.commit('setIsLoading', false);
+    },
+
+    async getNextProducts() {
+      await axios
+        .get(this.nextProducts)
+        .then((response) => {
+          this.products.push(...response.data.results);
+          this.nextProducts = response.data.next;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     setTitle(title) {
