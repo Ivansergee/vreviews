@@ -194,12 +194,24 @@ export default {
     Cropper,
     VueMultiselect,
   },
-  props: [
-    "brands",
-    "flavors",
-    "nic_content",
-    "volumes",
-  ],
+  props: {
+    brands: {
+      type: Array,
+      default: []
+    },
+    flavors: {
+      type: Array,
+      default: []
+    },
+    nic_content: {
+      type: Array,
+      default: []
+    },
+    volumes: {
+      type: Array,
+      default: []
+    },
+  },
   data() {
     return {
       image: {
@@ -222,17 +234,33 @@ export default {
       },
     };
   },
+  mounted() {
+    this.setBrand();
+  },
   computed: {
     pg() {
       return 100 - this.productData.vg
     }
   },
   methods: {
+    setBrand() {
+      const brandId = this.$route.query.brandId;
+
+      if (brandId) {
+        for (const brand of this.brands) {
+          if (brand.id == brandId) {
+            this.productData.brand = {id: brand.id, name: brand.name}
+          }
+        }
+      }
+    },
+
     change({ coordinates, canvas }) {
       canvas.toBlob((blob) => {
         this.image.thumbnail = blob
       }, this.image.type);
     },
+
     submitForm() {
       const formData = new FormData();
       for (var i of this.productData.flavors) {
@@ -268,7 +296,7 @@ export default {
             nic_content: [],
             flavors: [],
             volumes: [],
-            brand: "",
+            brand: this.productData.brand,
             vg: 50,
             is_salt: false,
           };
@@ -279,6 +307,7 @@ export default {
             file: null,
             thumbnail: null,
           };
+          this.setBrand();
         })
         .catch((error) => {
           console.log(error);

@@ -67,7 +67,11 @@
     </div>
 
     <div class="products" v-if="products">
-      <p class="title">Все вкусы {{ brand.name }} ({{ productsCount }})</p>
+      <p class="title">Все вкусы {{ brand.name }} ({{ productsCount }})
+        <router-link :to="{ name: 'add', params: {type: 'liquid'}, query:{brandId: brand.id} }" class="add button is-success">
+          Добавить новый вкус
+        </router-link>
+      </p>
       <Product
         v-for="product in products"
         :key="product.id"
@@ -116,12 +120,17 @@
   justify-content: center;
 }
 
+.add {
+  float: right;
+}
+
 </style>
 
 <script>
 import axios from 'axios';
 import Product from '../components/Product.vue';
 import EditBrand from '../components/EditBrand.vue';
+
 
 export default {
   components: {
@@ -142,9 +151,6 @@ export default {
   created() {
     this.getBrandData();
     this.getProducts();
-  },
-  mounted() {
-    
   },
   methods: {
     async getBrandData(){
