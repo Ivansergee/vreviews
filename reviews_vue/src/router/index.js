@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue';
 import BrandView from '../views/BrandView.vue';
 import ProducerView from '../views/ProducerView.vue';
 import LiquidsView from '../views/LiquidsView.vue';
+import BrandsView from '../views/BrandsView.vue';
 import ProductView from '../views/ProductView.vue';
 import AddView from '../views/AddView.vue';
 import AdminView from '../views/AdminView.vue';
@@ -30,6 +31,14 @@ const routes = [
       title: 'Топ жидкостей'
     },
     component: LiquidsView
+  },
+  {
+    path: '/top-brands',
+    name: 'brands-list',
+    meta: {
+      title: 'Топ брендов'
+    },
+    component: BrandsView
   },
   {
     path: '/producer/:producer_slug',

@@ -28,9 +28,8 @@
           <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
             >Жидкости</router-link
           >
-          <router-link class="navbar-item" :to="{ name: 'disposables' }"
-            >Одноразки</router-link
-          >
+          <router-link class="navbar-item" :to="{ name: 'brands-list' }"
+            >Бренды</router-link>
           <router-link
             class="navbar-item"
             :to="{ name: 'add' }"

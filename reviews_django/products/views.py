@@ -55,8 +55,9 @@ class BrandListCreate(generics.ListCreateAPIView):
     queryset = Brand.objects.select_related('producer')
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = BrandFilter
+    ordering_fields = ['avg_score']
     search_fields = ['name']
     pagination_class = CustomPagination
 

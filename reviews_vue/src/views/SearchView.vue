@@ -23,6 +23,7 @@
         :image="product.thumbnail_url"
         :product_slug="product.slug"
         :brand_slug="product.brand.slug"
+        :description="product.description"
         :avg_score="product.avg_score ? product.avg_score : '-'"
         :flavors="product.flavors"
         :reviews_count="product.reviews_count ? product.reviews_count : '0'"
@@ -43,6 +44,7 @@
         :name="brand.name"
         :image="brand.thumbnail_url"
         :slug="brand.slug"
+        :description="brand.description"
         :avg_score="brand.avg_score ? brand.avg_score : '-'"
         :reviews_count="brand.reviews_count ? brand.reviews_count : '0'"
         :score_count="brand.score_count ? brand.score_count : '0'"
@@ -103,7 +105,7 @@ export default {
   },
   watch: { 
       '$route.params.query': {
-          handler: function() {
+          handler() {
             this.getProducts();
             this.getBrands();
             this.getProducers();
@@ -111,11 +113,6 @@ export default {
           deep: true,
           immediate: true
         }
-  },
-  mounted() {
-    this.getProducts();
-    this.getBrands();
-    this.getProducers();
   },
   methods: {
     async getProducts(){

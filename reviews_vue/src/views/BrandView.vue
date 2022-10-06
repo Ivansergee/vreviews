@@ -80,6 +80,7 @@
         :image="product.thumbnail_url"
         :product_slug="product.slug"
         :brand_slug="product.brand.slug"
+        :description="product.description"
         :avg_score="product.avg_score"
         :flavors="product.flavors"
         :reviews_count="product.reviews_count"

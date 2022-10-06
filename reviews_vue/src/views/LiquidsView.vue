@@ -8,6 +8,7 @@
         :brand="product.brand.name"
         :image="product.thumbnail_url"
         :product_slug="product.slug"
+        :description="product.description"
         :brand_slug="product.brand.slug"
         :avg_score="product.avg_score"
         :flavors="product.flavors"

@@ -404,7 +404,7 @@ export default {
     async addReview() {
       if (!this.$store.state.isAuthenticated) {
         this.$root.showLogIn = true;
-        return null;
+        return;
       }
 
       const formData = {
@@ -412,6 +412,18 @@ export default {
         score: this.review_id ? this.user_score : this.score,
         text: this.new_user_review,
       };
+
+      if (formData.score < 1) {
+        toast({
+              message: 'Вы не поставили оценку!',
+              type: "is-danger",
+              dismissible: true,
+              duration: 5000,
+              pauseOnHover: true,
+              position: "top-center",
+            });
+        return;
+      }
 
       this.isLoading = true;
       if (!this.user_review_id) {
@@ -437,7 +449,7 @@ export default {
               message: error.response.data.detail,
               type: "is-danger",
               dismissible: true,
-              duration: 3000,
+              duration: 5000,
               pauseOnHover: true,
               position: "top-center",
             });

@@ -5,22 +5,29 @@
             <img :src="image" />
           </figure>
         </div>
-        <div class="column is-3">
+        <div class="column is-2">
           <p class="title is-5">
             <router-link :to="{ name: 'brand-detail', params: {brand_slug: slug} }"
             >{{ name }}</router-link>
           </p>
         </div>
-        <div class="column is-2">
-          <span
-            ><i class="bi bi-chat-left-text"></i> {{ reviews_count || 0 }}
-          </span>
-          <span><i class="bi bi-star-fill"></i> {{ score_count || 0 }}</span>
-        </div>
         <div class="column">
-          <span class="tag is-primary is-large"
-            ><i class="bi bi-star-fill"></i> {{ avg_score || '-' }}</span
-          >
+          <p>
+            {{ description }}
+          </p>
+        </div>
+        <div class="column is-2">
+          <span>
+            <i class="bi bi-chat-left-text"></i> {{ reviews_count || 0 }}
+          </span>
+          <span>
+            <i class="bi bi-star-fill"></i> {{ score_count || 0 }}
+          </span>
+        </div>
+        <div class="column is-2">
+          <span class="tag is-primary is-large">
+            <i class="bi bi-star-fill"></i> {{ avg_score || '-' }}
+          </span>
         </div>
       </div>
 </template>
@@ -37,6 +44,7 @@ export default {
     "name",
     "image",
     "slug",
+    "description",
     "reviews_count",
     "score_count",
     "avg_score",

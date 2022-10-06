@@ -6,9 +6,6 @@
           <li :class="[$route.params.type === 'liquid' || !$route.params.type ? 'is-active' : '']">
             <a @click="setActiveTab('liquid')">Добавить жидкость</a>
           </li>
-          <li :class="[$route.params.type === 'disposable' ? 'is-active' : '']">
-            <a @click="setActiveTab('disposable')">Добавить одноразовое устройство</a>
-          </li>
           <li :class="[$route.params.type === 'brand' ? 'is-active' : '']">
             <a @click="setActiveTab('brand')">Добавить бренд</a>
           </li>
@@ -23,9 +20,6 @@
         :flavors=options.flavors
         :nic_content=options.nic_content
         :volumes=options.volumes
-      />
-      <AddDisposable v-if="$route.params.type === 'disposable'"
-
       />
       <AddBrand v-if="$route.params.type === 'brand' && options"
         :producers=options.producers
@@ -62,7 +56,6 @@
 
 <script>
 import AddLiquid from '../components/AddLiquid.vue';
-import AddDisposable from '../components/AddDisposable.vue';
 import AddBrand from '../components/AddBrand.vue';
 import AddProducer from '../components/AddProducer.vue';
 import axios from "axios";
@@ -73,7 +66,6 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 export default {
   components: {
     AddLiquid,
-    AddDisposable,
     AddBrand,
     AddProducer,
     PulseLoader
@@ -92,7 +84,7 @@ export default {
   },
   methods: {
     show404(){
-      const types = ['liquid', 'disposable', 'brand', 'producer'];
+      const types = ['liquid', 'brand', 'producer'];
       if (this.$route.params.type && !types.includes(this.$route.params.type)){
         this.$router.push({name: 'not-found'});
       }

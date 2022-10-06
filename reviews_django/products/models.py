@@ -181,6 +181,15 @@ class Review(models.Model):
         set_product_rating(self.product)
         set_brand_rating(self.product.brand)
         set_producer_rating(self.product.brand.producer)
+    
+
+    def delete(self, *args, **kwargs):
+        from products.logic import set_product_rating, set_brand_rating, set_producer_rating
+
+        super().delete()
+        set_product_rating(self.product)
+        set_brand_rating(self.product.brand)
+        set_producer_rating(self.product.brand.producer)
         
 
     class Meta:
