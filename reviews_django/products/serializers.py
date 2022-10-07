@@ -106,7 +106,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'vg',
             'volume',
             'volume_id',
-            'vg',
             'flavors',
             'flavor_id',
             'nic_content',
@@ -413,3 +412,40 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
         if self.user and self.user.is_active:
             return attrs
         self.fail("invalid_credentials")
+
+
+class AdminProductSerializer(serializers.ModelSerializer):
+    brand = BrandShortSerializer(read_only=True)
+    flavors = serializers.StringRelatedField(many=True, read_only=True)
+    nic_content = serializers.StringRelatedField(many=True)
+    volume = serializers.StringRelatedField(many=True)
+    image_url = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        url = obj.image.url
+        return request.build_absolute_uri(url)
+    
+    def get_thumbnail_url(self, obj):
+        request = self.context.get('request')
+        url = obj.thumbnail.url
+        return request.build_absolute_uri(url)
+
+    class Meta:
+        model = Product
+        fields = [
+            'id',
+            'name',
+            'description',
+            'slug',
+            'brand',
+            'vg',
+            'volume',
+            'flavors',
+            'nic_content',
+            'is_salt',
+            'image_url',
+            'thumbnail_url',
+            'is_published'
+        ]

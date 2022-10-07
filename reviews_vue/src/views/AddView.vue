@@ -42,9 +42,10 @@
 </template>
 
 <style scoped>
-/* .v-spinner {
-  text-align: center;
-} */
+.tabs {
+  overflow: auto;
+  white-space: nowrap;
+}
 
 .loading {
   height: 70vh;

@@ -1,16 +1,17 @@
 <template>
-    <div class="products" v-if="products">
-      <p class="title">Топ жидкостей</p>
-      <Product
+    <div class="container products" v-if="products">
+      <p class="title">Неопубликованное</p>
+      <AdminProduct
         v-for="product in products"
         :key="product.id"
         :name="product.name"
-        :image="product.image_url"
-        :slug="product.slug"
-        :avg_score="product.get_avg_score"
+        :brand="product.brand.name"
+        :image="product.thumbnail_url"
+        :product_slug="product.slug"
+        :brand_slug="product.brand.slug"
+        :description="product.description"
         :flavors="product.flavors"
-        :reviews_amount="product.get_reviews_amount"
-        :score_amount="product.get_score_amount"
+        :nic_content="product.nic_content"
       />
     </div>
 </template>
@@ -21,11 +22,11 @@
 
 <script>
 import axios from 'axios'
-import Product from '../components/Product.vue'
+import AdminProduct from '../components/AdminProduct.vue'
 
 export default {
   components: {
-    Product
+    AdminProduct
   },
   data() {
     return {
@@ -40,9 +41,9 @@ export default {
       this.$store.commit('setIsLoading', true)
 
       await axios
-        .get('/products/')
+        .get('/admin/')
         .then(response => {
-          this.products = response.data
+          this.products = response.data.results;
           console.log(this.products);
         })
         .catch(error => {

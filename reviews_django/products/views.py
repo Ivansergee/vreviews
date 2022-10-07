@@ -1,25 +1,21 @@
-from datetime import timedelta
-
 from rest_framework import generics, mixins
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.exceptions import APIException
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 from django.db.models import Count, Case, When
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
     BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer,
-    EmailSerializer, ProducerNamesSerializer, CountrySerializer)
+    EmailSerializer, ProducerNamesSerializer, CountrySerializer, AdminProductSerializer)
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter, BrandFilter
@@ -251,3 +247,21 @@ class BookmarkView(mixins.CreateModelMixin, mixins.DestroyModelMixin, generics.G
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class UnpublishedProductList(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.filter(is_published=False) \
+            .select_related('brand', 'brand__producer') \
+            .prefetch_related('flavors', 'nic_content')
+    permission_classes = [IsAdminUser]
+    authentication_classes = [TokenAuthentication]
+    pagination_class = CustomPagination
+
+
+class AdminProductDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AdminProductSerializer
+    queryset = Product.objects.select_related('brand', 'brand__producer') \
+            .prefetch_related('flavors', 'nic_content')
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
