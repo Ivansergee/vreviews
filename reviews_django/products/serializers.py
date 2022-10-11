@@ -19,10 +19,12 @@ class ProducerShortSerializer(serializers.ModelSerializer):
 
 class BrandShortSerializer(serializers.ModelSerializer):
     producer = ProducerShortSerializer(read_only=True)
+    nic_content = serializers.StringRelatedField(many=True)
+    volume = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Brand
-        fields = ['name', 'slug', 'producer']
+        fields = ['name', 'nic_content', 'volume', 'is_salt', 'slug', 'producer']
 
 
 class FlavorSerializer(serializers.ModelSerializer):
@@ -50,8 +52,6 @@ class VolumeSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandShortSerializer(read_only=True)
     flavors = serializers.StringRelatedField(many=True, read_only=True)
-    nic_content = serializers.StringRelatedField(many=True)
-    volume = serializers.StringRelatedField(many=True)
     brand_id = serializers.PrimaryKeyRelatedField(
         queryset=Brand.objects.all(),
         source='brand',
@@ -60,18 +60,6 @@ class ProductSerializer(serializers.ModelSerializer):
     flavor_id = serializers.PrimaryKeyRelatedField(
         queryset=Flavor.objects.all(),
         source='flavors',
-        many=True,
-        write_only=True
-        )
-    nic_content_id = serializers.PrimaryKeyRelatedField(
-        queryset=Nicotine.objects.all(),
-        source='nic_content',
-        many=True,
-        write_only=True
-        )
-    volume_id = serializers.PrimaryKeyRelatedField(
-        queryset=Volume.objects.all(),
-        source='volume',
         many=True,
         write_only=True
         )
@@ -104,13 +92,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'brand',
             'brand_id',
             'vg',
-            'volume',
-            'volume_id',
             'flavors',
             'flavor_id',
-            'nic_content',
-            'nic_content_id',
-            'is_salt',
             'image',
             'image_url',
             'thumbnail',
@@ -132,11 +115,25 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class BrandSerializer(serializers.ModelSerializer):
     producer = ProducerShortSerializer(read_only=True)
+    nic_content = serializers.StringRelatedField(many=True)
+    volume = serializers.StringRelatedField(many=True)
     avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
     reviews_count = serializers.IntegerField(read_only=True)
     score_count = serializers.IntegerField(read_only=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
+    nic_content_id = serializers.PrimaryKeyRelatedField(
+        queryset=Nicotine.objects.all(),
+        source='nic_content',
+        many=True,
+        write_only=True
+        )
+    volume_id = serializers.PrimaryKeyRelatedField(
+        queryset=Volume.objects.all(),
+        source='volume',
+        many=True,
+        write_only=True
+        )
     producer_id = serializers.PrimaryKeyRelatedField(
         queryset=Producer.objects.all(),
         source='producer',
@@ -150,6 +147,11 @@ class BrandSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'slug',
+            'volume',
+            'volume_id',
+            'nic_content',
+            'nic_content_id',
+            'is_salt',
             'producer',
             'producer_id',
             'image',
@@ -417,8 +419,6 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
 class AdminProductSerializer(serializers.ModelSerializer):
     brand = BrandShortSerializer(read_only=True)
     flavors = serializers.StringRelatedField(many=True, read_only=True)
-    nic_content = serializers.StringRelatedField(many=True)
-    volume = serializers.StringRelatedField(many=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
 
@@ -438,13 +438,10 @@ class AdminProductSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
+            'flavors',
             'slug',
             'brand',
             'vg',
-            'volume',
-            'flavors',
-            'nic_content',
-            'is_salt',
             'image_url',
             'thumbnail_url',
             'is_published'

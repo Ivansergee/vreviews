@@ -46,8 +46,9 @@
         :name="brand.name"
         :image="brand.thumbnail_url"
         :slug="brand.slug"
+        :nic_content="brand.nic_content"
+        :description="brand.description"
         :avg_score="brand.avg_score"
-        :flavors="brand.flavors"
         :reviews_count="brand.reviews_count"
         :score_count="brand.score_count"
       />

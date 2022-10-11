@@ -13,8 +13,8 @@
             >{{ name }}</router-link>
           </p>
           <p class="mb-1">
-            <router-link :to="{ name: 'brand-detail', params: {brand_slug: brand_slug} }"
-            >{{ brand }}</router-link>
+            <router-link :to="{ name: 'brand-detail', params: {brand_slug: brand.slug} }"
+            >{{ brand.name }}</router-link>
           </p>
         </div>
 
@@ -39,7 +39,7 @@
           <p class="tags is-warning">
             <span
               class="tag is-warning"
-              v-for="nic in nic_content"
+              v-for="nic in brand.nic_content"
               :key="nic.id"
               >{{ nic }}</span
             >
@@ -72,11 +72,11 @@ export default {
     "brand",
     "image",
     "product_slug",
-    "brand_slug",
     "description",
     "flavors",
     "nic_content"
   ],
+  emits: ['approved'],
   methods: {
     async publish() {
       const data = {
@@ -86,7 +86,7 @@ export default {
       await axios
       .patch(`admin/${this.product_slug}/`, data)
       .then(() => {
-        console.log('success');
+        this.$emit('approved', this.product_slug);
       })
       .catch((error) => {
           console.log(error);

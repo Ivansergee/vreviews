@@ -1,15 +1,39 @@
 <template>
     <div class="products container" v-if="products">
       <p class="title">Топ жидкостей</p>
+      <div class="columns is-vcentered is-hidden-mobile list-header">
+        <div class="column">
+          <p>Изображение</p>
+        </div>
+
+        <div class="column">
+          <p>Название/Бренд</p>
+        </div>
+
+        <div class="column">
+          <p>Описание</p>
+        </div>
+
+        <div class="column">
+          <p>Вкусы</p>
+        </div>
+
+        <div class="column">
+          <p>Никотин</p>
+        </div>
+
+        <div class="column">
+          <p>Рейтинг</p>
+        </div>
+      </div>
       <Product
         v-for="product in products"
         :key="product.id"
         :name="product.name"
-        :brand="product.brand.name"
+        :brand="product.brand"
         :image="product.thumbnail_url"
         :product_slug="product.slug"
         :description="product.description"
-        :brand_slug="product.brand.slug"
         :avg_score="product.avg_score"
         :flavors="product.flavors"
         :reviews_count="product.reviews_count"
@@ -29,6 +53,10 @@
 .loadNext {
   display: flex;
   justify-content: center;
+}
+.list-header {
+  margin-bottom: 0;
+  font-weight: 500;
 }
 
 </style>

@@ -46,6 +46,47 @@
         </div>
 
         <div class="field">
+          <label><span class="subtitle">Содержание никотина</span></label>
+          <br />
+          <div class="select is-multiple">
+            <select multiple size="5" v-model="brandData.nic_content">
+              <option
+                v-for="amount in nic_content"
+                :key="amount.id"
+                :value="amount.id"
+              >
+                {{ amount.amount }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label><span class="subtitle">Объем</span></label>
+          <br />
+          <div class="select is-multiple">
+            <select multiple size="5" v-model="brandData.volumes">
+              <option
+                v-for="vol in volumes"
+                :key="vol.id"
+                :value="vol.id"
+              >
+                {{ vol.volume }} мл
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" v-model="brandData.is_salt" />
+              Солевой никотин
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
           <label><span class="subtitle">Изображение</span></label>
           <div class="control" v-if="image.src">
             <cropper
@@ -126,9 +167,20 @@ export default {
     Cropper,
     VueMultiselect,
   },
-  props: [
-    "producers"
-  ],
+  props: {
+    producers: {
+      type: Array,
+      default: []
+    },
+    nic_content: {
+      type: Array,
+      default: []
+    },
+    volumes: {
+      type: Array,
+      default: []
+    },
+  },
   emits: ["added"],
   data() {
     return {
@@ -144,6 +196,9 @@ export default {
         name: "",
         description: "",
         producer: "",
+        nic_content: [],
+        volumes: [],
+        is_salt: false,
       },
     };
   },
@@ -165,6 +220,13 @@ export default {
       formData.append("name", this.brandData.name);
       formData.append("description", this.brandData.description);
       formData.append("producer_id", this.brandData.producer.id);
+      for (var i of this.brandData.nic_content) {
+        formData.append("nic_content_id", i);
+      }
+      for (var i of this.brandData.volumes) {
+        formData.append("volume_id", i);
+      }
+      formData.append("is_salt", this.brandData.is_salt);
 
       axios
         .post("brands/", formData, {
@@ -177,6 +239,9 @@ export default {
             name: "",
             description: "",
             producer: "",
+            nic_content: [],
+            volumes: [],
+            is_salt: false,
           };
           this.image = {
             src: null,

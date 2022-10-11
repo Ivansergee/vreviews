@@ -1,12 +1,34 @@
 <template>
     <div class="brands container" v-if="brands">
       <p class="title">Топ брендов</p>
+            <div class="columns is-vcentered is-hidden-mobile list-header">
+        <div class="column">
+          <p>Изображение</p>
+        </div>
+
+        <div class="column">
+          <p>Название</p>
+        </div>
+
+        <div class="column">
+          <p>Описание</p>
+        </div>
+
+        <div class="column">
+          <p>Никотин</p>
+        </div>
+
+        <div class="column">
+          <p>Рейтинг</p>
+        </div>
+      </div>
       <Brand
         v-for="brand in brands"
         :key="brand.id"
         :name="brand.name"
         :image="brand.thumbnail_url"
         :slug="brand.slug"
+        :nic_content="brand.nic_content"
         :description="brand.description"
         :avg_score="brand.avg_score"
         :reviews_count="brand.reviews_count"
@@ -26,6 +48,11 @@
 .loadNext {
   display: flex;
   justify-content: center;
+}
+
+.list-header {
+  margin-bottom: 0;
+  font-weight: 500;
 }
 
 </style>

@@ -113,7 +113,7 @@
       <PulseLoader :loading="$store.state.isLoading" :size="loaderSize" />
     </div>
 
-    <main class="section main-content">
+    <main class="main-content" :class="{ 'section': $route.name != 'home' }">
       <div class="modal" :class="{ 'is-active': showLogIn }">
         <div class="modal-background" @click="showLogIn = false"></div>
         <div class="modal-content">
@@ -367,7 +367,7 @@ body,
 }
 
 .main-content {
-  min-height: 70vh;
+  min-height: 100vh;
   display: flex;
 }
 

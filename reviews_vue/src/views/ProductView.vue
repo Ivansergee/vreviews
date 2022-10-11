@@ -64,7 +64,7 @@
           <p class="tags">
             <span
               class="tag is-warning"
-              v-for="amount in product.nic_content"
+              v-for="amount in product.brand.nic_content"
               :key="amount.id"
               >{{ amount }}</span
             >
@@ -290,7 +290,7 @@ export default {
   },
   computed: {
     listVolumes() {
-      return this.product.volume.join(", ");
+      return this.product.brand.volume.join(", ");
     },
   },
   methods: {

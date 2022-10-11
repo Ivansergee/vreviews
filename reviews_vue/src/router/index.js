@@ -64,7 +64,7 @@ const routes = [
     component: AddView
   },
   {
-    path: '/admin',
+    path: '/dashboard',
     name: 'admin',
     meta: {
       title: 'Администрирование'

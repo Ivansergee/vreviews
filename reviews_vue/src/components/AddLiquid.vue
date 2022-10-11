@@ -63,50 +63,9 @@
           </div>
 
           <div class="field">
-            <label><span class="subtitle">Содержание никотина</span></label>
-            <br />
-            <div class="select is-multiple">
-              <select multiple size="5" v-model="productData.nic_content">
-                <option
-                  v-for="amount in nic_content"
-                  :key="amount.id"
-                  :value="amount.id"
-                >
-                  {{ amount.amount }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <label><span class="subtitle">Объем</span></label>
-            <br />
-            <div class="select is-multiple">
-              <select multiple size="5" v-model="productData.volumes">
-                <option
-                  v-for="vol in volumes"
-                  :key="vol.id"
-                  :value="vol.id"
-                >
-                  {{ vol.volume }} мл
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
             <label><span class="subtitle">VG/PG</span></label>
             <div class="control">
               <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="control">
-              <label class="checkbox">
-                <input type="checkbox" v-model="productData.is_salt" />
-                Солевой никотин
-              </label>
             </div>
           </div>
 
@@ -203,14 +162,6 @@ export default {
       type: Array,
       default: []
     },
-    nic_content: {
-      type: Array,
-      default: []
-    },
-    volumes: {
-      type: Array,
-      default: []
-    },
   },
   data() {
     return {
@@ -225,12 +176,9 @@ export default {
       productData: {
         name: "",
         description: "",
-        nic_content: [],
         flavors: [],
-        volumes: [],
         vg: 50,
         brand: "",
-        is_salt: false,
       },
     };
   },
@@ -266,12 +214,6 @@ export default {
       for (var i of this.productData.flavors) {
         formData.append("flavor_id", i.id);
       }
-      for (var i of this.productData.nic_content) {
-        formData.append("nic_content_id", i);
-      }
-      for (var i of this.productData.volumes) {
-        formData.append("volume_id", i);
-      }
       if (this.image.file){
         formData.append("image", this.image.file);
       }
@@ -282,7 +224,6 @@ export default {
       formData.append("vg", this.productData.vg);
       formData.append("description", this.productData.description);
       formData.append("brand_id", this.productData.brand.id);
-      formData.append("is_salt", this.productData.is_salt);
 
       axios
         .post("products/", formData, {
@@ -293,12 +234,9 @@ export default {
           this.productData = {
             name: "",
             description: "",
-            nic_content: [],
             flavors: [],
-            volumes: [],
             brand: this.productData.brand,
             vg: 50,
-            is_salt: false,
           };
           this.image = {
             src: null,

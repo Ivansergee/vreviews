@@ -1,5 +1,5 @@
 <template>
-      <div class="columns box is-vcentered my-5">
+      <div class="columns box is-vcentered mt-2 mb-5">
         
         <div class="column">
           <figure class="image">
@@ -13,8 +13,8 @@
             >{{ name }}</router-link>
           </p>
           <p class="mb-1">
-            <router-link :to="{ name: 'brand-detail', params: {brand_slug: brand_slug} }"
-            >{{ brand }}</router-link>
+            <router-link :to="{ name: 'brand-detail', params: {brand_slug: brand.slug} }"
+            >{{ brand.name }}</router-link>
           </p>
         </div>
 
@@ -36,18 +36,27 @@
         </div>
 
         <div class="column">
-          <span>
-            <i class="bi bi-chat-left-text"></i> {{ reviews_count || 0 }}
-          </span>
-          <span>
-            <i class="bi bi-star-fill"></i> {{ score_count || 0 }}
-          </span>
+          <p class="tags">
+            <span
+              class="tag is-warning"
+              v-for="amount in brand.nic_content"
+              :key="amount.id"
+              >{{ amount }}</span>
+          </p>
         </div>
 
         <div class="column mr-2">
-          <span class="tag is-primary is-large"
-            ><i class="bi bi-star-fill"></i> {{ avg_score || '-' }}</span
-          >
+          <p class="tag is-primary is-large">
+            <i class="bi bi-star-fill"></i> {{ avg_score || '-' }}
+          </p>
+          <p class="mt-1">
+            <span>
+              <i class="bi bi-chat-left-text"></i> {{ reviews_count || 0 }}
+            </span>
+            <span>
+              <i class="bi bi-star-fill"></i> {{ score_count || 0 }}
+            </span>
+          </p>
         </div>
 
       </div>
@@ -70,7 +79,6 @@ export default {
     "brand",
     "image",
     "product_slug",
-    "brand_slug",
     "description",
     "reviews_count",
     "score_count",

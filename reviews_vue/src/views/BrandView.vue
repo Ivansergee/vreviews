@@ -17,13 +17,26 @@
       <div class="column is-4">
         <div class="content">
           <p><strong>Страна:</strong> {{brand.producer.country}} </p>
-          <p><strong>Производитель:</strong>   
+          <p><strong>Производитель:  </strong>   
           <router-link
               :to="{
                 name: 'producer-detail',
                 params: { producer_slug: brand.producer.slug },
               }"
               >{{ brand.producer.name }}</router-link> </p>
+          <p><strong>Содержание никотина:</strong></p>
+          <p class="tags">
+            <span
+              class="tag is-warning"
+              v-for="amount in brand.nic_content"
+              :key="amount.id"
+              >{{ amount }}</span
+            >
+          </p>
+          <p>
+            <strong>Объем: </strong>
+            <span>{{ listVolumes }}</span>
+          </p>
           <p><strong>Описание:</strong></p>
           <p>{{ brand.description }}</p>
         </div>
@@ -76,10 +89,9 @@
         v-for="product in products"
         :key="product.id"
         :name="product.name"
-        :brand="product.brand.name"
+        :brand="product.brand"
         :image="product.thumbnail_url"
         :product_slug="product.slug"
-        :brand_slug="product.brand.slug"
         :description="product.description"
         :avg_score="product.avg_score"
         :flavors="product.flavors"
@@ -148,6 +160,11 @@ export default {
       showImage: false,
       showEdit: false,
     }
+  },
+  computed: {
+    listVolumes() {
+      return this.brand.volume.join(", ");
+    },
   },
   created() {
     this.getBrandData();

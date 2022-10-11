@@ -14,6 +14,27 @@ class Country(models.Model):
         return self.name
 
 
+class Flavor(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Nicotine(models.Model):
+    amount = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return self.amount
+
+
+class Volume(models.Model):
+    volume = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return str(self.volume) + ' мл'
+
+
 class Producer(models.Model):
 
     def image_path(instance, filename):
@@ -70,6 +91,9 @@ class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
     producer = models.ForeignKey(Producer, related_name='brands', on_delete=models.PROTECT)
     description = models.TextField(blank=True)
+    nic_content = models.ManyToManyField(Nicotine, related_name='brands', blank=True)
+    volume = models.ManyToManyField(Volume, related_name='brands', blank=True)
+    is_salt = models.BooleanField(default=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True, unique=True)
@@ -96,27 +120,6 @@ class Brand(models.Model):
         ordering = ['id']
 
 
-class Flavor(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Nicotine(models.Model):
-    amount = models.CharField(max_length=20, unique=True)
-
-    def __str__(self):
-        return self.amount
-
-
-class Volume(models.Model):
-    volume = models.IntegerField(unique=True)
-
-    def __str__(self):
-        return str(self.volume) + ' мл'
-
-
 class Product(models.Model):
 
     def image_path(instance, filename):
@@ -132,10 +135,7 @@ class Product(models.Model):
     brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     description = models.TextField(blank=True)
-    nic_content = models.ManyToManyField(Nicotine, related_name='products')
     vg = models.IntegerField()
-    volume = models.ManyToManyField(Volume, related_name='products')
-    is_salt = models.BooleanField()
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')

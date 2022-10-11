@@ -26,7 +26,7 @@ class ProductListCreate(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(is_published=True) \
             .select_related('brand', 'brand__producer') \
-            .prefetch_related('flavors', 'nic_content')
+            .prefetch_related('flavors')
     parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -41,14 +41,14 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(is_published=True) \
             .select_related('brand', 'brand__producer') \
-            .prefetch_related('flavors', 'nic_content')
+            .prefetch_related('flavors')
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 
 
 class BrandListCreate(generics.ListCreateAPIView):
     serializer_class = BrandSerializer
-    queryset = Brand.objects.select_related('producer')
+    queryset = Brand.objects.select_related('producer').prefetch_related('nic_content', 'volume')
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -60,7 +60,7 @@ class BrandListCreate(generics.ListCreateAPIView):
 
 class BrandDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BrandSerializer
-    queryset = Brand.objects.select_related('producer')
+    queryset = Brand.objects.select_related('producer').prefetch_related('nic_content', 'volume')
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 
@@ -253,7 +253,7 @@ class UnpublishedProductList(generics.ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.filter(is_published=False) \
             .select_related('brand', 'brand__producer') \
-            .prefetch_related('flavors', 'nic_content')
+            .prefetch_related('flavors')
     permission_classes = [IsAdminUser]
     authentication_classes = [TokenAuthentication]
     pagination_class = CustomPagination
@@ -262,6 +262,6 @@ class UnpublishedProductList(generics.ListAPIView):
 class AdminProductDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AdminProductSerializer
     queryset = Product.objects.select_related('brand', 'brand__producer') \
-            .prefetch_related('flavors', 'nic_content')
+            .prefetch_related('flavors')
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
