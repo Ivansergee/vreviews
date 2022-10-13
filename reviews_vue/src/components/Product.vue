@@ -19,8 +19,11 @@
         </div>
 
         <div class="column">
-          <p>
+          <p v-if="description.length < 150">
             {{ description }}
+          </p>
+          <p v-else>
+            {{ description.substring(0,150)+"..." }}
           </p>
         </div>
 
