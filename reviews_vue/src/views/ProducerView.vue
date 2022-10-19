@@ -119,7 +119,7 @@ export default {
       const producerSlug = this.$route.params.producer_slug;
 
       await axios
-        .get(`/brands/?producer=${producerSlug}`)
+        .get(`/brands/?producer=${producerSlug}&ordering=-avg_score,-created_at`)
         .then(response => {
           this.brands = response.data.results;
         })

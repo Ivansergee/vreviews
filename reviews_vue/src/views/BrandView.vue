@@ -195,7 +195,7 @@ export default {
       const brand_slug = this.$route.params.brand_slug;
 
       await axios
-        .get(`/products/?brand=${brand_slug}`)
+        .get(`/products/?brand=${brand_slug}&ordering=-avg_score,-created_at`)
         .then(response => {
           this.products = response.data.results;
           this.nextProducts = response.data.next;

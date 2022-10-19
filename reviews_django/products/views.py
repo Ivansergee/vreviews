@@ -32,7 +32,7 @@ class ProductListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
     filterset_class = ProductFilter
-    ordering_fields = ['avg_score', 'bookmarks__created_at']
+    ordering_fields = ['avg_score', 'created_at', 'bookmarks__created_at']
     search_fields = ['name']
     pagination_class = CustomPagination
 
@@ -53,7 +53,7 @@ class BrandListCreate(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = BrandFilter
-    ordering_fields = ['avg_score']
+    ordering_fields = ['avg_score', 'created_at']
     search_fields = ['name']
     pagination_class = CustomPagination
 

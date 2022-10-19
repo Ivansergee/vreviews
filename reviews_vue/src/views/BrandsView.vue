@@ -80,7 +80,7 @@ export default {
       this.$store.commit('setIsLoading', true)
 
       await axios
-        .get('/brands/?ordering=-avg_score')
+        .get('/brands/?ordering=-avg_score,-created_at')
         .then(response => {
           this.brands = response.data.results;
           this.nextBrands = response.data.next;

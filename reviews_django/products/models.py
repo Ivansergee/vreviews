@@ -58,6 +58,7 @@ class Producer(models.Model):
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
     score_count = models.IntegerField(null=True, blank=True, default=None)
     reviews_count = models.IntegerField(null=True, blank=True, default=None)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -100,6 +101,7 @@ class Brand(models.Model):
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
     score_count = models.IntegerField(null=True, blank=True, default=None)
     reviews_count = models.IntegerField(null=True, blank=True, default=None)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
