@@ -45,46 +45,45 @@
           <p class="help">О бренде</p>
         </div>
 
-        <div class="field">
-          <label><span class="subtitle">Изображение</span></label>
-          <div class="control" v-if="image.src">
-            <cropper
-              class="cropper"
-              ref="cropper"
-              :src="image.src"
-              :stencil-props="{
-                handlers: {},
-                movable: false,
-                scalable: false,
-              }"
-              :stencil-size="{
-                width: 300,
-                height: 300,
-              }"
-              image-restriction="none"
-              @change="change"
-            />
+        <div class="field" v-if="options">
+          <label><span class="subtitle">Содержание никотина</span></label>
+          <br />
+          <div class="select is-multiple">
+            <select multiple size="5" v-model="brandData.nic_content">
+              <option
+                v-for="amount in options.nic_content"
+                :key="amount.id"
+                :value="amount.id"
+              >
+                {{ amount.amount }}
+              </option>
+            </select>
           </div>
-          <p class="help">Добавьте лого бренда и выберите участок, который будет использован для превью. Для зума используйте колесико мыши или стандартный жест на смартфоне.</p>
         </div>
 
-        <div class="file has-name">
-          <label class="file-label">
-            <input
-              class="file-input"
-              type="file"
-              accept="image/png, image/jpeg"
-              @change="uploadImage($event)"
-              name="image"
-            />
-            <span class="file-cta">
-              <span class="file-icon">
-                <i class="fas fa-upload"></i>
-              </span>
-              <span class="file-label"> Выберите файл </span>
-            </span>
-            <span class="file-name">{{ image.name }}</span>
-          </label>
+        <div class="field" v-if="options">
+          <label><span class="subtitle">Объем</span></label>
+          <br />
+          <div class="select is-multiple">
+            <select multiple size="5" v-model="brandData.volumes">
+              <option
+                v-for="vol in options.volumes"
+                :key="vol.id"
+                :value="vol.id"
+              >
+                {{ vol.volume }} мл
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" v-model="brandData.is_salt" />
+              Солевой никотин
+            </label>
+          </div>
         </div>
 
         <div class="notification is-danger" v-if="errors.length">
@@ -116,14 +115,11 @@
 
 <script>
 import axios from "axios";
-import { Cropper } from "vue-advanced-cropper";
-import "vue-advanced-cropper/dist/style.css";
 import VueMultiselect from 'vue-multiselect';
 import { toast } from "bulma-toast";
 
 export default {
   components: {
-    Cropper,
     VueMultiselect,
   },
   props: [
@@ -131,23 +127,22 @@ export default {
     "producer",
     "name",
     "description",
-    "imageURL"
+    "nic_content",
+    "volume",
+    "is_salt",
   ],
   emits: ["added"],
   data() {
     return {
-      image: {
-        src: null,
-        type: null,
-        name: null,
-        file: null,
-        thumbnail: null,
-      },
       errors: [],
+      options: null,
       brandData: {
-        name: "",
-        description: "",
-        producer: "",
+        name: null,
+        description: null,
+        producer: null,
+        is_salt: null,
+        nic_content: null,
+        volumes: null,
       },
     };
   },
@@ -155,45 +150,48 @@ export default {
     this.brandData.producer = this.producer;
     this.brandData.name = this.name;
     this.brandData.description = this.description;
-
+    this.brandData.nic_content = this.nic_content;
+    this.brandData.volumes = this.volume;
+    this.getOptions();
   },
   methods: {
-    change({ coordinates, canvas }) {
-      canvas.toBlob((blob) => {
-        this.image.thumbnail = blob
-      }, this.image.type);
+    async getOptions() {
+      this.isLoading = true;
+      await axios
+        .get("create-options/")
+        .then((response) => {
+          this.options = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.isLoading = false;
     },
+
     submitForm() {
       const formData = new FormData();
 
-      if (this.image.file){
-        formData.append("image", this.image.file);
+      if (this.brandData.name){
+        formData.append("name", this.brandData.name);
       }
-      if (this.image.thumbnail){
-        formData.append("thumbnail", this.image.thumbnail, this.image.name);
+      if (this.brandData.description){
+        formData.append("description", this.brandData.description);
       }
-      formData.append("name", this.brandData.name);
-      formData.append("description", this.brandData.description);
-      formData.append("producer_id", this.brandData.producer.id);
+      if (this.brandData.producer){
+        formData.append("producer_id", this.brandData.producer.id);
+      }
 
       axios
-        .post("brands/", formData, {
+        .patch(`brands/${this.$route.params.brand_slug}/`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        .then(() => {
+        .then(response => {
           this.showSuccess();
-          this.$emit("added");
-          this.brandtData = {
-            name: "",
-            description: "",
-            producer: "",
-          };
-          this.image = {
-            src: null,
-            type: null,
+          this.$emit("added", response.data.slug);
+          this.brandData = {
             name: null,
-            file: null,
-            thumbnail: null,
+            description: null,
+            producer: null,
           };
         })
         .catch((error) => {
@@ -201,24 +199,10 @@ export default {
         });
     },
 
-    uploadImage(event) {
-      const { files } = event.target;
-      if (files && files[0]) {
-        if (this.image.src) {
-          URL.revokeObjectURL(this.image.src);
-        }
-        const src = URL.createObjectURL(files[0]);
-
-        this.image.src = src;
-        this.image.type = files[0].type;
-        this.image.name = files[0].name;
-        this.image.file = files[0];
-      }
-    },
 
     showSuccess() {
       toast({
-        message: "Бренд успешно создан!",
+        message: "Информация обновлена",
         type: "is-success",
         dismissible: true,
         duration: 10000,

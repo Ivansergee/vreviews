@@ -72,7 +72,10 @@
           :name="brand.name"
           :description="brand.description"
           :producer="{name: brand.producer.name, id: brand.producer.id}"
-          :imageURL="brand.image_url"
+          :nic_content="brand.nic_content"
+          :volume="brand.volume"
+          :is_salt="brand.is_salt"
+          @added="updateInfo"
         />
         </div>
       </div>
@@ -170,7 +173,25 @@ export default {
     this.getBrandData();
     this.getProducts();
   },
+  watch: { 
+    '$route.params': {
+        handler() {
+          this.getBrandData();
+        },
+        deep: true,
+        immediate: true
+      }
+  },
   methods: {
+    updateInfo(slug) {
+      if (slug != this.$route.params.brand_slug) {
+        this.$router.replace({ name: 'brand-detail', params: { brand_slug: slug } })
+      } else {
+        this.getBrandData();
+      }
+      this.showEdit = false;
+    },
+
     async getBrandData(){
       this.$store.commit('setIsLoading', true)
 
