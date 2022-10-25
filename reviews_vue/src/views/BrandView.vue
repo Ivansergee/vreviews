@@ -73,7 +73,7 @@
           :description="brand.description"
           :producer="{name: brand.producer.name, id: brand.producer.id}"
           :nic_content="brand.nic_content"
-          :volume="brand.volume"
+          :volumes="brand.volume"
           :is_salt="brand.is_salt"
           @added="updateInfo"
         />

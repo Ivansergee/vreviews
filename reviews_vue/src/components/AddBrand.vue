@@ -47,33 +47,21 @@
 
         <div class="field">
           <label><span class="subtitle">Содержание никотина</span></label>
-          <br />
-          <div class="select is-multiple">
-            <select multiple size="5" v-model="brandData.nic_content">
-              <option
-                v-for="amount in nic_content"
-                :key="amount.id"
-                :value="amount.id"
-              >
-                {{ amount.amount }}
-              </option>
-            </select>
+          <div class="control" v-for="amount in nic_content" :key="amount.id">
+            <label class="checkbox">
+              <input type="checkbox" @click="addNic(amount.id)" />
+              {{ amount.amount }} мг
+            </label>
           </div>
         </div>
 
         <div class="field">
           <label><span class="subtitle">Объем</span></label>
-          <br />
-          <div class="select is-multiple">
-            <select multiple size="5" v-model="brandData.volumes">
-              <option
-                v-for="vol in volumes"
-                :key="vol.id"
-                :value="vol.id"
-              >
-                {{ vol.volume }} мл
-              </option>
-            </select>
+          <div class="control" v-for="vol in volumes" :key="vol.id">
+            <label class="checkbox">
+              <input type="checkbox" @click="addVol(vol.id)" />
+              {{ vol.volume }} мл
+            </label>
           </div>
         </div>
 
@@ -268,6 +256,24 @@ export default {
         this.image.type = files[0].type;
         this.image.name = files[0].name;
         this.image.file = files[0];
+      }
+    },
+
+    addNic(id){
+      if (this.brandData.nic_content.includes(id)){
+        var i = this.brandData.nic_content.indexOf(id);
+        this.brandData.nic_content.splice(i, 1);
+      } else {
+        this.brandData.nic_content.push(id)
+      }
+    },
+
+    addVol(id){
+      if (this.brandData.volumes.includes(id)){
+        var i = this.brandData.volumes.indexOf(id);
+        this.brandData.volumes.splice(i, 1);
+      } else {
+        this.brandData.volumes.push(id)
       }
     },
 

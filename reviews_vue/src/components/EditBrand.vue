@@ -1,6 +1,6 @@
 <template>
 
-  <div class="columns add-brand">
+  <div class="columns add-brand" v-if="!isLoading">
     <div class="column is-6 is-offset-3">
       <h1 class="title is-4">Редактирование бренда</h1>
       <form @submit.prevent="submitForm">
@@ -13,12 +13,12 @@
           <p class="help">Название бренда. Добавляйте к названию "Salt", если у производителя есть аналогичная линейка вкусов на классическом никотине.</p>
         </div>
 
-        <div class="field" v-if="producers">
+        <div class="field" v-if="options.producers">
           <label><span class="subtitle">Производитель</span></label>
           <div class="control">
             <VueMultiselect
               v-model="brandData.producer"
-              :options="producers"
+              :options="options.producers"
               :multiple="false"
               selectLabel="Выбрать"
               selectedLabel="Выбрано"
@@ -45,35 +45,23 @@
           <p class="help">О бренде</p>
         </div>
 
-        <div class="field" v-if="options">
+        <div class="field" v-if="options.nic_content">
           <label><span class="subtitle">Содержание никотина</span></label>
-          <br />
-          <div class="select is-multiple">
-            <select multiple size="5" v-model="brandData.nic_content">
-              <option
-                v-for="amount in options.nic_content"
-                :key="amount.id"
-                :value="amount.id"
-              >
-                {{ amount.amount }}
-              </option>
-            </select>
+          <div class="control" v-for="amount in options.nic_content" :key="amount.id">
+            <label class="checkbox">
+              <input type="checkbox" @click="addNic(amount.id)"/>
+              {{ amount.amount }} мг
+            </label>
           </div>
         </div>
 
-        <div class="field" v-if="options">
+        <div class="field" v-if="options.volumes">
           <label><span class="subtitle">Объем</span></label>
-          <br />
-          <div class="select is-multiple">
-            <select multiple size="5" v-model="brandData.volumes">
-              <option
-                v-for="vol in options.volumes"
-                :key="vol.id"
-                :value="vol.id"
-              >
-                {{ vol.volume }} мл
-              </option>
-            </select>
+          <div class="control" v-for="vol in options.volumes" :key="vol.id">
+            <label class="checkbox">
+              <input type="checkbox" @click="addVol(vol.id)"/>
+              {{ vol.volume }} мл
+            </label>
           </div>
         </div>
 
@@ -123,17 +111,17 @@ export default {
     VueMultiselect,
   },
   props: [
-    "producers",
     "producer",
     "name",
     "description",
     "nic_content",
-    "volume",
+    "volumes",
     "is_salt",
   ],
   emits: ["added"],
   data() {
     return {
+      isLoading: true,
       errors: [],
       options: null,
       brandData: {
@@ -147,12 +135,12 @@ export default {
     };
   },
   mounted() {
-    this.brandData.producer = this.producer;
-    this.brandData.name = this.name;
-    this.brandData.description = this.description;
-    this.brandData.nic_content = this.nic_content;
-    this.brandData.volumes = this.volume;
     this.getOptions();
+    // this.brandData.producer = this.producer;
+    // this.brandData.name = this.name;
+    // this.brandData.description = this.description;
+    // this.brandData.nic_content = this.nic_content;
+    // this.brandData.volumes = this.volumes;
   },
   methods: {
     async getOptions() {
@@ -199,6 +187,23 @@ export default {
         });
     },
 
+    addNic(id){
+      if (this.brandData.nic_content.includes(id)){
+        var i = this.brandData.nic_content.indexOf(id);
+        this.brandData.nic_content.splice(i, 1);
+      } else {
+        this.brandData.nic_content.push(id)
+      }
+    },
+
+    addVol(id){
+      if (this.brandData.volumes.includes(id)){
+        var i = this.brandData.volumes.indexOf(id);
+        this.brandData.volumes.splice(i, 1);
+      } else {
+        this.brandData.volumes.push(id)
+      }
+    },
 
     showSuccess() {
       toast({
