@@ -64,7 +64,7 @@
       <button class="modal-close is-large" aria-label="close" @click="showImage = false"></button>
     </div>
 
-    <div class="modal" :class="{ 'is-active': showEdit }" v-if="brand.producer">
+    <div class="modal" :class="{ 'is-active': showEdit }" v-if="brand.producer && showEdit">
       <div class="modal-background" @click="showEdit = false"></div>
       <div class="modal-content">
         <div class="box">

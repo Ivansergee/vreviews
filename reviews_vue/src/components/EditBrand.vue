@@ -129,18 +129,20 @@ export default {
         description: null,
         producer: null,
         is_salt: null,
-        nic_content: null,
-        volumes: null,
+        nic_content: [],
+        volumes: [],
       },
     };
   },
   mounted() {
     this.getOptions();
-    // this.brandData.producer = this.producer;
-    // this.brandData.name = this.name;
-    // this.brandData.description = this.description;
-    // this.brandData.nic_content = this.nic_content;
-    // this.brandData.volumes = this.volumes;
+    this.brandData.producer = this.producer;
+    this.brandData.name = this.name;
+    this.brandData.description = this.description;
+    this.brandData.nic_content = this.nic_content;
+    console.log(this.nic_content);
+    this.nic_content.forEach(element => console.log(element));
+    // this.volumes.forEach(element => console.log(element));
   },
   methods: {
     async getOptions() {
