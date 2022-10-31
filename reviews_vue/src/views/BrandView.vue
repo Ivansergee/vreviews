@@ -28,9 +28,9 @@
           <p class="tags">
             <span
               class="tag is-warning"
-              v-for="amount in brand.nic_content"
-              :key="amount.id"
-              >{{ amount }}</span
+              v-for="nic in brand.nic_content"
+              :key="nic.id"
+              >{{ nic.amount }}</span
             >
           </p>
           <p>
@@ -73,7 +73,7 @@
           :description="brand.description"
           :producer="{name: brand.producer.name, id: brand.producer.id}"
           :nic_content="brand.nic_content"
-          :volumes="brand.volume"
+          :volumes="brand.volume ? brand.volume : null"
           :is_salt="brand.is_salt"
           @added="updateInfo"
         />
@@ -166,26 +166,29 @@ export default {
   },
   computed: {
     listVolumes() {
-      return this.brand.volume.join(", ");
+      const volList = [];
+      for (var vol of this.brand.volume) {
+        volList.push(vol.volume + ' мл');
+      }
+      return volList.join(", ");
     },
   },
-  created() {
+  mounted() {
     this.getBrandData();
     this.getProducts();
   },
-  watch: { 
-    '$route.params': {
-        handler() {
-          this.getBrandData();
-        },
-        deep: true,
-        immediate: true
-      }
-  },
+  // watch: { 
+  //   '$route.params.brand_slug': {
+  //       handler() {
+  //         this.getBrandData();
+  //       },
+  //   }
+  // },
   methods: {
     updateInfo(slug) {
       if (slug != this.$route.params.brand_slug) {
-        this.$router.replace({ name: 'brand-detail', params: { brand_slug: slug } })
+        this.$router.replace({ name: 'brand-detail', params: { brand_slug: slug } });
+        console.log(this.$route.params.brand_slug);
       } else {
         this.getBrandData();
       }

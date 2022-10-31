@@ -49,7 +49,7 @@
           <label><span class="subtitle">Содержание никотина</span></label>
           <div class="control" v-for="amount in options.nic_content" :key="amount.id">
             <label class="checkbox">
-              <input type="checkbox" @click="addNic(amount.id)"/>
+              <input type="checkbox" @click="addNic(amount.id)" :checked="brandData.nic_content.includes(amount.id)"/>
               {{ amount.amount }} мг
             </label>
           </div>
@@ -59,17 +59,18 @@
           <label><span class="subtitle">Объем</span></label>
           <div class="control" v-for="vol in options.volumes" :key="vol.id">
             <label class="checkbox">
-              <input type="checkbox" @click="addVol(vol.id)"/>
+              <input type="checkbox" @click="addVol(vol.id)" :checked="brandData.volumes.includes(vol.id)"/>
               {{ vol.volume }} мл
             </label>
           </div>
         </div>
 
         <div class="field">
+          <label><span class="subtitle">Солевой никотин</span></label>
           <div class="control">
             <label class="checkbox">
               <input type="checkbox" v-model="brandData.is_salt" />
-              Солевой никотин
+              Да
             </label>
           </div>
         </div>
@@ -139,10 +140,12 @@ export default {
     this.brandData.producer = this.producer;
     this.brandData.name = this.name;
     this.brandData.description = this.description;
-    this.brandData.nic_content = this.nic_content;
-    console.log(this.nic_content);
-    this.nic_content.forEach(element => console.log(element));
-    // this.volumes.forEach(element => console.log(element));
+    if (this.nic_content) {
+      this.nic_content.forEach((element) => {this.addNic(element.id)});
+    }
+    if (this.volumes) {
+      this.volumes.forEach((element) => {this.addVol(element.id)});
+    }
   },
   methods: {
     async getOptions() {
@@ -170,6 +173,16 @@ export default {
       if (this.brandData.producer){
         formData.append("producer_id", this.brandData.producer.id);
       }
+      if (this.brandData.nic_content){
+        for (var i of this.brandData.volumes) {
+          formData.append("nic_content_id", i);
+        }
+      }
+      if (this.brandData.volumes){
+        for (var i of this.brandData.volumes) {
+          formData.append("volume_id", i);
+        }
+      }
 
       axios
         .patch(`brands/${this.$route.params.brand_slug}/`, formData, {
@@ -182,6 +195,9 @@ export default {
             name: null,
             description: null,
             producer: null,
+            is_salt: null,
+            nic_content: [],
+            volumes: [],
           };
         })
         .catch((error) => {

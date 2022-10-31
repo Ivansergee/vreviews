@@ -27,9 +27,9 @@
           <p class="tags">
             <span
               class="tag is-warning"
-              v-for="amount in nic_content"
-              :key="amount.id"
-              >{{ amount }}</span>
+              v-for="nic in nic_content"
+              :key="nic.id"
+              >{{ nic.amount }}</span>
           </p>
         </div>
 

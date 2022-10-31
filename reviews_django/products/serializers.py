@@ -27,13 +27,6 @@ class BrandShortSerializer(serializers.ModelSerializer):
         fields = ['name', 'nic_content', 'volume', 'is_salt', 'slug', 'producer']
 
 
-class FlavorSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Flavor
-        fields = ['id', 'name']
-
-
 class CountrySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -47,6 +40,34 @@ class VolumeSerializer(serializers.ModelSerializer):
         model = Volume
         fields = ['id', 'volume']
         read_only_fields = ['volume']
+
+
+class FlavorsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Flavor
+        fields = ['id', 'name']
+
+
+class BrandNamesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Brand
+        fields = ['id', 'name']
+
+
+class ProducerNamesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Producer
+        fields = ['id', 'name']
+
+
+class NicotineSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Nicotine
+        fields = ['id', 'amount']
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -115,8 +136,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class BrandSerializer(serializers.ModelSerializer):
     producer = ProducerShortSerializer(read_only=True)
-    nic_content = serializers.StringRelatedField(many=True)
-    volume = serializers.StringRelatedField(many=True)
+    nic_content = NicotineSerializer(many=True, read_only=True)
+    volume = VolumeSerializer(many=True, read_only=True)
     avg_score = serializers.DecimalField(max_digits=None, decimal_places=2, read_only=True)
     reviews_count = serializers.IntegerField(read_only=True)
     score_count = serializers.IntegerField(read_only=True)
@@ -320,34 +341,6 @@ class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reaction
         fields = ['id', 'author', 'review', 'like']
-
-
-class FlavorsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Flavor
-        fields = ['id', 'name']
-
-
-class BrandNamesSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Brand
-        fields = ['id', 'name']
-
-
-class ProducerNamesSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Producer
-        fields = ['id', 'name']
-
-
-class NicotineSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Nicotine
-        fields = ['id', 'amount']
 
 
 class CustomUserSerializer(UserSerializer):
