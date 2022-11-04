@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
 
     'products',
+
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 CORS_ALLOWED_ORIGINS = [

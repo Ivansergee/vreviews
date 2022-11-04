@@ -1,105 +1,112 @@
 <template>
+  <div>
+    <div>
+      <div class="modal" :class="{ 'is-active': showEditImage }" v-if="showEditImage">
+      <div class="modal-background" @click="showEditImage = false"></div>
+      <div class="modal-content">
+        <div class="box">
+          <EditImage
+          :image=image
+          @changed="showEditImage = false"
+          />
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close" @click="showEditImage = false"></button>
+    </div>
+    </div>
+    <div class="columns add-brand" v-if="!isLoading">
+      <div class="column is-6 is-offset-3">
+        <h1 class="title is-4">Редактирование бренда</h1>
+        <form @submit.prevent="submitForm">
 
-  <div class="columns add-brand" v-if="!isLoading">
-    <div class="column is-6 is-offset-3">
-      <h1 class="title is-4">Редактирование бренда</h1>
-      <form @submit.prevent="submitForm">
-
-        <div class="field">
-          <label><span class="subtitle">Название</span></label>
-          <div class="control">
-            <input type="text" class="input" v-model="brandData.name" />
+          <div class="field">
+            <label><span class="subtitle">Название</span></label>
+            <div class="control">
+              <input type="text" class="input" v-model="brandData.name" />
+            </div>
+            <p class="help">Название бренда. Добавляйте к названию "Salt", если у производителя есть аналогичная линейка вкусов на классическом никотине.</p>
           </div>
-          <p class="help">Название бренда. Добавляйте к названию "Salt", если у производителя есть аналогичная линейка вкусов на классическом никотине.</p>
-        </div>
 
-        <div class="field" v-if="options.producers">
-          <label><span class="subtitle">Производитель</span></label>
-          <div class="control">
-            <VueMultiselect
-              v-model="brandData.producer"
-              :options="options.producers"
-              :multiple="false"
-              selectLabel="Выбрать"
-              selectedLabel="Выбрано"
-              deselectLabel="Удалить"
-              placeholder="Выберите производителя"
-              label="name"
-              track-by="id"
-            />
+          <div class="field" v-if="options.producers">
+            <label><span class="subtitle">Производитель</span></label>
+            <div class="control">
+              <VueMultiselect
+                v-model="brandData.producer"
+                :options="options.producers"
+                :multiple="false"
+                selectLabel="Выбрать"
+                selectedLabel="Выбрано"
+                deselectLabel="Удалить"
+                placeholder="Выберите производителя"
+                label="name"
+                track-by="id"
+              />
+            </div>
+            <p class="help">Выберите компанию производителя. Для поиска начните набирать название</p>
           </div>
-          <p class="help">Выберите компанию производителя. Для поиска начните набирать название</p>
-        </div>
 
-        <div class="field">
-          <label><span class="subtitle">Описание</span></label>
-          <div class="control">
-            <textarea
-              class="textarea"
-              cols="100"
-              rows="5"
-              v-model="brandData.description"
-            >
-            </textarea>
+          <div class="field">
+            <label><span class="subtitle">Описание</span></label>
+            <div class="control">
+              <textarea
+                class="textarea"
+                cols="100"
+                rows="5"
+                v-model="brandData.description"
+              >
+              </textarea>
+            </div>
+            <p class="help">О бренде</p>
           </div>
-          <p class="help">О бренде</p>
-        </div>
 
-        <div class="field" v-if="options.nic_content">
-          <label><span class="subtitle">Содержание никотина</span></label>
-          <div class="control" v-for="amount in options.nic_content" :key="amount.id">
-            <label class="checkbox">
-              <input type="checkbox" @click="addNic(amount.id)" :checked="brandData.nic_content.includes(amount.id)"/>
-              {{ amount.amount }} мг
-            </label>
+          <div class="field" v-if="options.nic_content">
+            <label><span class="subtitle">Содержание никотина</span></label>
+            <div class="control" v-for="amount in options.nic_content" :key="amount.id">
+              <label class="checkbox">
+                <input type="checkbox" @click="addNic(amount.id)" :checked="brandData.nic_content.includes(amount.id)"/>
+                {{ amount.amount }} мг
+              </label>
+            </div>
           </div>
-        </div>
 
-        <div class="field" v-if="options.volumes">
-          <label><span class="subtitle">Объем</span></label>
-          <div class="control" v-for="vol in options.volumes" :key="vol.id">
-            <label class="checkbox">
-              <input type="checkbox" @click="addVol(vol.id)" :checked="brandData.volumes.includes(vol.id)"/>
-              {{ vol.volume }} мл
-            </label>
+          <div class="field" v-if="options.volumes">
+            <label><span class="subtitle">Объем</span></label>
+            <div class="control" v-for="vol in options.volumes" :key="vol.id">
+              <label class="checkbox">
+                <input type="checkbox" @click="addVol(vol.id)" :checked="brandData.volumes.includes(vol.id)"/>
+                {{ vol.volume }} мл
+              </label>
+            </div>
           </div>
-        </div>
 
-        <div class="field">
-          <label><span class="subtitle">Солевой никотин</span></label>
-          <div class="control">
-            <label class="checkbox">
-              <input type="checkbox" v-model="brandData.is_salt" />
-              Да
-            </label>
+          <div class="field">
+            <label><span class="subtitle">Солевой никотин</span></label>
+            <div class="control">
+              <label class="checkbox">
+                <input type="checkbox" v-model="brandData.is_salt" />
+                Да
+              </label>
+            </div>
           </div>
-        </div>
 
-        <div class="notification is-danger" v-if="errors.length">
-          <p v-for="error in errors" :key="error">{{ error }}</p>
-        </div>
-
-        <div class="field mt-4">
-          <div class="control">
-            <button class="button is-dark">Отправить</button>
+          <div class="notification is-danger" v-if="errors.length">
+            <p v-for="error in errors" :key="error">{{ error }}</p>
           </div>
-        </div>
-      </form>
+
+          <a class="button is-dark mb-2" @click="showEditImage = true">Изменить изображение</a>
+
+          <div class="field mt-4">
+            <div class="control">
+              <button class="button is-dark">Отправить</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
 </template>
 
-<style scoped>
-.cropper {
-  height: 400px;
-  width: 400px;
-  background: #ddd;
-}
-.cropper:hover {
-  cursor: move;
-}
-</style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <script>
@@ -107,9 +114,12 @@ import axios from "axios";
 import VueMultiselect from 'vue-multiselect';
 import { toast } from "bulma-toast";
 
+import EditImage from './EditImage.vue'
+
 export default {
   components: {
     VueMultiselect,
+    EditImage
   },
   props: [
     "producer",
@@ -118,10 +128,12 @@ export default {
     "nic_content",
     "volumes",
     "is_salt",
+    "image"
   ],
   emits: ["added"],
   data() {
     return {
+      showEditImage: false,
       isLoading: true,
       errors: [],
       options: null,

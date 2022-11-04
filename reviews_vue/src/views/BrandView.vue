@@ -75,6 +75,7 @@
           :nic_content="brand.nic_content"
           :volumes="brand.volume ? brand.volume : null"
           :is_salt="brand.is_salt"
+          :image="brand.image_url"
           @added="updateInfo"
         />
         </div>
@@ -177,28 +178,19 @@ export default {
     this.getBrandData();
     this.getProducts();
   },
-  // watch: { 
-  //   '$route.params.brand_slug': {
-  //       handler() {
-  //         this.getBrandData();
-  //       },
-  //   }
-  // },
   methods: {
     updateInfo(slug) {
       if (slug != this.$route.params.brand_slug) {
         this.$router.replace({ name: 'brand-detail', params: { brand_slug: slug } });
-        console.log(this.$route.params.brand_slug);
+        this.getBrandData(slug);
       } else {
         this.getBrandData();
       }
       this.showEdit = false;
     },
 
-    async getBrandData(){
+    async getBrandData(brand_slug=this.$route.params.brand_slug){
       this.$store.commit('setIsLoading', true)
-
-      const brand_slug = this.$route.params.brand_slug;
 
       await axios
         .get(`/brands/${brand_slug}/`)
