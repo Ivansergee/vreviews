@@ -63,38 +63,6 @@
           </div>
 
           <div class="field">
-            <label><span class="subtitle">Содержание никотина</span></label>
-            <br />
-            <div class="select is-multiple">
-              <select multiple size="5" v-model="productData.nic_content">
-                <option
-                  v-for="amount in nic_content"
-                  :key="amount.id"
-                  :value="amount.id"
-                >
-                  {{ amount.amount }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <label><span class="subtitle">Объем</span></label>
-            <br />
-            <div class="select is-multiple">
-              <select multiple size="5" v-model="productData.volumes">
-                <option
-                  v-for="vol in volumes"
-                  :key="vol.id"
-                  :value="vol.id"
-                >
-                  {{ vol.volume }} мл
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
             <label><span class="subtitle">VG/PG</span></label>
             <div class="control">
               <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>

@@ -6,6 +6,9 @@
           {{ product.brand.name }} {{ product.name }}
         </h1>
       </div>
+      <div class="level-right" v-if="$store.state.isAdmin">
+        <button class="button is-success level-item" @click="showEdit = true">Редактировать</button>
+      </div>
     </div>
     <div class="columns">
       <div class="column is-4">
@@ -195,6 +198,25 @@
       <button class="modal-close is-large" aria-label="close" @click="showImage = false"></button>
     </div>
 
+    <div class="modal" :class="{ 'is-active': showEdit }" v-if="showEdit">
+      <div class="modal-background" @click="showEdit = false"></div>
+      <div class="modal-content">
+        <div class="box">
+        <EditLiquid
+          :name="brand.name"
+          :description="brand.description"
+          :producer="{name: brand.producer.name, id: brand.producer.id}"
+          :nic_content="brand.nic_content"
+          :volumes="brand.volume ? brand.volume : null"
+          :is_salt="brand.is_salt"
+          :image="brand.image_url"
+          @added="updateInfo"
+        />
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close" @click="showEdit = false"></button>
+    </div>
+
     <div class="modal" :class="{ 'is-active': showDeleteConfirm }">
       <div class="modal-background" @click="showDeleteConfirm = false"></div>
       <div class="modal-content">
@@ -262,10 +284,12 @@ import axios from "axios";
 import { toast } from "bulma-toast";
 
 import Review from "../components/Review.vue";
+import EditLiquid from "../components/EditLiquid.vue";
 
 export default {
   components: {
     Review,
+    EditLiquid
   },
   data() {
     return {
@@ -282,6 +306,7 @@ export default {
       showDeleteConfirm: false,
       isLoadingDelete: false,
       showImage: false,
+      showEdit: false
     };
   },
   mounted() {
