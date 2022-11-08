@@ -33,7 +33,7 @@
               class="tag is-info"
               v-for="flavor in flavors"
               :key="flavor.id"
-              >{{ flavor }}</span
+              >{{ flavor.name }}</span
             >
           </p>
         </div>

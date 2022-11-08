@@ -189,11 +189,11 @@ export default {
       this.showEdit = false;
     },
 
-    async getBrandData(brand_slug=this.$route.params.brand_slug){
+    async getBrandData(slug=this.$route.params.brand_slug){
       this.$store.commit('setIsLoading', true)
 
       await axios
-        .get(`/brands/${brand_slug}/`)
+        .get(`/brands/${slug}/`)
         .then(response => {
           this.brand = response.data;
           this.setTitle(this.brand.name);

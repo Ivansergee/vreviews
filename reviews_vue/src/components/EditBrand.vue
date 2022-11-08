@@ -1,7 +1,6 @@
 <template>
   <div>
-    <div>
-      <div class="modal" :class="{ 'is-active': showEditImage }" v-if="showEditImage">
+    <div class="modal" :class="{ 'is-active': showEditImage }" v-if="showEditImage">
       <div class="modal-background" @click="showEditImage = false"></div>
       <div class="modal-content">
         <div class="box">
@@ -13,7 +12,7 @@
       </div>
       <button class="modal-close is-large" aria-label="close" @click="showEditImage = false"></button>
     </div>
-    </div>
+
     <div class="columns add-brand" v-if="!isLoading">
       <div class="column is-6 is-offset-3">
         <h1 class="title is-4">Редактирование бренда</h1>
@@ -114,7 +113,7 @@ import axios from "axios";
 import VueMultiselect from 'vue-multiselect';
 import { toast } from "bulma-toast";
 
-import EditImage from './EditImage.vue'
+import EditImage from './EditImage.vue';
 
 export default {
   components: {

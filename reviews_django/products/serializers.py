@@ -24,7 +24,7 @@ class BrandShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ['name', 'nic_content', 'volume', 'is_salt', 'slug', 'producer']
+        fields = ['id', 'name', 'nic_content', 'volume', 'is_salt', 'slug', 'producer']
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -72,7 +72,7 @@ class NicotineSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandShortSerializer(read_only=True)
-    flavors = serializers.StringRelatedField(many=True, read_only=True)
+    flavors = FlavorsSerializer(many=True, read_only=True)
     brand_id = serializers.PrimaryKeyRelatedField(
         queryset=Brand.objects.all(),
         source='brand',

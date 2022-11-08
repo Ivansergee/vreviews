@@ -60,7 +60,7 @@
               class="tag is-info"
               v-for="flavor in product.flavors"
               :key="flavor.id"
-              >{{ flavor }}</a
+              >{{ flavor.name }}</a
             >
           </p>
           <p><strong>Содержание никотина:</strong></p>
@@ -203,13 +203,12 @@
       <div class="modal-content">
         <div class="box">
         <EditLiquid
-          :name="brand.name"
-          :description="brand.description"
-          :producer="{name: brand.producer.name, id: brand.producer.id}"
-          :nic_content="brand.nic_content"
-          :volumes="brand.volume ? brand.volume : null"
-          :is_salt="brand.is_salt"
-          :image="brand.image_url"
+          :name="product.name"
+          :description="product.description"
+          :brand="{name: product.brand.name, id: product.brand.id}"
+          :image="product.image_url"
+          :flavors="product.flavors"
+          :vg="product.vg"
           @added="updateInfo"
         />
         </div>
@@ -319,6 +318,16 @@ export default {
     },
   },
   methods: {
+    updateInfo(slug) {
+      if (slug != this.$route.params.product_slug) {
+        this.$router.replace({ name: 'product-detail', params: { product_slug: slug } });
+        this.getProductData(slug);
+      } else {
+        this.getProductData();
+      }
+      this.showEdit = false;
+    },
+
     setCommentingPostId(id) {
       this.commentingPostId = id;
     },
@@ -379,13 +388,11 @@ export default {
       }
     },
 
-    async getProductData() {
+    async getProductData(slug=this.$route.params.product_slug) {
       this.$store.commit("setIsLoading", true);
 
-      const product_slug = this.$route.params.product_slug;
-
       await axios
-        .get(`/products/${product_slug}/`)
+        .get(`/products/${slug}/`)
         .then((response) => {
           this.product = response.data;
           this.setTitle(this.product.name);

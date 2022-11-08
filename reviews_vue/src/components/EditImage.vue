@@ -7,6 +7,7 @@
             <label><span class="subtitle">Текущее изображение</span></label>
             <div class="control">
               <a :href="image" target="_blank">{{ image }}</a>
+              {{type}}
             </div>
           </div>
         <form @submit.prevent="submitForm">
@@ -84,7 +85,7 @@ export default {
   components: {
     Cropper,
   },
-  props: ['image'],
+  props: ["image", "type"],
   emits: ["changed"],
   data() {
     return {
@@ -132,7 +133,7 @@ export default {
       }
 
       axios
-        .patch(`brands/${this.$route.params.brand_slug}/`, formData, {
+        .patch(`${this.type}s/${this.$route.params.brand_slug}/`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then(response => {
