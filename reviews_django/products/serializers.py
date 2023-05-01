@@ -400,7 +400,7 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
         )
         if not self.user:
             self.user = User.objects.filter(**params).first()
-            if self.user and not self.user.check_password(password):
+            if not self.user or not self.user.check_password(password):
                 self.fail("invalid_credentials")
         if not self.user.is_active:
             raise ValidationError('User is not active')
