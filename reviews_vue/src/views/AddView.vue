@@ -18,6 +18,8 @@
       <AddLiquid v-if="($route.params.type === 'liquid' || !$route.params.type) && options"
         :brands=options.brands
         :flavors=options.flavors
+        :nic_content=options.nic_content
+        :volumes=options.volumes
       />
       <AddBrand v-if="$route.params.type === 'brand' && options"
         :producers=options.producers

@@ -63,9 +63,38 @@
           </div>
 
           <div class="field">
+            <label><span class="subtitle">Содержание никотина</span></label>
+            <div class="control" v-for="amount in nic_content" :key="amount.id">
+              <label class="checkbox">
+                <input type="checkbox" @click="addNic(amount.id)" />
+                {{ amount.amount }} мг
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
             <label><span class="subtitle">VG/PG</span></label>
             <div class="control">
               <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
+            </div>
+          </div>
+
+          <div class="field">
+            <label><span class="subtitle">Объем</span></label>
+            <div class="control" v-for="vol in volumes" :key="vol.id">
+              <label class="checkbox">
+                <input type="checkbox" @click="addVol(vol.id)" />
+                {{ vol.volume }} мл
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control">
+              <label class="checkbox">
+                <input type="checkbox" v-model="productData.is_salt" />
+                Солевой никотин
+              </label>
             </div>
           </div>
 
@@ -162,6 +191,14 @@ export default {
       type: Array,
       default: []
     },
+    nic_content: {
+      type: Array,
+      default: []
+    },
+    volumes: {
+      type: Array,
+      default: []
+    },
   },
   data() {
     return {
@@ -211,6 +248,7 @@ export default {
 
     submitForm() {
       const formData = new FormData();
+
       for (var i of this.productData.flavors) {
         formData.append("flavor_id", i.id);
       }
@@ -222,6 +260,12 @@ export default {
       }
       formData.append("name", this.productData.name);
       formData.append("vg", this.productData.vg);
+      for (var i of this.productData.nic_content) {
+        formData.append("nic_content_id", i);
+      }
+      for (var i of this.productData.volumes) {
+        formData.append("volume_id", i);
+      }
       formData.append("description", this.productData.description);
       formData.append("brand_id", this.productData.brand.id);
 
@@ -235,6 +279,8 @@ export default {
             name: "",
             description: "",
             flavors: [],
+            nic_content: [],
+            volumes: [],
             brand: this.productData.brand,
             vg: 50,
           };
@@ -264,6 +310,24 @@ export default {
         this.image.type = files[0].type;
         this.image.name = files[0].name;
         this.image.file = files[0];
+      }
+    },
+
+    addNic(id){
+      if (this.productData.nic_content.includes(id)){
+        var i = this.productData.nic_content.indexOf(id);
+        this.productData.nic_content.splice(i, 1);
+      } else {
+        this.productData.nic_content.push(id)
+      }
+    },
+
+    addVol(id){
+      if (this.productData.volumes.includes(id)){
+        var i = this.productData.volumes.indexOf(id);
+        this.productData.volumes.splice(i, 1);
+      } else {
+        this.productData.volumes.push(id)
       }
     },
 

@@ -55,6 +55,14 @@
           </div>
         </div>
 
+        
+        <div class="field">
+          <label><span class="subtitle">VG/PG</span></label>
+          <div class="control">
+            <input type="number" class="input vg" v-model="brandData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
+          </div>
+        </div>
+
         <div class="field">
           <label><span class="subtitle">Объем</span></label>
           <div class="control" v-for="vol in volumes" :key="vol.id">
@@ -140,6 +148,9 @@
 .cropper:hover {
   cursor: move;
 }
+.vg {
+  width: 8ch;
+}
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
@@ -185,10 +196,16 @@ export default {
         description: "",
         producer: "",
         nic_content: [],
+        vg: 50,
         volumes: [],
         is_salt: false,
       },
     };
+  },
+  computed: {
+    pg() {
+      return 100 - this.brandData.vg
+    }
   },
   methods: {
     change({ coordinates, canvas }) {
@@ -215,6 +232,7 @@ export default {
         formData.append("volume_id", i);
       }
       formData.append("is_salt", this.brandData.is_salt);
+      formData.append("vg", this.brandData.vg);
 
       axios
         .post("brands/", formData, {
@@ -230,6 +248,7 @@ export default {
             nic_content: [],
             volumes: [],
             is_salt: false,
+            vg: 50,
           };
           this.image = {
             src: null,
