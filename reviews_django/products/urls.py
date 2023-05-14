@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (ProductListCreate, ProductDetail, BrandListCreate, BrandDetail, ProducerListCreate,
                     ProducerDetail, ReviewListCreate, ReviewUpdate, ReviewDelete, CommentCreate, ReactionView,
                     CreateOptions, UserView, BookmarkView, EditUserProfile, EditEmail, UnpublishedProductList,
-                    AdminProductDetail)
+                    AdminProductDetail, BrandChoices)
 
 
 
@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('brands/', BrandListCreate.as_view(), name='brands'),
     path('brands/<str:slug>/', BrandDetail.as_view(), name='brand_detail'),
+    path('brand-choices/<int:id>/', BrandChoices.as_view(), name='brand_choices'),
 
     path('producers/', ProducerListCreate.as_view(), name='producers'),
     path('producers/<str:slug>/', ProducerDetail.as_view(), name='producer_detail'),

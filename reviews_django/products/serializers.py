@@ -54,18 +54,27 @@ class BrandNamesSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class ProducerNamesSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Producer
-        fields = ['id', 'name']
-
-
 class NicotineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Nicotine
         fields = ['id', 'amount']
+
+
+class BrandChoicesSerializer(serializers.ModelSerializer):
+    nic_content = NicotineSerializer(many=True, read_only=True)
+    volume = VolumeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Brand
+        fields = ['nic_content', 'volume', 'vg']
+
+
+class ProducerNamesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Producer
+        fields = ['id', 'name']
 
 
 class ProductSerializer(serializers.ModelSerializer):

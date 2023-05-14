@@ -55,14 +55,6 @@
           </div>
         </div>
 
-        
-        <div class="field">
-          <label><span class="subtitle">VG/PG</span></label>
-          <div class="control">
-            <input type="number" class="input vg" v-model="brandData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
-          </div>
-        </div>
-
         <div class="field">
           <label><span class="subtitle">Объем</span></label>
           <div class="control" v-for="vol in volumes" :key="vol.id">
@@ -70,6 +62,13 @@
               <input type="checkbox" @click="addVol(vol.id)" />
               {{ vol.volume }} мл
             </label>
+          </div>
+        </div>
+        
+        <div class="field">
+          <label><span class="subtitle">VG/PG</span></label>
+          <div class="control">
+            <input type="number" class="input vg" v-model="brandData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
           </div>
         </div>
 

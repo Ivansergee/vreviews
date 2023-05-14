@@ -25,6 +25,7 @@
                 placeholder="Выберите бренд"
                 label="name"
                 track-by="id"
+                @select="getBrandData"
               />
             </div>
             <p class="help">Выберите бренд. Для поиска начните набирать название</p>
@@ -73,19 +74,19 @@
           </div>
 
           <div class="field">
-            <label><span class="subtitle">VG/PG</span></label>
-            <div class="control">
-              <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
-            </div>
-          </div>
-
-          <div class="field">
             <label><span class="subtitle">Объем</span></label>
             <div class="control" v-for="vol in volumes" :key="vol.id">
               <label class="checkbox">
                 <input type="checkbox" @click="addVol(vol.id)" />
                 {{ vol.volume }} мл
               </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label><span class="subtitle">VG/PG</span></label>
+            <div class="control">
+              <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
             </div>
           </div>
 
@@ -214,7 +215,9 @@ export default {
         name: "",
         description: "",
         flavors: [],
+        nic_content: [],
         vg: 50,
+        volumes: [],
         brand: "",
       },
     };
@@ -329,6 +332,17 @@ export default {
       } else {
         this.productData.volumes.push(id)
       }
+    },
+
+    getBrandData(choice){
+      axios
+        .get(`brand-choices/${choice.id}/`)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     showSuccess() {

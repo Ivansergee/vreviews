@@ -15,7 +15,7 @@ from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
     BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer,
-    EmailSerializer, ProducerNamesSerializer, CountrySerializer, AdminProductSerializer)
+    EmailSerializer, ProducerNamesSerializer, CountrySerializer, AdminProductSerializer, BrandChoicesSerializer)
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter, BrandFilter
@@ -63,6 +63,13 @@ class BrandDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Brand.objects.select_related('producer').prefetch_related('nic_content', 'volume')
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
+
+
+class BrandChoices(generics.RetrieveAPIView):
+    serializer_class = BrandChoicesSerializer
+    queryset = Brand.objects.prefetch_related('nic_content', 'volume')
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
 
 
 class ProducerListCreate(generics.ListCreateAPIView):
