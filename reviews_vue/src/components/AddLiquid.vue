@@ -67,7 +67,7 @@
             <label><span class="subtitle">Содержание никотина</span></label>
             <div class="control" v-for="amount in nic_content" :key="amount.id">
               <label class="checkbox">
-                <input type="checkbox" @click="addNic(amount.id)" />
+                <input type="checkbox" :value="amount.amount" v-model="productData.nic_content" />
                 {{ amount.amount }} мг
               </label>
             </div>
@@ -77,8 +77,8 @@
             <label><span class="subtitle">Объем</span></label>
             <div class="control" v-for="vol in volumes" :key="vol.id">
               <label class="checkbox">
-                <input type="checkbox" @click="addVol(vol.id)" />
-                {{ vol.volume }} мл
+                <input type="checkbox" :value="vol.volume" v-model="productData.volumes" />
+                {{ vol.volume }} мг
               </label>
             </div>
           </div>
@@ -87,15 +87,6 @@
             <label><span class="subtitle">VG/PG</span></label>
             <div class="control">
               <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="control">
-              <label class="checkbox">
-                <input type="checkbox" v-model="productData.is_salt" />
-                Солевой никотин
-              </label>
             </div>
           </div>
 
@@ -316,29 +307,15 @@ export default {
       }
     },
 
-    addNic(id){
-      if (this.productData.nic_content.includes(id)){
-        var i = this.productData.nic_content.indexOf(id);
-        this.productData.nic_content.splice(i, 1);
-      } else {
-        this.productData.nic_content.push(id)
-      }
-    },
-
-    addVol(id){
-      if (this.productData.volumes.includes(id)){
-        var i = this.productData.volumes.indexOf(id);
-        this.productData.volumes.splice(i, 1);
-      } else {
-        this.productData.volumes.push(id)
-      }
-    },
-
     getBrandData(choice){
       axios
         .get(`brand-choices/${choice.id}/`)
         .then((response) => {
-          console.log(response.data)
+          console.log(response.data);
+
+          this.productData.vg = response.data.vg;
+          this.productData.nic_content = response.data.nic_content;
+          this.productData.volumes = response.data.volume;
         })
         .catch((error) => {
           console.log(error);
