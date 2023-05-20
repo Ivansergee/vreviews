@@ -67,7 +67,7 @@
             <label><span class="subtitle">Содержание никотина</span></label>
             <div class="control" v-for="amount in nic_content" :key="amount.id">
               <label class="checkbox">
-                <input type="checkbox" :value="amount.amount" v-model="productData.nic_content" />
+                <input type="checkbox" :value="amount.id" v-model="productData.nic_content" />
                 {{ amount.amount }} мг
               </label>
             </div>
@@ -77,7 +77,7 @@
             <label><span class="subtitle">Объем</span></label>
             <div class="control" v-for="vol in volumes" :key="vol.id">
               <label class="checkbox">
-                <input type="checkbox" :value="vol.volume" v-model="productData.volumes" />
+                <input type="checkbox" :value="vol.id" v-model="productData.volumes" />
                 {{ vol.volume }} мг
               </label>
             </div>
@@ -255,9 +255,11 @@ export default {
       formData.append("name", this.productData.name);
       formData.append("vg", this.productData.vg);
       for (var i of this.productData.nic_content) {
+        console.log(i);
         formData.append("nic_content_id", i);
       }
       for (var i of this.productData.volumes) {
+        console.log(i);
         formData.append("volume_id", i);
       }
       formData.append("description", this.productData.description);
@@ -275,7 +277,7 @@ export default {
             flavors: [],
             nic_content: [],
             volumes: [],
-            brand: this.productData.brand,
+            brand: "",
             vg: 50,
           };
           this.image = {
@@ -311,11 +313,15 @@ export default {
       axios
         .get(`brand-choices/${choice.id}/`)
         .then((response) => {
-          console.log(response.data);
-
           this.productData.vg = response.data.vg;
-          this.productData.nic_content = response.data.nic_content;
-          this.productData.volumes = response.data.volume;
+          this.productData.nic_content = [];
+          this.productData.volumes = [];
+          for (var i of response.data.nic_content){
+            this.productData.nic_content.push(i.id)
+          }
+          for (var i of response.data.volume){
+            this.productData.volumes.push(i.id)
+          }
         })
         .catch((error) => {
           console.log(error);

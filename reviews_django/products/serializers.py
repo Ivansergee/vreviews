@@ -79,8 +79,20 @@ class ProducerNamesSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandShortSerializer(read_only=True)
-    nic_content = serializers.StringRelatedField(many=True)
-    volume = serializers.StringRelatedField(many=True)
+    nic_content = NicotineSerializer(many=True, read_only=True)
+    volume = VolumeSerializer(many=True, read_only=True)
+    nic_content_id = serializers.PrimaryKeyRelatedField(
+        queryset=Nicotine.objects.all(),
+        source='nic_content',
+        many=True,
+        write_only=True
+        )
+    volume_id = serializers.PrimaryKeyRelatedField(
+        queryset=Volume.objects.all(),
+        source='volume',
+        many=True,
+        write_only=True
+        )
     flavors = FlavorsSerializer(many=True, read_only=True)
     brand_id = serializers.PrimaryKeyRelatedField(
         queryset=Brand.objects.all(),
@@ -121,8 +133,10 @@ class ProductSerializer(serializers.ModelSerializer):
             'slug',
             'brand',
             'brand_id',
-            'nic_content',
             'volume',
+            'volume_id',
+            'nic_content',
+            'nic_content_id',
             'vg',
             'flavors',
             'flavor_id',

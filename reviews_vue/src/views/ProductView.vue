@@ -67,15 +67,20 @@
           <p class="tags">
             <span
               class="tag is-warning"
-              v-for="amount in product.brand.nic_content"
+              v-for="amount in product.nic_content"
               :key="amount.id"
-              >{{ amount }}</span
+              >{{ amount.amount }}</span
             >
           </p>
           <p><strong>VG/PG: </strong>{{ product.vg }}/{{ 100 - product.vg }}</p>
-          <p>
-            <strong>Объем: </strong>
-            <span>{{ listVolumes }}</span>
+          <p><strong>Объем: </strong></p>
+          <p class="tags">
+            <span
+              class="tag is-warning"
+              v-for="volume in product.volume"
+              :key="volume.id"
+              >{{ volume.volume }} мл</span
+            >
           </p>
           <p><strong>Описание:</strong></p>
           <p>{{ product.description }}</p>
@@ -314,7 +319,7 @@ export default {
   },
   computed: {
     listVolumes() {
-      return this.product.brand.volume.join(", ");
+      return this.product.volume.join(", ");
     },
   },
   methods: {
