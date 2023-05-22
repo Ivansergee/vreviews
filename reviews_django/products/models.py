@@ -135,15 +135,15 @@ class Product(models.Model):
 
 
     name = models.CharField('Название', max_length=100)
-    brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
+    brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     nic_content = models.ManyToManyField(Nicotine, related_name='products', blank=True)
     volume = models.ManyToManyField(Volume, related_name='products', blank=True)
-    vg = models.IntegerField()
+    vg = models.IntegerField(blank=True, null=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
-    flavors = models.ManyToManyField(Flavor, related_name='products')
+    flavors = models.ManyToManyField(Flavor, related_name='products', blank=True)
     slug = models.SlugField(blank=True, null=True, db_index=True, unique=True, default=None)
     is_published = models.BooleanField(default=False)
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
@@ -170,9 +170,9 @@ class Product(models.Model):
 
 
 class Review(models.Model):
-    author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE, blank=False)
-    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE, blank=False)
-    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, default=0)
+    author = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
+    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0)
     text = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
