@@ -30,10 +30,12 @@ export default {
   data() {
     return {
       products: null,
+      suggestions: null
     }
   },
   mounted() {
-    this.getProducts()
+    this.getProducts();
+    this.getSuggestions();
   },
   methods: {
     async getProducts(){
@@ -43,6 +45,21 @@ export default {
         .get('/admin/')
         .then(response => {
           this.products = response.data.results;
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      this.$store.commit('setIsLoading', false)
+    },
+
+    async getSuggestions(){
+      this.$store.commit('setIsLoading', true)
+
+      await axios
+        .get('/suggestions/')
+        .then(response => {
+          this.suggestions = response.data.results;
         })
         .catch(error => {
           console.log(error)

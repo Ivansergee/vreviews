@@ -15,8 +15,9 @@ from .serializers import (
     ProductSerializer, BrandSerializer, ProducerSerializer, ReviewSerializer,
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
     BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer,
-    EmailSerializer, ProducerNamesSerializer, CountrySerializer, AdminProductSerializer, BrandChoicesSerializer)
-from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country
+    EmailSerializer, ProducerNamesSerializer, CountrySerializer, AdminProductSerializer, BrandChoicesSerializer,
+    SuggestionSerializer)
+from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country, Suggestion
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter, BrandFilter
 from .pagination import CustomPagination
@@ -272,3 +273,26 @@ class AdminProductDetail(generics.RetrieveUpdateDestroyAPIView):
             .prefetch_related('flavors')
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
+
+
+class SuggestionListCreate(generics.ListCreateAPIView):
+    queryset = Suggestion.objects.filter(processed=False)
+    serializer_class = SuggestionSerializer
+    authentication_classes = [TokenAuthentication]
+    pagination_class = CustomPagination
+    
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]
+        return [IsAdminUser()]
+
+    def perform_create(self, serializer):
+        return serializer.save(author=self.request.user)
+
+
+class SuggestionDetail(generics.RetrieveUpdateAPIView):
+    queryset = Suggestion.objects.all()
+    serializer_class = SuggestionSerializer
+    authentication_classes = [TokenAuthentication]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'

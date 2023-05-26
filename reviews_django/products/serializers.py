@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from djoser.conf import settings
 from djoser.serializers import UserSerializer, TokenCreateSerializer
 
-from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume, Country
+from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume, Country, Suggestion
 
 
 class ProducerShortSerializer(serializers.ModelSerializer):
@@ -437,7 +437,7 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
 
 class AdminProductSerializer(serializers.ModelSerializer):
     brand = BrandShortSerializer(read_only=True)
-    flavors = serializers.StringRelatedField(many=True, read_only=True)
+    flavors = serializers.StringRelatedField(many=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
 
@@ -465,3 +465,19 @@ class AdminProductSerializer(serializers.ModelSerializer):
             'thumbnail_url',
             'is_published'
         ]
+
+
+class SuggestionSerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source='author.username', read_only=True)
+
+    class Meta:
+        model = Suggestion
+        fields = [
+            'name',
+            'comment',
+            'score',
+            'text',
+            'author',
+            'author_name'
+        ]
+        read_only_fields = ['author']

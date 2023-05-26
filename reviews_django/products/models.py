@@ -135,16 +135,16 @@ class Product(models.Model):
 
 
     name = models.CharField('Название', max_length=100)
-    brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT, blank=True, null=True)
+    brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     description = models.TextField(blank=True, null=True)
-    nic_content = models.ManyToManyField(Nicotine, related_name='products', blank=True)
-    volume = models.ManyToManyField(Volume, related_name='products', blank=True)
-    vg = models.IntegerField(blank=True, null=True)
+    nic_content = models.ManyToManyField(Nicotine, related_name='products')
+    volume = models.ManyToManyField(Volume, related_name='products')
+    vg = models.IntegerField()
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
-    flavors = models.ManyToManyField(Flavor, related_name='products', blank=True)
-    slug = models.SlugField(blank=True, null=True, db_index=True, unique=True, default=None)
+    flavors = models.ManyToManyField(Flavor, related_name='products')
+    slug = models.SlugField(db_index=True, unique=True, default=None)
     is_published = models.BooleanField(default=False)
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
     score_count = models.IntegerField(null=True, blank=True, default=None)
@@ -157,8 +157,9 @@ class Product(models.Model):
         return f'{self.brand} {self.name}'
     
     def save(self, *args, **kwargs):
-        slug_str = self.brand.name + ' ' + self.name
-        self.slug = slugify(slug_str.replace("'", ""))
+        if self.is_published == True:
+            slug_str = self.brand.name + ' ' + self.name
+            self.slug = slugify(slug_str.replace("'", ""))
         super().save(*args, **kwargs)
 
     def delete(self):
@@ -257,3 +258,19 @@ class Profile(models.Model):
         if self.avatar.name != 'default_avatar.png':
             self.avatar.delete()
         super().delete()
+
+
+class Suggestion(models.Model):
+    name = models.CharField('Название', max_length=100)
+    comment = models.TextField(blank=True, null=True)
+    author = models.ForeignKey(User, related_name='suggestion', on_delete=models.CASCADE)
+    score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    text = models.TextField(blank=True, null=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.author}'s suggestion"

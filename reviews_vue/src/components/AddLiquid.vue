@@ -255,11 +255,9 @@ export default {
       formData.append("name", this.productData.name);
       formData.append("vg", this.productData.vg);
       for (var i of this.productData.nic_content) {
-        console.log(i);
         formData.append("nic_content_id", i);
       }
       for (var i of this.productData.volumes) {
-        console.log(i);
         formData.append("volume_id", i);
       }
       formData.append("description", this.productData.description);
