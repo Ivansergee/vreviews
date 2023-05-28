@@ -90,6 +90,7 @@
         </div>
       </div>
     </nav>
+    
     <nav class="navbar is-dark" v-if="showSearch">
       <div class="navbar-item is-flex-grow-1">
         <div class="field has-addons is-flex-grow-1 mx-6">
@@ -108,6 +109,17 @@
         </div>
       </div>
     </nav>
+
+    <!-- <nav class="navbar">
+      <div class="navbar-start">
+          <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
+            >Жидкости</router-link>
+          <router-link class="navbar-item" :to="{ name: 'brands-list' }"
+            >Бренды</router-link>
+          <router-link class="navbar-item" :to="{ name: 'contacts' }"
+            >Контакты</router-link>
+        </div>
+    </nav> -->
 
     <div class="loading" v-if="$store.state.isLoading">
       <PulseLoader :loading="$store.state.isLoading" :size="loaderSize" />
