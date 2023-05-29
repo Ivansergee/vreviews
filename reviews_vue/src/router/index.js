@@ -15,6 +15,8 @@ import SearchView from '../views/SearchView.vue';
 import ContactsView from '../views/ContactsView.vue';
 import DisposablesView from '../views/DisposablesView.vue';
 import NotFoundView from '../views/NotFoundView.vue';
+import AdminSuggestions from '../views/AdminSuggestions';
+import AdminLiquids from '../views/AdminLiquids';
 
 const routes = [
   {
@@ -78,7 +80,18 @@ const routes = [
     meta: {
       title: 'Администрирование'
     },
-    component: AdminView
+    component: AdminView,
+    children: [
+      {
+        path: 'suggestions',
+        component: AdminSuggestions
+      },
+      {
+        path: 'liquids',
+        component: AdminLiquids
+      }
+      
+    ]
   },
   {
     path: '/profile/:username',

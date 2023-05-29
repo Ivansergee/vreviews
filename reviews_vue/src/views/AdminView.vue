@@ -1,6 +1,7 @@
 <template>
-    <div class="container products" v-if="products">
-      <p class="title">Неопубликованное</p>
+    <div class="container products">
+      <router-view></router-view>
+      <!-- <p class="title">Неопубликованное</p>
       <AdminProduct
         v-for="product in products"
         :key="product.id"
@@ -11,7 +12,7 @@
         :description="product.description"
         :flavors="product.flavors"
         @approved="approve"
-      />
+      /> -->
     </div>
 </template>
 

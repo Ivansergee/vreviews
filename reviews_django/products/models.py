@@ -50,7 +50,7 @@ class Producer(models.Model):
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
-    slug = models.SlugField(blank=True, db_index=True)
+    slug = models.SlugField(blank=True, unique=True, db_index=True)
     website = models.URLField(null=True, blank=True)
     tg = models.URLField(null=True, blank=True)
     vk = models.URLField(null=True, blank=True)
@@ -144,7 +144,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     flavors = models.ManyToManyField(Flavor, related_name='products')
-    slug = models.SlugField(db_index=True, unique=True, default=None)
+    slug = models.SlugField(db_index=True, unique=True, blank=True)
     is_published = models.BooleanField(default=False)
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
     score_count = models.IntegerField(null=True, blank=True, default=None)
@@ -157,9 +157,8 @@ class Product(models.Model):
         return f'{self.brand} {self.name}'
     
     def save(self, *args, **kwargs):
-        if self.is_published == True:
-            slug_str = self.brand.name + ' ' + self.name
-            self.slug = slugify(slug_str.replace("'", ""))
+        slug_str = self.brand.name + ' ' + self.name
+        self.slug = slugify(slug_str.replace("'", ""))
         super().save(*args, **kwargs)
 
     def delete(self):

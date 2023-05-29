@@ -110,16 +110,7 @@
       </div>
     </nav>
 
-    <!-- <nav class="navbar">
-      <div class="navbar-start">
-          <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
-            >Жидкости</router-link>
-          <router-link class="navbar-item" :to="{ name: 'brands-list' }"
-            >Бренды</router-link>
-          <router-link class="navbar-item" :to="{ name: 'contacts' }"
-            >Контакты</router-link>
-        </div>
-    </nav> -->
+    <AdminNavbar v-if="adminNavbar"/>
 
     <div class="loading" v-if="$store.state.isLoading">
       <PulseLoader :loading="$store.state.isLoading" :size="loaderSize" />
@@ -241,6 +232,7 @@ import { toast } from "bulma-toast";
 
 import LogIn from "./components/LogIn.vue";
 import SignUp from "./components/SignUp.vue";
+import AdminNavbar from "./components/AdminNavbar.vue";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
 export default {
@@ -248,6 +240,7 @@ export default {
     LogIn,
     SignUp,
     PulseLoader,
+    AdminNavbar
   },
   data() {
     return {
@@ -272,6 +265,11 @@ export default {
       axios.defaults.headers.common["Authorization"] = "Token " + token;
     } else {
       axios.defaults.headers.common["Authorization"] = "";
+    }
+  },
+  computed: {
+    adminNavbar() {
+      return this.$route.path.startsWith('/dashboard') ? true : null
     }
   },
   methods: {
