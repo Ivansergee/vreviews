@@ -270,6 +270,9 @@ export default {
   computed: {
     adminNavbar() {
       return this.$route.path.startsWith('/dashboard') ? true : null
+    },
+    addOptions() {
+      return this.$route.path.startsWith('/add') ? true : null
     }
   },
   methods: {
