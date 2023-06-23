@@ -111,6 +111,8 @@
     </nav>
 
     <AdminNavbar v-if="adminNavbar"/>
+    <AddNavbar v-if="addNavbar"/>
+    <ProfileNavbar v-if="profileNavbar"/>
 
     <div class="loading" v-if="$store.state.isLoading">
       <PulseLoader :loading="$store.state.isLoading" :size="loaderSize" />
@@ -233,6 +235,8 @@ import { toast } from "bulma-toast";
 import LogIn from "./components/LogIn.vue";
 import SignUp from "./components/SignUp.vue";
 import AdminNavbar from "./components/AdminNavbar.vue";
+import AddNavbar from "./components/AddNavbar.vue";
+import ProfileNavbar from "./components/ProfileNavbar.vue";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
 export default {
@@ -240,7 +244,9 @@ export default {
     LogIn,
     SignUp,
     PulseLoader,
-    AdminNavbar
+    AdminNavbar,
+    AddNavbar,
+    ProfileNavbar
   },
   data() {
     return {
@@ -271,9 +277,12 @@ export default {
     adminNavbar() {
       return this.$route.path.startsWith('/dashboard') ? true : null
     },
-    addOptions() {
+    addNavbar() {
       return this.$route.path.startsWith('/add') ? true : null
-    }
+    },
+    profileNavbar() {
+      return this.$route.path.startsWith('/profile') ? true : null
+    },
   },
   methods: {
     logout() {

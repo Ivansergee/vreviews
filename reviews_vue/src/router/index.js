@@ -84,10 +84,12 @@ const routes = [
     children: [
       {
         path: 'suggestions',
+        name: 'admin-suggestions',
         component: AdminSuggestions
       },
       {
         path: 'liquids',
+        name: 'admin-liquids',
         component: AdminLiquids
       }
       
