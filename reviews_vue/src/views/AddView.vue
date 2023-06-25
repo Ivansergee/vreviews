@@ -1,19 +1,6 @@
 <template>
   <div class="container">
     <div v-if="!isLoading">
-      <div class="tabs is-medium">
-        <ul>
-          <li :class="[$route.params.type === 'liquid' || !$route.params.type ? 'is-active' : '']">
-            <a @click="setActiveTab('liquid')">Добавить жидкость</a>
-          </li>
-          <li :class="[$route.params.type === 'brand' ? 'is-active' : '']">
-            <a @click="setActiveTab('brand')">Добавить бренд</a>
-          </li>
-          <li :class="[$route.params.type === 'producer' ? 'is-active' : '']">
-            <a @click="setActiveTab('producer')">Добавить производителя</a>
-          </li>
-        </ul>
-      </div>
     
       <AddLiquid v-if="($route.params.type === 'liquid' || !$route.params.type) && options"
         :brands=options.brands
@@ -87,14 +74,10 @@ export default {
   },
   methods: {
     show404(){
-      const types = ['liquid', 'brand', 'producer'];
+      const types = ['liquid', 'brand', 'producer', 'suggestion'];
       if (this.$route.params.type && !types.includes(this.$route.params.type)){
         this.$router.push({name: 'not-found'});
       }
-    },
-
-    setActiveTab(tab){
-      this.$router.replace({ name: 'add', params: { type: tab } });
     },
 
     async getOptions() {

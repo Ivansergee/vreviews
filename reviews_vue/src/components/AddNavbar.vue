@@ -1,14 +1,23 @@
 <template>
     <nav class="navbar">
       <div class="navbar-start">
-          <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
-            ><strong>Добавить отзыв</strong></router-link>
-          <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
-            >Добавить жидкость</router-link>
-          <router-link class="navbar-item" :to="{ name: 'brands-list' }"
-            >Добавить бренд</router-link>
-          <router-link class="navbar-item" :to="{ name: 'contacts' }"
-            >Добавить производителя</router-link>
+          <a class="navbar-item" @click="setActiveTab('suggestion')"
+            ><strong>Добавить отзыв</strong></a>
+          <a class="navbar-item" @click="setActiveTab('liquid')"
+            >Добавить жидкость</a>
+          <a class="navbar-item" @click="setActiveTab('brand')"
+            >Добавить бренд</a>
+          <a class="navbar-item" @click="setActiveTab('producer')"
+            >Добавить производителя</a>
         </div>
     </nav>
 </template>
+<script>
+export default {
+  methods: {
+    setActiveTab(tab){
+      this.$router.replace({ name: 'add', params: { type: tab } });
+    }
+  },
+};
+</script>
