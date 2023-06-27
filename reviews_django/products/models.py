@@ -264,7 +264,7 @@ class Suggestion(models.Model):
     comment = models.TextField(blank=True, null=True)
     author = models.ForeignKey(User, related_name='suggestion', on_delete=models.CASCADE)
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
-    text = models.TextField(blank=True, null=True, default='')
+    text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     processed = models.BooleanField(default=False)
 

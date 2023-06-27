@@ -18,6 +18,7 @@
         :countries=options.countries
         @added="getOptions()"
       />
+      <AddSuggestion v-if="$route.params.type === 'suggestion'" />
     </div>
 
     <div class="loading" v-else>
@@ -48,6 +49,7 @@
 import AddLiquid from '../components/AddLiquid.vue';
 import AddBrand from '../components/AddBrand.vue';
 import AddProducer from '../components/AddProducer.vue';
+import AddSuggestion from '../components/AddSuggestion.vue';
 import axios from "axios";
 
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
@@ -58,6 +60,7 @@ export default {
     AddLiquid,
     AddBrand,
     AddProducer,
+    AddSuggestion,
     PulseLoader
   },
   data() {
