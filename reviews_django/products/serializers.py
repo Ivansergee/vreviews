@@ -473,6 +473,7 @@ class SuggestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Suggestion
         fields = [
+            'id',
             'name',
             'comment',
             'score',
@@ -480,4 +481,4 @@ class SuggestionSerializer(serializers.ModelSerializer):
             'author',
             'author_name'
         ]
-        read_only_fields = ['author']
+        read_only_fields = ['id', 'author']

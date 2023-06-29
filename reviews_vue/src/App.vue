@@ -355,8 +355,7 @@ export default {
         });
       }
     },
-  },
-  mounted() {},
+  }
 };
 </script>
 
