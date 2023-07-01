@@ -6,7 +6,6 @@ import LiquidsView from '../views/LiquidsView.vue';
 import BrandsView from '../views/BrandsView.vue';
 import ProductView from '../views/ProductView.vue';
 import AddView from '../views/AddView.vue';
-import AddReviewView from '../views/AddReviewView.vue';
 import AdminView from '../views/AdminView.vue';
 import ProfileView from '../views/ProfileView.vue';
 import ActivateView from '../views/ActivateView.vue';
@@ -65,14 +64,6 @@ const routes = [
       title: 'Добавить'
     },
     component: AddView
-  },
-  {
-    path: '/add-review',
-    name: 'add-review',
-    meta: {
-      title: 'Добавить отзыв'
-    },
-    component: AddReviewView
   },
   {
     path: '/dashboard',

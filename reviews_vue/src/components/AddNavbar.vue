@@ -5,10 +5,10 @@
             ><strong>Добавить отзыв</strong></a>
           <a class="navbar-item" @click="setActiveTab('liquid')"
             >Добавить жидкость</a>
-          <a class="navbar-item" @click="setActiveTab('brand')"
+          <!-- <a class="navbar-item" @click="setActiveTab('brand')"
             >Добавить бренд</a>
           <a class="navbar-item" @click="setActiveTab('producer')"
-            >Добавить производителя</a>
+            >Добавить производителя</a> -->
         </div>
     </nav>
 </template>

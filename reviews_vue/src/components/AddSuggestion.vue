@@ -2,6 +2,9 @@
     <div class="columns add-liquid">
       <div class="column is-6 is-offset-3">
         <h1 class="title is-4">Добавление отзыва</h1>
+
+        <p>Если вы не нашли свою жидкость на сайте, вы все равно можете оставить на неё отзыв в форме ниже. Наша администрация добавит её на сайт и опубликует вместе с вашим отзывом!</p>
+        <br>
         <form @submit.prevent="submitForm">
 
           <div class="field">
@@ -58,7 +61,7 @@
               >
               </textarea>
             </div>
-            <p class="help">Комментарий для модератора (ссылка на жидкость итд)</p>
+            <p class="help">Комментарий для модератора (ссылка на жидкость итд). Этот текст не будет опубликован.</p>
           </div>
 
           <div class="field mt-4">
@@ -107,6 +110,17 @@ export default {
   methods: {
 
     submitForm() {
+      if (!this.$store.state.isAuthenticated) {
+        toast({
+        message: "Для отправки формы необходимо выполнить вход в свой аккаунт!",
+        type: "is-danger",
+        dismissible: true,
+        duration: 10000,
+        pauseOnHover: true,
+        position: "top-center",
+        });
+        return;
+      }
       const formData = new FormData();
 
       formData.append("name", this.suggestionData.name);

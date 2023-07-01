@@ -2,13 +2,13 @@
   <div class="container">
     <div v-if="!isLoading">
     
-      <AddLiquid v-if="($route.params.type === 'liquid' || !$route.params.type) && options"
+      <AddLiquid v-if="($route.params.type === 'liquid') && options"
         :brands=options.brands
         :flavors=options.flavors
         :nic_content=options.nic_content
         :volumes=options.volumes
       />
-      <AddBrand v-if="$route.params.type === 'brand' && options"
+      <!-- <AddBrand v-if="$route.params.type === 'brand' && options"
         :producers=options.producers
         :nic_content=options.nic_content
         :volumes=options.volumes
@@ -17,8 +17,8 @@
       <AddProducer v-if="$route.params.type === 'producer' && options"
         :countries=options.countries
         @added="getOptions()"
-      />
-      <AddSuggestion v-if="$route.params.type === 'suggestion'" />
+      /> -->
+      <AddSuggestion v-if="$route.params.type === 'suggestion' || !$route.params.type" />
     </div>
 
     <div class="loading" v-else>
@@ -58,14 +58,13 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 export default {
   components: {
     AddLiquid,
-    AddBrand,
-    AddProducer,
+    // AddBrand,
+    // AddProducer,
     AddSuggestion,
     PulseLoader
   },
   data() {
     return {
-      activeTab: 'addLiquid',
       options: null,
       isLoading: false,
       size: '25px',
@@ -77,7 +76,7 @@ export default {
   },
   methods: {
     show404(){
-      const types = ['liquid', 'brand', 'producer', 'suggestion'];
+      const types = ['liquid', 'suggestion'];
       if (this.$route.params.type && !types.includes(this.$route.params.type)){
         this.$router.push({name: 'not-found'});
       }

@@ -2,6 +2,8 @@
     <div class="columns add-liquid">
       <div class="column is-6 is-offset-3">
         <h1 class="title is-4">Добавление новой жидкости</h1>
+        <p>Помогите нам с наполнением сайта, предложив жидкость. После проверки мы добавим её на сайт.</p>
+        <br>
         <form @submit.prevent="submitForm">
 
           <div class="field">
@@ -241,6 +243,18 @@ export default {
     },
 
     submitForm() {
+      if (!this.$store.state.isAuthenticated) {
+        toast({
+        message: "Для отправки формы необходимо выполнить вход в свой аккаунт!",
+        type: "is-danger",
+        dismissible: true,
+        duration: 10000,
+        pauseOnHover: true,
+        position: "top-center",
+        });
+        return;
+      }
+      
       const formData = new FormData();
 
       for (var i of this.productData.flavors) {
