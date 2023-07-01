@@ -10,7 +10,7 @@
         :comment="suggestion.comment"
         :author="suggestion.author_name"
         :score="suggestion.score"
-        @process="showCreateLiquid(suggestion.name, suggestion.comment, suggestion.text, suggestion.author)"
+        @process="showCreateLiquid(suggestion.name, suggestion.comment, suggestion.text, suggestion.author, suggestion.score)"
       />
 
       <div class="modal" :class="{ 'is-active': showCreate }" v-if="showCreate">
@@ -26,6 +26,7 @@
             :comment=modalComment
             :review=modalReview
             :authorId=modalAuthorId
+            :score=modalScore
         />
         </div>
       </div>
@@ -57,7 +58,8 @@ export default {
       modalName: null,
       modalComment: null,
       modalReview: null,
-      modalAuthorId: null
+      modalAuthorId: null,
+      modalScore: null
     }
   },
   mounted() {
@@ -91,12 +93,13 @@ export default {
         });
     },
 
-    showCreateLiquid(name, comment, review, authorId) {
+    showCreateLiquid(name, comment, review, authorId, score) {
       this.showCreate = true;
       this.modalName = name;
       this.modalComment = comment;
       this.modalReview = review;
       this.modalAuthorId = authorId;
+      this.modalScore = score;
     }
   }
 }

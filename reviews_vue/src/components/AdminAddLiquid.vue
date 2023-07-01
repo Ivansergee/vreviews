@@ -210,6 +210,10 @@ export default {
     authorId: {
         type: Number,
         default: null
+    },
+    score: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -272,6 +276,22 @@ export default {
         .post("products/", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
+        .then((response) => {
+          const formData = {
+          product_id: response.data.id,
+          score: this.score,
+          text: this.review,
+          author: this.authorId
+          };
+          axios
+          .post("reviews/", formData)
+          .then(() => {
+            console.log('created!');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        })
         .then(() => {
           this.showSuccess();
           this.productData = {
@@ -290,18 +310,6 @@ export default {
             file: null,
             thumbnail: null,
           };
-        })
-        .then(() => {
-            axios
-          .post("reviews/", formData)
-          .then((response) => {
-            this.user_score = response.data.score;
-            this.user_review = response.data.review;
-            this.user_review_id = response.data.id;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
         })
         .catch((error) => {
           console.log(error);
@@ -344,7 +352,7 @@ export default {
 
     showSuccess() {
       toast({
-        message: "Спасибо! Информация отправлена на проверку и скоро будет опубликована на сайте.",
+        message: "Информация успешно сохранена.",
         type: "is-success",
         dismissible: true,
         duration: 10000,

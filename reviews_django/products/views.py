@@ -37,6 +37,11 @@ class ProductListCreate(generics.ListCreateAPIView):
     search_fields = ['name']
     pagination_class = CustomPagination
 
+    def perform_create(self, serializer):
+        if self.request.user.is_staff:
+            serializer.save(is_published=True)
+        serializer.save()
+
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
@@ -109,10 +114,14 @@ class ReviewListCreate(generics.ListCreateAPIView):
                 'author__username',
                 'product__name',
                 'product__slug',
-                'product__image')
+                'product__image') \
+            .order_by('id')
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        if self.request.user.is_staff and self.request.data['author']:
+            serializer.save(author_id=self.request.data['author'])
+        else:
+            serializer.save(author=self.request.user)
 
 
 class ReviewUpdate(generics.UpdateAPIView):
