@@ -10,7 +10,9 @@
         :comment="suggestion.comment"
         :author="suggestion.author_name"
         :score="suggestion.score"
-        @process="showCreateLiquid(suggestion.name, suggestion.comment, suggestion.text, suggestion.author, suggestion.score)"
+        :product_slug="suggestion.product_slug"
+        :processed="suggestion.processed"
+        @process="showCreateLiquid(suggestion.name, suggestion.comment, suggestion.text, suggestion.author, suggestion.score, suggestion.id)"
       />
 
       <div class="modal" :class="{ 'is-active': showCreate }" v-if="showCreate">
@@ -27,6 +29,8 @@
             :review=modalReview
             :authorId=modalAuthorId
             :score=modalScore
+            :suggestion_id=modalSuggestionId
+            @processed="processSuggestion"
         />
         </div>
       </div>
@@ -59,7 +63,8 @@ export default {
       modalComment: null,
       modalReview: null,
       modalAuthorId: null,
-      modalScore: null
+      modalScore: null,
+      modalSuggestionId: null
     }
   },
   mounted() {
@@ -93,13 +98,26 @@ export default {
         });
     },
 
-    showCreateLiquid(name, comment, review, authorId, score) {
+    async processSuggestion(id, slug){
+      await axios
+      .patch(`suggestions/${id}/`, {'processed': true, 'product_slug': slug})
+      .then(() => {
+        this.getSuggestions();
+        this.showCreate = false;
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      })
+    },
+
+    showCreateLiquid(name, comment, review, authorId, score, suggestion_id) {
       this.showCreate = true;
       this.modalName = name;
       this.modalComment = comment;
       this.modalReview = review;
       this.modalAuthorId = authorId;
       this.modalScore = score;
+      this.modalSuggestionId = suggestion_id;
     }
   }
 }

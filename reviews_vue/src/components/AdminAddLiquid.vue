@@ -214,8 +214,13 @@ export default {
     score: {
       type: Number,
       default: null
+    },
+    suggestion_id: {
+      type: Number,
+      default: null
     }
   },
+  emits: ['processed'],
   data() {
     return {
       image: {
@@ -235,6 +240,7 @@ export default {
         volumes: [],
         brand: "",
       },
+      product_slug: null
     };
   },
   computed: {
@@ -277,6 +283,7 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
+          this.product_slug = response.data.slug;
           const formData = {
           product_id: response.data.id,
           score: this.score,
@@ -285,15 +292,13 @@ export default {
           };
           axios
           .post("reviews/", formData)
-          .then(() => {
-            console.log('created!');
-          })
           .catch((error) => {
             console.log(error);
           });
         })
         .then(() => {
           this.showSuccess();
+          this.$emit("processed", this.suggestion_id, this.product_slug);
           this.productData = {
             name: "",
             description: "",

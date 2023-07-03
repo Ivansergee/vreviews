@@ -33,7 +33,7 @@ urlpatterns = [
     path('bookmarks/', BookmarkView.as_view(), name='bookmark'),
 
     path('suggestions/', SuggestionListCreate.as_view(), name='suggestions'),
-    path('suggestions/<int:id>/', SuggestionListCreate.as_view(), name='suggestion'),
+    path('suggestions/<int:id>/', SuggestionDetail.as_view(), name='suggestion'),
 
     path('admin/', UnpublishedProductList.as_view(), name='unpublished_products'),
     path('admin/<str:slug>/', AdminProductDetail.as_view(), name='admin_product_detail'),

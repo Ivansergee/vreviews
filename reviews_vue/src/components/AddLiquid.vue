@@ -9,9 +9,10 @@
           <div class="field">
             <label><span class="subtitle">Название</span></label>
             <div class="control">
-              <input type="text" class="input" v-model="productData.name" />
+              <input type="text" class="input" :class="{'is-danger': errors.name}" v-model="productData.name" />
             </div>
             <p class="help">Название жидкости без названия бренда</p>
+            <p class="help is-danger" v-if="errors.name">{{ errors.name[0] }}</p>
           </div>
 
           <div class="field">
@@ -31,6 +32,7 @@
               />
             </div>
             <p class="help">Выберите бренд. Для поиска начните набирать название</p>
+            <p class="help is-danger" v-if="errors.brand">{{ errors.brand[0] }}</p>
           </div>
 
           <div class="field">
@@ -45,6 +47,7 @@
               </textarea>
             </div>
             <p class="help">Описание вкуса</p>
+            <p class="help is-danger" v-if="errors.description">{{ errors.description[0] }}</p>
           </div>
 
           <div class="field">
@@ -63,6 +66,7 @@
               />
             </div>
             <p class="help">Для поиска начните набирать название</p>
+            <p class="help is-danger" v-if="errors.flavors">{{ errors.flavors[0] }}</p>
           </div>
 
           <div class="field">
@@ -134,10 +138,6 @@
             </label>
           </div>
 
-          <div class="notification is-danger" v-if="errors.length">
-            <p v-for="error in errors" :key="error">{{ error }}</p>
-          </div>
-
           <div class="field mt-4">
             <div class="control">
               <button class="button is-dark">Отправить</button>
@@ -203,7 +203,7 @@ export default {
         file: null,
         thumbnail: null,
       },
-      errors: [],
+      errors: {},
       productData: {
         name: "",
         description: "",
@@ -302,7 +302,7 @@ export default {
           this.setBrand();
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error.response.data);
         });
     },
 

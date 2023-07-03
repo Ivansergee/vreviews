@@ -3,16 +3,17 @@
       <div class="column is-6 is-offset-3">
         <h1 class="title is-4">Добавление отзыва</h1>
 
-        <p>Если вы не нашли свою жидкость на сайте, вы все равно можете оставить на неё отзыв в форме ниже. Наша администрация добавит её на сайт и опубликует вместе с вашим отзывом!</p>
+        <p>Если вы не нашли свою жидкость на сайте, вы все равно можете оценить её здесь. Наша администрация добавит её на сайт и опубликует вместе с вашей оценкой!</p>
         <br>
         <form @submit.prevent="submitForm">
 
           <div class="field">
             <label><span class="subtitle">Название</span></label>
             <div class="control">
-              <input type="text" class="input" v-model="suggestionData.name" />
+              <input type="text" class="input" :class="{'is-danger': errors.name}" v-model="suggestionData.name" />
             </div>
             <p class="help">Название жидкости с названием бренда</p>
+            <p class="help is-danger" v-if="errors.name">{{ errors.name[0] }}</p>
           </div>
 
           <div class="field">
@@ -26,7 +27,7 @@
               >
               </textarea>
             </div>
-            <p class="help">Ваш отзыв</p>
+            <p class="help">Ваш отзыв (не обязательно)</p>
           </div>
 
           <div class="field">
@@ -44,10 +45,7 @@
               </a>
               <span class="tag is-primary">{{ hover_score }}</span>
             </div>
-          </div>
-
-          <div class="notification is-danger" v-if="errors.length">
-            <p v-for="error in errors" :key="error">{{ error }}</p>
+            <p class="help is-danger" v-if="errors.score">{{ errors.score[0] }}</p>
           </div>
 
           <div class="field">
@@ -97,7 +95,7 @@ import { toast } from "bulma-toast";
 export default {
   data() {
     return {
-      errors: [],
+      errors: {},
       hover_score: 0,
       suggestionData: {
         name: "",
@@ -121,6 +119,7 @@ export default {
         });
         return;
       }
+
       const formData = new FormData();
 
       formData.append("name", this.suggestionData.name);
@@ -140,7 +139,7 @@ export default {
           };
         })
         .catch((error) => {
-          console.log(error);
+          this.errors = error.response.data;
         });
     },
 

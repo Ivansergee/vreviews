@@ -479,6 +479,8 @@ class SuggestionSerializer(serializers.ModelSerializer):
             'score',
             'text',
             'author',
-            'author_name'
+            'author_name',
+            'product_slug',
+            'processed'
         ]
         read_only_fields = ['id', 'author']

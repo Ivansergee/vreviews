@@ -285,7 +285,7 @@ class AdminProductDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SuggestionListCreate(generics.ListCreateAPIView):
-    queryset = Suggestion.objects.filter(processed=False)
+    queryset = Suggestion.objects.all()
     serializer_class = SuggestionSerializer
     authentication_classes = [TokenAuthentication]
     pagination_class = CustomPagination

@@ -34,7 +34,8 @@
     </div>
 
     <div class="column mr-2">
-      <button class="button is-info" @click="process(id)">Обработать</button>
+      <button class="button is-info" @click="process(id)" v-if="!processed">Обработать</button>
+      <router-link :to="{ name: 'product-detail', params: {product_slug: product_slug} }" class="button is-success" v-if="processed && product_slug">Обработано </router-link>
     </div>
 
   </div>
@@ -54,7 +55,9 @@ export default {
     "text",
     "comment",
     "author",
-    "score"
+    "score",
+    "product_slug",
+    "processed"
   ],
   emits: ['process'],
   methods: {

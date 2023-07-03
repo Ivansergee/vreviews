@@ -403,6 +403,9 @@ export default {
           this.setTitle(this.product.name);
         })
         .catch((error) => {
+          if (error.response.status == 404) {
+            this.$router.push({name: "not-found"});
+          }
           console.log(error);
         });
 
