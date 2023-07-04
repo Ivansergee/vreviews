@@ -5,10 +5,10 @@
             ><strong>Добавить отзыв</strong></a>
           <a class="navbar-item" @click="setActiveTab('liquid')"
             >Добавить жидкость</a>
-          <!-- <a class="navbar-item" @click="setActiveTab('brand')"
+          <a v-if="$store.state.isAdmin" class="navbar-item" @click="setActiveTab('brand')"
             >Добавить бренд</a>
-          <a class="navbar-item" @click="setActiveTab('producer')"
-            >Добавить производителя</a> -->
+          <a v-if="$store.state.isAdmin" class="navbar-item" @click="setActiveTab('producer')"
+            >Добавить производителя</a>
         </div>
     </nav>
 </template>

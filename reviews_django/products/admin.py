@@ -1,9 +1,15 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 from .models import Product, Brand, Producer, Flavor, Review, Reaction, Comment, Nicotine, Profile, Bookmark, Volume, Country, Suggestion
 
 
 class ReviewAdmin(admin.ModelAdmin):
     readonly_fields = ('id',)
+
+
+class CustomUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'is_active', 'date_joined')
 
 
 admin.site.register(Product)
@@ -19,5 +25,8 @@ admin.site.register(Profile)
 admin.site.register(Bookmark)
 admin.site.register(Volume)
 admin.site.register(Suggestion)
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
 
 

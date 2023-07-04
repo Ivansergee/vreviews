@@ -8,7 +8,7 @@
         :nic_content=options.nic_content
         :volumes=options.volumes
       />
-      <!-- <AddBrand v-if="$route.params.type === 'brand' && options"
+      <AddBrand v-if="$route.params.type === 'brand' && options"
         :producers=options.producers
         :nic_content=options.nic_content
         :volumes=options.volumes
@@ -17,7 +17,7 @@
       <AddProducer v-if="$route.params.type === 'producer' && options"
         :countries=options.countries
         @added="getOptions()"
-      /> -->
+      />
       <AddSuggestion v-if="$route.params.type === 'suggestion' || !$route.params.type" />
     </div>
 
@@ -58,8 +58,8 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 export default {
   components: {
     AddLiquid,
-    // AddBrand,
-    // AddProducer,
+    AddBrand,
+    AddProducer,
     AddSuggestion,
     PulseLoader
   },
@@ -76,9 +76,12 @@ export default {
   },
   methods: {
     show404(){
-      const types = ['liquid', 'suggestion'];
+      const types = ['liquid', 'suggestion', 'brand', 'producer'];
+      if ((this.$route.params.type === 'brand' || this.$route.params.type === 'producer') && !this.$store.state.isAdmin){
+        this.$router.replace({name: 'not-found'});
+      }
       if (this.$route.params.type && !types.includes(this.$route.params.type)){
-        this.$router.push({name: 'not-found'});
+        this.$router.replace({name: 'not-found'});
       }
     },
 
