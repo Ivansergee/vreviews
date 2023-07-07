@@ -30,7 +30,7 @@
               class="tag is-info"
               v-for="flavor in flavors"
               :key="flavor.id"
-              >{{ flavor }}</span
+              >{{ flavor.name }}</span
             >
           </p>
         </div>
@@ -39,9 +39,9 @@
           <p class="tags is-warning">
             <span
               class="tag is-warning"
-              v-for="nic in brand.nic_content"
+              v-for="nic in nic_content"
               :key="nic.id"
-              >{{ nic }}</span
+              >{{ nic.amount }}</span
             >
           </p>
         </div>

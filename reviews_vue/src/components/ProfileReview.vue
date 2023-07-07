@@ -1,5 +1,5 @@
 <template>
-  <div class="review">
+  <div class="review mb-5">
     <article class="media">
       <figure class="media-left">
         <p class="image is-64x64">

@@ -148,8 +148,9 @@ class ProductSerializer(serializers.ModelSerializer):
             'avg_score',
             'reviews_count',
             'score_count',
+            'added_by'
         ]
-        read_only_fields = ['slug', 'avg_score', 'reviews_count', 'score_count']
+        read_only_fields = ['slug', 'avg_score', 'reviews_count', 'score_count', 'added_by']
 
 
     def __init__(self, *args, **kwargs):
@@ -391,7 +392,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'profile']
+        fields = ['id', 'username', 'profile', 'devices']
         read_only_fields = ['username']
 
 

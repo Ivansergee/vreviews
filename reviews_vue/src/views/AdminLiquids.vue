@@ -10,6 +10,7 @@
         :product_slug="product.slug"
         :description="product.description"
         :flavors="product.flavors"
+        :nic_content="product.nic_content"
         @approved="approve"
       />
     </div>

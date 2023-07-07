@@ -39,8 +39,9 @@ class ProductListCreate(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         if self.request.user.is_staff:
-            serializer.save(is_published=True)
-        serializer.save()
+            serializer.save(is_published=True, added_by=self.request.user)
+        else:
+            serializer.save(added_by=self.request.user)
 
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):

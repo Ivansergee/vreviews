@@ -54,6 +54,20 @@
         <p>{{ userInfo.profile.about || "-" }}</p>
       </div>
     </div>
+    <!-- <div class="level is-mobile">
+      <div class="level-left">
+        <div class="level-item">
+          <p class="title is-4">Мои устройства</p>
+        </div>
+        <div class="level-item">
+          <button class="button is-success">
+            <span class="icon is-small">
+              <i class="fa-solid fa-plus"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div> -->
     <div class="reviews" v-if="activeTab == 'reviews'">
       <p v-if="!reviews.length">Нет ни одного отзыва</p>
       <ProfileReview
@@ -70,6 +84,11 @@
         :dislikesCount="review.dislikes_count"
         :comments="review.comments"
       />
+      <a
+        class="button is-success"
+        @click="getNextReviews"
+        v-if="nextReviews && reviewsCount > 10"
+        >Показать ещё</a>
     </div>
     <div class="bookmarks" v-if="activeTab == 'bookmarks' && $store.state.username === $route.params.username">
       <p v-if="!bookmarks.length">Нет закладок</p>
@@ -78,8 +97,12 @@
         :key="bookmark.id"
         :id="bookmark.id"
         :name="bookmark.name"
+        :description="bookmark.description"
         :image="bookmark.thumbnail_url"
         :slug="bookmark.slug"
+        :brand_name="bookmark.brand.name"
+        :brand_slug="bookmark.brand.slug"
+        :nic_content="bookmark.nic_content"
         :avg_score="bookmark.avg_score"
         :flavors="bookmark.flavors"
         :reviews_amount="bookmark.reviews_count"
@@ -88,7 +111,7 @@
       />
       <a
         class="button is-success"
-        @click="getNextBookmarks()"
+        @click="getNextBookmarks"
         v-if="nextBookmarks && bookmarksCount > 10"
         >Показать ещё</a>
     </div>

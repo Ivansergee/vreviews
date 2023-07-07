@@ -23,6 +23,8 @@
         :image="product.thumbnail_url"
         :product_slug="product.slug"
         :brand_slug="product.brand.slug"
+        :brand_name="product.brand.name"
+        :nic_content="product.nic_content"
         :description="product.description"
         :avg_score="product.avg_score ? product.avg_score : '-'"
         :flavors="product.flavors"

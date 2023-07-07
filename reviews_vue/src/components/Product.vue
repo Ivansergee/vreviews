@@ -13,8 +13,8 @@
             >{{ name }}</router-link>
           </p>
           <p class="mb-1">
-            <router-link :to="{ name: 'brand-detail', params: {brand_slug: brand.slug} }"
-            >{{ brand.name }}</router-link>
+            <router-link :to="{ name: 'brand-detail', params: {brand_slug: brand_slug} }"
+            >{{ brand_name }}</router-link>
           </p>
         </div>
 
@@ -42,9 +42,9 @@
           <p class="tags">
             <span
               class="tag is-warning"
-              v-for="amount in brand.nic_content"
-              :key="amount.id"
-              >{{ amount }}</span>
+              v-for="item in nic_content"
+              :key="item.id"
+              >{{ item.amount }}</span>
           </p>
         </div>
 
@@ -79,14 +79,16 @@
 export default {
   props: [
     "name",
-    "brand",
+    "brand_slug",
+    "brand_name",
+    "nic_content",
     "image",
     "product_slug",
     "description",
     "reviews_count",
     "score_count",
     "flavors",
-    "avg_score",
+    "avg_score"
   ],
 };
 </script>

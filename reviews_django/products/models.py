@@ -35,6 +35,11 @@ class Volume(models.Model):
         return str(self.volume) + ' мл'
 
 
+class Device(models.Model):
+    name = models.CharField(max_length=200)
+    owner = models.ForeignKey(User, related_name='devices', on_delete=models.CASCADE)
+
+
 class Producer(models.Model):
 
     def image_path(instance, filename):
@@ -146,6 +151,7 @@ class Product(models.Model):
     flavors = models.ManyToManyField(Flavor, related_name='products')
     slug = models.SlugField(db_index=True, unique=True, blank=True)
     is_published = models.BooleanField(default=False)
+    added_by = models.ForeignKey(User, related_name='products', on_delete=models.SET_NULL, blank=True, null=True)
     avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
     score_count = models.IntegerField(null=True, blank=True, default=None)
     reviews_count = models.IntegerField(null=True, blank=True, default=None)
@@ -175,6 +181,7 @@ class Review(models.Model):
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0)
     text = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
+    devices = models.ManyToManyField(Device)
 
     def __str__(self):
         return f"{self.product} {self.author}'s review"
