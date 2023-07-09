@@ -39,6 +39,9 @@ class Device(models.Model):
     name = models.CharField(max_length=200)
     owner = models.ForeignKey(User, related_name='devices', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class Producer(models.Model):
 

@@ -111,7 +111,7 @@
 
     <AdminNavbar v-if="adminNavbar"/>
     <AddNavbar v-if="addNavbar"/>
-    <!-- <ProfileNavbar v-if="profileNavbar"/> -->
+    <ProfileNavbar v-if="profileNavbar"/>
 
     <div class="loading" v-if="$store.state.isLoading">
       <PulseLoader :loading="$store.state.isLoading" :size="loaderSize" />

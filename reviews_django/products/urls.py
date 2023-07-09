@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (ProductListCreate, ProductDetail, BrandListCreate, BrandDetail, ProducerListCreate,
                     ProducerDetail, ReviewListCreate, ReviewUpdate, ReviewDelete, CommentCreate, ReactionView,
                     CreateOptions, UserView, BookmarkView, EditUserProfile, EditEmail, UnpublishedProductList,
-                    AdminProductDetail, BrandChoices, SuggestionListCreate, SuggestionDetail)
+                    AdminProductDetail, BrandChoices, SuggestionListCreate, SuggestionDetail, DeviceCreate)
 
 
 
@@ -29,6 +29,8 @@ urlpatterns = [
     path('user/<str:username>/', UserView.as_view(), name='user'),
     path('user/<str:username>/edit/', EditUserProfile.as_view(), name='user_edit'),
     path('user/<str:username>/edit-email/', EditEmail.as_view(), name='edit_email'),
+
+    path('devices/', DeviceCreate.as_view(), name='create-device'),
 
     path('bookmarks/', BookmarkView.as_view(), name='bookmark'),
 

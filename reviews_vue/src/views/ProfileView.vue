@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="tabs is-medium">
+    <!-- <div class="tabs is-medium">
       <ul>
         <li :class="[activeTab === 'profile' ? 'is-active' : '']">
           <a @click="activeTab = 'profile'">Профиль</a>
@@ -14,7 +14,7 @@
           >
         </li>
       </ul>
-    </div>
+    </div> -->
     <div class="columns profile" v-if="activeTab == 'profile' && userInfo">
       <div class="column is-4">
         <figure class="avatar image is-1by1">
@@ -54,20 +54,9 @@
         <p>{{ userInfo.profile.about || "-" }}</p>
       </div>
     </div>
-    <!-- <div class="level is-mobile">
-      <div class="level-left">
-        <div class="level-item">
-          <p class="title is-4">Мои устройства</p>
-        </div>
-        <div class="level-item">
-          <button class="button is-success">
-            <span class="icon is-small">
-              <i class="fa-solid fa-plus"></i>
-            </span>
-          </button>
-        </div>
-      </div>
-    </div> -->
+
+    <Devices v-if="userInfo" :devices="userInfo.devices" />
+
     <div class="reviews" v-if="activeTab == 'reviews'">
       <p v-if="!reviews.length">Нет ни одного отзыва</p>
       <ProfileReview
@@ -194,6 +183,34 @@
         ></button>
       </div>
     </div>
+
+    <div class="modal" :class="{ 'is-active': showEditAvatar }" v-if="avatar">
+      <div class="modal-background" @click="showEditAvatar = false"></div>
+      <div class="modal-content">
+        <div class="box">
+          <div class="field">
+            <label><span class="subtitle">Аватар</span></label>
+            <div class="control" v-if="avatar">
+              
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control">
+              <button class="button is-dark" @click="editAvatar()">
+                Сохранить
+              </button>
+            </div>
+          </div>
+        </div>
+        <button
+          class="modal-close is-large"
+          aria-label="close"
+          @click="showEditAvatar = false"
+        ></button>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -212,6 +229,7 @@ import moment from "moment";
 import Bookmark from "../components/Bookmark.vue";
 import ProfileReview from "../components/ProfileReview.vue";
 import UserInfoForm from "../components/UserInfoForm.vue";
+import Devices from "../components/Devices.vue";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 
@@ -220,6 +238,7 @@ export default {
     Bookmark,
     ProfileReview,
     UserInfoForm,
+    Devices,
     Cropper,
   },
   data() {
@@ -227,6 +246,7 @@ export default {
       activeTab: "profile",
       showEditUserInfo: false,
       showEditAvatar: false,
+      showDeviceForm: false,
       avatar: {
         src: null,
         type: null,

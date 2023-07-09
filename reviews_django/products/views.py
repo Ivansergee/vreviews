@@ -16,7 +16,7 @@ from .serializers import (
     CommentSerializer, ReactionSerializer, FlavorsSerializer, NicotineSerializer,
     BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer,
     EmailSerializer, ProducerNamesSerializer, CountrySerializer, AdminProductSerializer, BrandChoicesSerializer,
-    SuggestionSerializer)
+    SuggestionSerializer, DeviceSerializer)
 from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country, Suggestion
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter, BrandFilter
@@ -304,5 +304,15 @@ class SuggestionDetail(generics.RetrieveUpdateAPIView):
     queryset = Suggestion.objects.all()
     serializer_class = SuggestionSerializer
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAdminUser]
     lookup_field = 'id'
     lookup_url_kwarg = 'id'
+
+
+class DeviceCreate(generics.CreateAPIView):
+    serializer_class = DeviceSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        return serializer.save(owner=self.request.user)

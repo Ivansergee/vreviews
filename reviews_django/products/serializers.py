@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from djoser.conf import settings
 from djoser.serializers import UserSerializer, TokenCreateSerializer
 
-from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume, Country, Suggestion
+from .models import Product, Brand, Producer, Review, Comment, Reaction, Flavor, Nicotine, Profile, Bookmark, Volume, Country, Suggestion, Device
 
 
 class ProducerShortSerializer(serializers.ModelSerializer):
@@ -387,8 +387,15 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['about', 'avatar', 'city', 'birthday', 'vk', 'yt', 'tg']
 
 
+class DeviceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Device
+        fields = ['id', 'name']
+
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
+    devices = DeviceSerializer(many=True)
 
     class Meta:
         model = User

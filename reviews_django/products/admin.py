@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import Product, Brand, Producer, Flavor, Review, Reaction, Comment, Nicotine, Profile, Bookmark, Volume, Country, Suggestion
+from .models import Product, Brand, Producer, Flavor, Review, Reaction, Comment, Nicotine, Profile, Bookmark, Volume, Country, Suggestion, Device
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -25,6 +25,7 @@ admin.site.register(Profile)
 admin.site.register(Bookmark)
 admin.site.register(Volume)
 admin.site.register(Suggestion)
+admin.site.register(Device)
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
