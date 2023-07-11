@@ -11,10 +11,14 @@
           <p>
             <strong><router-link :to="{ name: 'profile', params: {username: author} }">{{ author }}</router-link></strong> <small>{{ formatTime(created_at) }}</small>
             <br />
-            <strong>Оценка:</strong> {{ score }}
+            <span class="review-score" :class="getScoreColor()">
+              <i class="fa-solid fa-star mr-2"></i> <b>{{ score }}</b>
+            </span>
             <br />
-            {{ text }}
-            <br />
+            <p>{{ text }}</p>
+            <b>Парил(а) на:</b>
+            <div v-for="device in devices" :key="device.key"><span>{{ device.name }}</span></div>
+            <br>
             <small>
               <a @click="manageReaction(true)">
                 <i
@@ -32,7 +36,7 @@
               <small>{{ dislikesCount }}</small> ·
               <a @click="toggleReplyForm()">{{
                 commentingPostId === id ? "Закрыть" : "Ответить"
-              }}</a> · 
+              }}</a>  
 
               <a @click="activeModal = true">{{
                 $store.state.isAdmin ? "Удалить" : ""
@@ -129,6 +133,7 @@ export default {
     "score",
     "text",
     "created_at",
+    "devices",
     "comments",
     "commentingPostId",
     "userReaction",
@@ -145,6 +150,17 @@ export default {
   methods: {
     formatTime(time) {
       return moment(time).format('DD.MM.YYYY HH:mm')
+    },
+    getScoreColor(){
+      if (this.score > 8){
+        return 'tag is-success is-light is-medium';
+      } else if (this.score > 6) {
+        return 'tag is-success is-light is-medium';
+      } else if (this.score > 4) {
+        return 'tag is-warning is-light is-medium';
+      } else {
+        return 'tag is-danger is-light is-medium';
+      }
     },
 
     toggleReplyForm() {

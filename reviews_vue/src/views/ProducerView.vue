@@ -30,7 +30,7 @@
           <p class="title is-4">Средняя оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">{{ producer.avg_score }}</span>
+            <span class="tag is-primary">{{ producer.avg_score > 0 ? producer.avg_score : '-' }}</span>
           </div>
           <p><strong>Отзывов:</strong> {{ producer.reviews_count || 0 }}</p>
           <p><strong>Оценок:</strong> {{ producer.score_count || 0 }}</p>

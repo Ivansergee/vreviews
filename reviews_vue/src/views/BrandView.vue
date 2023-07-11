@@ -46,7 +46,7 @@
           <p class="title is-4">Средняя оценка:</p>
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
-            <span class="tag is-primary">{{ brand.avg_score }}</span>
+            <span class="tag is-primary">{{ brand.avg_score > 0 ? brand.avg_score : '-'}}</span>
           </div>
           <p><strong>Отзывов:</strong> {{ brand.reviews_count || 0 }}</p>
           <p><strong>Оценок:</strong> {{ brand.score_count || 0 }}</p>

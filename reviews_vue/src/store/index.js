@@ -7,6 +7,7 @@ export default createStore({
     token: null,
     isLoading: false,
     username: null,
+    devices: []
   },
   getters: {
   },
@@ -17,6 +18,7 @@ export default createStore({
         state.username = localStorage.getItem('username');
         state.isAdmin = localStorage.getItem('isAdmin') === 'true';
         state.isAuthenticated = true;
+        state.devices = JSON.parse(localStorage.getItem('devices'));
       } else {
         state.token = null;
         state.isAuthenticated = false;
@@ -33,11 +35,15 @@ export default createStore({
     setIsAdmin(state, isAdmin) {
       state.isAdmin = isAdmin;
     },
+    setDevices(state, devices) {
+      state.devices = devices;
+    },
     removeToken(state) {
       state.token = null;
       state.isAuthenticated = false;
       state.username = null;
       state.isAdmin = false;
+      state.devices = null;
     },
     setIsLoading(state, status) {
       state.isLoading = status;

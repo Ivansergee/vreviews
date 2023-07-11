@@ -63,7 +63,7 @@ class Producer(models.Model):
     tg = models.URLField(null=True, blank=True)
     vk = models.URLField(null=True, blank=True)
     ig = models.URLField(null=True, blank=True)
-    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
+    avg_score = models.DecimalField(max_digits=4, decimal_places=2, default=-1)
     score_count = models.IntegerField(null=True, blank=True, default=None)
     reviews_count = models.IntegerField(null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -107,7 +107,7 @@ class Brand(models.Model):
     image = models.ImageField(upload_to=image_path, default='placeholder.jpg')
     thumbnail = models.ImageField(upload_to=thumbnail_path, default='placeholder.jpg')
     slug = models.SlugField(blank=True, db_index=True, unique=True)
-    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
+    avg_score = models.DecimalField(max_digits=4, decimal_places=2, default=-1)
     score_count = models.IntegerField(null=True, blank=True, default=None)
     reviews_count = models.IntegerField(null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -155,7 +155,7 @@ class Product(models.Model):
     slug = models.SlugField(db_index=True, unique=True, blank=True)
     is_published = models.BooleanField(default=False)
     added_by = models.ForeignKey(User, related_name='products', on_delete=models.SET_NULL, blank=True, null=True)
-    avg_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=None)
+    avg_score = models.DecimalField(max_digits=4, decimal_places=2, default=-1)
     score_count = models.IntegerField(null=True, blank=True, default=None)
     reviews_count = models.IntegerField(null=True, blank=True, default=None)
 
@@ -184,7 +184,7 @@ class Review(models.Model):
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0)
     text = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    devices = models.ManyToManyField(Device)
+    devices = models.ManyToManyField(Device, related_name='reviews', blank=True)
 
     def __str__(self):
         return f"{self.product} {self.author}'s review"

@@ -17,7 +17,7 @@ from .serializers import (
     BrandNamesSerializer, UserSerializer, ProfileSerializer, BookmarkSerializer, VolumeSerializer,
     EmailSerializer, ProducerNamesSerializer, CountrySerializer, AdminProductSerializer, BrandChoicesSerializer,
     SuggestionSerializer, DeviceSerializer)
-from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country, Suggestion
+from .models import Product, Brand, Producer, Review, Reaction, Flavor, Nicotine, Bookmark, Profile, Volume, Country, Suggestion, Device
 from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly, IsOwner, AuthorCanDelete
 from .filters import ProductFilter, ReviewFilter, BrandFilter
 from .pagination import CustomPagination
@@ -316,3 +316,18 @@ class DeviceCreate(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         return serializer.save(owner=self.request.user)
+
+
+class DeviceUpdateDeleteView(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+
+    serializer_class = DeviceSerializer
+    queryset = Device.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

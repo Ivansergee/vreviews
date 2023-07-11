@@ -50,7 +50,7 @@
 
         <div class="column mr-2">
           <p class="tag is-primary is-large">
-            <i class="bi bi-star-fill"></i> {{ avg_score || '-' }}
+            <i class="bi bi-star-fill"></i> {{ avg_score  > 0 ? avg_score : '-' }}
           </p>
           <p class="mt-1">
             <span>

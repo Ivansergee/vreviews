@@ -19,7 +19,7 @@
         </div>
         <div class="column">
           <span class="tag is-primary is-large"
-            ><i class="bi bi-star-fill"></i> {{ avg_score || '-' }}</span
+            ><i class="bi bi-star-fill"></i> {{ avg_score  > 0 ? avg_score : '-' }}</span
           >
         </div>
       </div>

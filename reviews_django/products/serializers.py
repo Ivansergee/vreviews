@@ -61,6 +61,13 @@ class NicotineSerializer(serializers.ModelSerializer):
         fields = ['id', 'amount']
 
 
+class DeviceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Device
+        fields = ['id', 'name']
+
+
 class BrandChoicesSerializer(serializers.ModelSerializer):
     nic_content = NicotineSerializer(many=True, read_only=True)
     volume = VolumeSerializer(many=True, read_only=True)
@@ -324,6 +331,14 @@ class ReviewSerializer(serializers.ModelSerializer):
         source='product',
         write_only=True
         )
+    device_id = serializers.PrimaryKeyRelatedField(
+        queryset=Device.objects.all(),
+        source='devices',
+        many=True,
+        required=False,
+        write_only=True
+        )
+    devices = DeviceSerializer(many=True, read_only=True)
     
     def get_user_reaction(self, obj):
         user = self.context['request'].user
@@ -357,7 +372,9 @@ class ReviewSerializer(serializers.ModelSerializer):
             'likes_count',
             'dislikes_count',
             'user_reaction',
-            'comments'
+            'comments',
+            'devices',
+            'device_id'
         ]
 
 
@@ -371,6 +388,7 @@ class ReactionSerializer(serializers.ModelSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
+    devices = DeviceSerializer(many=True)
 
     class Meta(UserSerializer.Meta):
         fields = (
@@ -378,6 +396,7 @@ class CustomUserSerializer(UserSerializer):
             'email',
             'username',
             'is_staff',
+            'devices'
         )
 
 
@@ -386,12 +405,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['about', 'avatar', 'city', 'birthday', 'vk', 'yt', 'tg']
 
-
-class DeviceSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Device
-        fields = ['id', 'name']
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()

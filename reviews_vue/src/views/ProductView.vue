@@ -92,7 +92,7 @@
           <div class="tags are-large has-addons">
             <span class="tag"><i class="bi bi-star-fill"></i></span>
             <span class="tag is-primary">{{
-              product.avg_score ? product.avg_score : "-"
+              product.avg_score > 0 ? product.avg_score : '-'
             }}</span>
           </div>
           <p>
@@ -108,10 +108,10 @@
     </div>
 
     <section class="user-review">
-      <p class="title is-4">Ваша оценка</p>
+      <p class="title is-4">Ваш отзыв</p>
       <div v-if="!user_review">
-        <div
-          class="tags has-addons"
+        <p class="subtitle">Оценка</p>
+        <div class="tags has-addons"
           @mouseleave="score = user_score"
           @click="setScore()"
         >
@@ -123,31 +123,34 @@
           </a>
           <span class="tag is-primary">{{ score }}</span>
         </div>
-        <article class="media">
-          <div class="media-content">
-            <div class="field">
-              <p class="control">
-                <textarea
-                  class="textarea"
-                  placeholder="Ваш отзыв..."
-                  v-model="new_user_review"
-                ></textarea>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control">
-                <button
-                  class="button"
-                  :class="{ 'is-loading': isLoading }"
-                  :disabled="!new_user_review"
-                  @click="addReview()"
-                >
-                  Отправить
-                </button>
-              </p>
-            </div>
+        <div class="field">
+          <p class="subtitle">Отзыв</p>
+          <div class="control">
+              <textarea
+                class="textarea"
+                v-model="new_user_review"
+              ></textarea>
           </div>
-        </article>
+        </div>
+        <div class="field">
+          <p class="subtitle">Устройства</p>
+          <div class="control select is-multiple">
+            <select multiple size="3" v-model="selectedDevices">
+              <option v-for="device in devices" :value="device.id">{{ device.name }}</option>
+            </select>
+          </div>
+          <p class="help">Выберите устройства, на которых вы использовали жидкость. Удерживайте Ctrl для выбора нескольких.</p>
+        </div>
+        <div class="control mt-2">
+            <button
+              class="button"
+              :class="{ 'is-loading': isLoading }"
+              :disabled="!new_user_review"
+              @click="addReview()"
+            >
+              Отправить
+            </button>
+        </div>
       </div>
       <div v-else>
         <p><strong>Оценка: </strong>{{ user_score }}</p>
@@ -185,6 +188,7 @@
         :dislikesCount="review.dislikes_count"
         :userReaction="review.user_reaction"
         :comments="review.comments"
+        :devices="review.devices"
         :commentingPostId="commentingPostId"
         @commenting="setCommentingPostId"
         @commented="getReviews"
@@ -277,7 +281,6 @@
   max-width: 100%;
   margin: auto;
 }
-
 .fa-bookmark {
   color: red;
 }
@@ -302,6 +305,7 @@ export default {
       score: 0,
       user_score: 0,
       user_review: "",
+      selectedDevices: [],
       new_user_review: null,
       user_review_id: null,
       commentingPostId: 0,
@@ -320,6 +324,9 @@ export default {
   computed: {
     listVolumes() {
       return this.product.volume.join(", ");
+    },
+    devices() {
+      return this.$store.state.devices;
     },
   },
   methods: {
@@ -447,13 +454,20 @@ export default {
         return;
       }
 
-      const formData = {
-        product_id: this.product.id,
-        score: this.review_id ? this.user_score : this.score,
-        text: this.new_user_review,
-      };
+      const formData = new FormData();
 
-      if (formData.score < 1) {
+      formData.append('product_id', this.product.id);
+      if (this.review_id) {
+        formData.append('score', this.user_score);
+      } else {
+        formData.append('score', this.score);
+      }
+      formData.append('text', this.new_user_review);
+      for (var i of this.selectedDevices) {
+        formData.append("device_id", i);
+      }
+
+      if (formData.get('score') < 1) {
         toast({
               message: 'Вы не поставили оценку!',
               type: "is-danger",

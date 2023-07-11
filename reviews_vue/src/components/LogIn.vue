@@ -141,9 +141,12 @@ export default {
         }),(this.isLoading = false);
 
         if (localStorage.getItem('token')){
-          await axios.get("users/me/").then((response) => {
+          await axios.get("users/me/")
+          .then((response) => {
             this.$store.commit("setIsAdmin", response.data.is_staff);
             localStorage.setItem("isAdmin", response.data.is_staff);
+            this.$store.commit("setDevices", response.data.devices);
+            localStorage.setItem("devices", JSON.stringify(this.$store.state.devices));
           });
         }
 

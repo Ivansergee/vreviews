@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <Devices v-if="userInfo" :devices="userInfo.devices" />
+    <Devices v-if="userInfo" :devices="userInfo.devices" :getUserInfo="getUserInfo"/>
 
     <div class="reviews" v-if="activeTab == 'reviews'">
       <p v-if="!reviews.length">Нет ни одного отзыва</p>
@@ -171,33 +171,6 @@
                 @click="editAvatar()"
                 :class="{ 'is-loading': changeAvatarLoading }"
               >
-                Сохранить
-              </button>
-            </div>
-          </div>
-        </div>
-        <button
-          class="modal-close is-large"
-          aria-label="close"
-          @click="showEditAvatar = false"
-        ></button>
-      </div>
-    </div>
-
-    <div class="modal" :class="{ 'is-active': showEditAvatar }" v-if="avatar">
-      <div class="modal-background" @click="showEditAvatar = false"></div>
-      <div class="modal-content">
-        <div class="box">
-          <div class="field">
-            <label><span class="subtitle">Аватар</span></label>
-            <div class="control" v-if="avatar">
-              
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="control">
-              <button class="button is-dark" @click="editAvatar()">
                 Сохранить
               </button>
             </div>
