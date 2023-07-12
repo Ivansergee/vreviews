@@ -1,21 +1,6 @@
 <template>
   <div class="container">
-    <!-- <div class="tabs is-medium">
-      <ul>
-        <li :class="[activeTab === 'profile' ? 'is-active' : '']">
-          <a @click="activeTab = 'profile'">Профиль</a>
-        </li>
-        <li :class="[activeTab === 'reviews' ? 'is-active' : '']">
-          <a @click="activeTab = 'reviews'">Отзывы и оценки ({{ reviewsCount }})</a>
-        </li>
-        <li :class="[activeTab === 'bookmarks' ? 'is-active' : '']" v-if="$store.state.username === $route.params.username">
-          <a @click="activeTab = 'bookmarks'"
-            >Закладки ({{ bookmarksCount }})</a
-          >
-        </li>
-      </ul>
-    </div> -->
-    <div class="columns profile" v-if="activeTab == 'profile' && userInfo">
+    <div class="columns profile" v-if="userInfo">
       <div class="column is-4">
         <figure class="avatar image is-1by1">
           <img :src="userInfo.profile.avatar" />
@@ -57,54 +42,6 @@
 
     <Devices v-if="userInfo" :devices="userInfo.devices" :getUserInfo="getUserInfo"/>
 
-    <div class="reviews" v-if="activeTab == 'reviews'">
-      <p v-if="!reviews.length">Нет ни одного отзыва</p>
-      <ProfileReview
-        v-for="review in reviews"
-        :key="review.id"
-        :id="review.id"
-        :product="review.product.name"
-        :productSlug="review.product.slug"
-        :productImage="review.product.thumbnail_url"
-        :score="review.score"
-        :text="review.text"
-        :created_at="review.created_at"
-        :likesCount="review.likes_count"
-        :dislikesCount="review.dislikes_count"
-        :comments="review.comments"
-      />
-      <a
-        class="button is-success"
-        @click="getNextReviews"
-        v-if="nextReviews && reviewsCount > 10"
-        >Показать ещё</a>
-    </div>
-    <div class="bookmarks" v-if="activeTab == 'bookmarks' && $store.state.username === $route.params.username">
-      <p v-if="!bookmarks.length">Нет закладок</p>
-      <Bookmark
-        v-for="bookmark in bookmarks"
-        :key="bookmark.id"
-        :id="bookmark.id"
-        :name="bookmark.name"
-        :description="bookmark.description"
-        :image="bookmark.thumbnail_url"
-        :slug="bookmark.slug"
-        :brand_name="bookmark.brand.name"
-        :brand_slug="bookmark.brand.slug"
-        :nic_content="bookmark.nic_content"
-        :avg_score="bookmark.avg_score"
-        :flavors="bookmark.flavors"
-        :reviews_amount="bookmark.reviews_count"
-        :score_amount="bookmark.score_count"
-        @deleted="deleteBookmark"
-      />
-      <a
-        class="button is-success"
-        @click="getNextBookmarks"
-        v-if="nextBookmarks && bookmarksCount > 10"
-        >Показать ещё</a>
-    </div>
-
     <UserInfoForm
       v-if="showEditUserInfo && userInfo"
       :birthday="userInfo.profile.birthday"
@@ -145,7 +82,7 @@
             </div>
           </div>
 
-          <div class="file has-name">
+          <div class="file has-name mb-2">
             <label class="file-label">
               <input
                 class="file-input"
@@ -199,8 +136,6 @@
 import axios from "axios";
 import moment from "moment";
 
-import Bookmark from "../components/Bookmark.vue";
-import ProfileReview from "../components/ProfileReview.vue";
 import UserInfoForm from "../components/UserInfoForm.vue";
 import Devices from "../components/Devices.vue";
 import { Cropper } from "vue-advanced-cropper";
@@ -208,15 +143,12 @@ import "vue-advanced-cropper/dist/style.css";
 
 export default {
   components: {
-    Bookmark,
-    ProfileReview,
     UserInfoForm,
     Devices,
     Cropper,
   },
   data() {
     return {
-      activeTab: "profile",
       showEditUserInfo: false,
       showEditAvatar: false,
       showDeviceForm: false,
@@ -226,20 +158,12 @@ export default {
         name: null,
         file: null,
       },
-      reviews: null,
       userInfo: null,
-      bookmarks: [],
-      bookmarksCount: null,
-      nextBookmarks: null,
-      reviewsCount: null,
-      nextReviews: null,
       changeAvatarLoading: false,
     };
   },
   mounted() {
-    this.getReviews();
     this.getUserInfo();
-    this.getBookmarks();
   },
   methods: {
     change({ canvas }) {
@@ -299,25 +223,6 @@ export default {
       return moment().diff(date, "years");
     },
 
-    async getReviews() {
-      this.$store.commit("setIsLoading", true);
-
-      const username = this.$route.params.username;
-
-      await axios
-        .get(`/reviews/?author=${username}`)
-        .then((response) => {
-          this.reviews = response.data.results;
-          this.nextReviews = response.data.next;
-          this.reviewsCount = response.data.count;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      this.$store.commit("setIsLoading", false);
-    },
-
     async getUserInfo() {
       this.$store.commit("setIsLoading", true);
 
@@ -334,61 +239,6 @@ export default {
         });
 
       this.$store.commit("setIsLoading", false);
-    },
-
-    async getBookmarks() {
-      if (this.$store.state.username === this.$route.params.username){
-        this.$store.commit("setIsLoading", true);
-
-        const username = this.$store.state.username;
-        await axios
-          .get(
-            `/products/?bookmarks_author=${username}&ordering=-bookmarks__created_at`
-          )
-          .then((response) => {
-            this.bookmarks.push(...response.data.results);
-            this.nextBookmarks = response.data.next;
-            this.bookmarksCount = response.data.count;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
-        this.$store.commit("setIsLoading", false);
-      }
-    },
-
-    async getNextBookmarks() {
-      await axios
-        .get(this.nextBookmarks)
-        .then((response) => {
-          this.bookmarks.push(...response.data.results);
-          this.nextBookmarks = response.data.next;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
-    async getNextReviews() {
-      await axios
-        .get(this.nextReviews)
-        .then((response) => {
-          this.reviews.push(...response.data.results);
-          this.nextReviews = response.data.next;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
-    deleteBookmark(id) {
-      for (var i in this.bookmarks) {
-        if (this.bookmarks[i].id == id) {
-          this.bookmarks.splice(i, 1);
-          this.bookmarksCount -= 1;
-        }
-      }
     },
 
     setTitle(title) {

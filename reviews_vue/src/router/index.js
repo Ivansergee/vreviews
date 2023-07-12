@@ -16,6 +16,8 @@ import DisposablesView from '../views/DisposablesView.vue';
 import NotFoundView from '../views/NotFoundView.vue';
 import AdminSuggestions from '../views/AdminSuggestions';
 import AdminLiquids from '../views/AdminLiquids';
+import ProfileReviewsView from '../views/ProfileReviewsView.vue';
+import ProfileBookmarksView from '../views/ProfileBookmarksView.vue';
 
 const routes = [
   {
@@ -89,7 +91,17 @@ const routes = [
   {
     path: '/profile/:username',
     name: 'profile',
-    component: ProfileView
+    component: ProfileView,
+  },
+  {
+    path: '/profile/:username/reviews',
+    name: 'profile-reviews',
+    component: ProfileReviewsView
+  },
+  {
+    path: '/profile/:username/bookmarks',
+    name: 'profile-bookmarks',
+    component: ProfileBookmarksView
   },
   {
     path: '/activate/:uid/:token',

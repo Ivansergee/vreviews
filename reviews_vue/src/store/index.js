@@ -38,6 +38,18 @@ export default createStore({
     setDevices(state, devices) {
       state.devices = devices;
     },
+    addDevice(state, device) {
+      state.devices.push(device);
+      localStorage.setItem('devices', JSON.stringify(state.devices));
+    },
+    removeDevice(state, deviceId) {
+      state.devices = state.devices.filter(d => d.id !== deviceId);
+      localStorage.setItem('devices', JSON.stringify(state.devices));
+    },
+    editDevice(state, device) {
+      state.devices.find(d => d.id == device.id).name = device.name;
+      localStorage.setItem('devices', JSON.stringify(state.devices));
+    },
     removeToken(state) {
       state.token = null;
       state.isAuthenticated = false;

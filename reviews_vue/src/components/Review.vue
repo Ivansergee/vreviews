@@ -1,5 +1,5 @@
 <template>
-  <div class="review">
+  <div class="review box">
     <article class="media">
       <figure class="media-left">
         <p class="image is-64x64">
@@ -8,11 +8,10 @@
       </figure>
       <div class="media-content">
         <div class="content">
-          <p>
             <strong><router-link :to="{ name: 'profile', params: {username: author} }">{{ author }}</router-link></strong> <small>{{ formatTime(created_at) }}</small>
             <br />
             <span class="review-score" :class="getScoreColor()">
-              <i class="fa-solid fa-star mr-2"></i> <b>{{ score }}</b>
+              <b>{{ score }}</b><i class="fa-solid fa-star ml-2"></i>
             </span>
             <br />
             <p>{{ text }}</p>
@@ -42,7 +41,6 @@
                 $store.state.isAdmin ? "Удалить" : ""
               }}</a>
             </small>
-          </p>
         </div>
 
         <Comment
@@ -81,7 +79,7 @@
     >
       <div class="modal-background"></div>
       <div class="modal-content">
-        <div class="box">
+        <div class="box confirm">
           <p class="mb-5">Вы уверены?</p>
           <div class="controls">
             <button class="button is-danger mr-2" @click="deleteReview()">
@@ -111,7 +109,7 @@
   display: flex;
   justify-content: center;
 }
-.box p {
+.confirm {
   text-align: center;
 }
 </style>

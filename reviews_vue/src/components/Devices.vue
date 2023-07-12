@@ -98,8 +98,9 @@ export default {
     async addDevice() {
       await axios
         .post(`devices/`, { name: this.deviceName })
-        .then(() => {
+        .then((response) => {
           this.getUserInfo();
+          this.$store.commit('addDevice', response.data);
           this.deviceName = null;
           this.showModal = false;
         })
@@ -110,8 +111,9 @@ export default {
     async editDevice() {
       await axios
         .patch(`devices/${this.deviceId}/`, { name: this.deviceName })
-        .then(() => {
+        .then((response) => {
           this.getUserInfo();
+          this.$store.commit('editDevice', response.data);
           this.deviceName = null;
           this.showModal = false;
         })
@@ -124,6 +126,7 @@ export default {
         .delete(`devices/${this.deviceId}/`)
         .then(() => {
           this.getUserInfo();
+          this.$store.commit('removeDevice', this.deviceId);
           this.deviceName = null;
           this.showModal = false;
         })
