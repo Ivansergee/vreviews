@@ -15,7 +15,7 @@
             </span>
             <br />
             <p>{{ text }}</p>
-            <b>Парил(а) на:</b>
+            <b v-if="devices.length > 0">Парил(а) на:</b>
             <div v-for="device in devices" :key="device.key"><span>{{ device.name }}</span></div>
             <br>
             <small>

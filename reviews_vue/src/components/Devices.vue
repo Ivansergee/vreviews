@@ -3,9 +3,10 @@
     <div class="level is-mobile">
       <div class="level-left">
         <div class="level-item">
-          <p class="title is-4">Мои устройства</p>
+          <p class="title is-4" v-if="$store.state.username === $route.params.username">Мои устройства</p>
+          <p class="title is-4" v-else>Устройства {{ $route.params.username }}</p>
         </div>
-        <div class="level-item">
+        <div class="level-item" v-if="$store.state.username === $route.params.username">
           <button class="button is-success" @click="modalType = 'create'; showModal = true">
             <span class="icon">
               <i class="fa-solid fa-plus"></i>

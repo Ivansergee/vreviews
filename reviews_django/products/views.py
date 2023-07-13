@@ -323,7 +323,7 @@ class DeviceUpdateDeleteView(mixins.UpdateModelMixin, mixins.DestroyModelMixin, 
     serializer_class = DeviceSerializer
     queryset = Device.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     lookup_field = 'id'
 
     def patch(self, request, *args, **kwargs):

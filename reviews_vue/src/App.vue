@@ -274,13 +274,22 @@ export default {
   },
   computed: {
     adminNavbar() {
-      return this.$route.path.startsWith('/dashboard') ? true : null
+      if (this.$store.state.isAdmin && this.$route.path.startsWith('/dashboard')) {
+        return true
+      }
+      return null
     },
     addNavbar() {
-      return this.$route.path.startsWith('/add') ? true : null
+      if (this.$route.path.startsWith('/add')) {
+        return true
+      }
+      return null
     },
     profileNavbar() {
-      return this.$route.path.startsWith('/profile') ? true : null
+      if (this.$route.path.startsWith('/profile')) {
+        return true
+      }
+      return null
     },
   },
   methods: {
