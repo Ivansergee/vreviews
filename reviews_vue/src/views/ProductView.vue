@@ -464,7 +464,7 @@ export default {
       }
       formData.append('text', this.new_user_review);
       for (var i of this.selectedDevices) {
-        formData.append("device_id", i);
+        formData.append("device_id", i );
       }
 
       if (formData.get('score') < 1) {
