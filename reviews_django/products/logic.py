@@ -15,7 +15,7 @@ def set_brand_rating(brand):
     score_count = Product.objects.filter(brand=brand).aggregate(score_count=Sum('score_count')).get('score_count')
     reviews_count = Product.objects.filter(brand=brand).aggregate(reviews_count=Sum('reviews_count')).get('reviews_count')
     if score_count:
-        avg_score = Product.objects.filter(brand=brand).aggregate(avg_score=Avg('avg_score')).get('avg_score')
+        avg_score = Product.objects.filter(brand=brand, avg_score__gt=0).aggregate(avg_score=Avg('avg_score')).get('avg_score')
     else:
         avg_score = 0
     brand.avg_score = avg_score

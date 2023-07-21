@@ -6,6 +6,7 @@
         <div class="box">
           <EditImage
           :image=image
+          :type="'brand'"
           @changed="showEditImage = false"
           />
         </div>
