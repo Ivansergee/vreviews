@@ -136,7 +136,7 @@
           <p class="subtitle">Устройства</p>
           <div class="control select is-multiple">
             <select multiple size="3" v-model="selectedDevices">
-              <option v-for="device in devices" :value="device.id">{{ device.name }}</option>
+              <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.name }}</option>
             </select>
           </div>
           <p class="help">Выберите устройства, на которых вы использовали жидкость. Удерживайте Ctrl для выбора нескольких.</p>
