@@ -4,5 +4,7 @@ db.sqlite3
 .env
 reviews_django/media/brands
 reviews_django/media/products
+reviews_django/media/avatars
+reviews_django/media/producers
 reviews_django/static/
 deploy.py
