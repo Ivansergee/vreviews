@@ -119,6 +119,7 @@ export default {
 
           localStorage.setItem("token", token);
           localStorage.setItem("username", this.username);
+          location.reload();
 
           this.close();
         })

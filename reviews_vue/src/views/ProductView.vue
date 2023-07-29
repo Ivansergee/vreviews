@@ -108,67 +108,79 @@
     </div>
 
     <section class="user-review">
-      <p class="title is-4">Ваш отзыв</p>
-      <div v-if="!user_review">
-        <p class="subtitle">Оценка</p>
-        <div class="tags has-addons"
-          @mouseleave="score = user_score"
-          @click="setScore()"
-        >
-          <a class="tag" v-for="i in 10" :key="i" @mouseover="score = i">
-            <i
-              class="bi"
-              :class="[score >= i ? 'bi-star-fill' : 'bi-star']"
-            ></i>
-          </a>
-          <span class="tag is-primary">{{ score }}</span>
-        </div>
-        <div class="field">
-          <p class="subtitle">Отзыв</p>
-          <div class="control">
-              <textarea
-                class="textarea"
-                v-model="new_user_review"
-              ></textarea>
+      <div v-if="$store.state.isAuthenticated">
+        <p class="title is-4">Ваш отзыв</p>
+        <div v-if="!user_review">
+          <p class="subtitle">Оценка</p>
+          <div class="tags has-addons"
+            @mouseleave="score = user_score"
+            @click="setScore()"
+          >
+            <a class="tag" v-for="i in 10" :key="i" @mouseover="score = i">
+              <i
+                class="bi"
+                :class="[score >= i ? 'bi-star-fill' : 'bi-star']"
+              ></i>
+            </a>
+            <span class="tag is-primary">{{ score }}</span>
+          </div>
+          <div class="field" v-if="user_score">
+            <p class="subtitle">Отзыв</p>
+            <div class="control">
+                <textarea
+                  class="textarea"
+                  v-model="new_user_review"
+                ></textarea>
+            </div>
+            <p class="help">Опишите свои впечатления от вкуса (не обязательно).</p>
+          </div>
+          <div class="field" v-if="user_score">
+            <p class="subtitle mb-2">Устройства</p>
+            <p class="mb-2" v-if="!devices">Вы ещё не добавили ни одного устройства</p>
+            <p class="subtitle">
+              <button class="button is-success is-small">
+                <span>Добавить уcтройство</span>
+              </button>
+            </p>
+            <div class="control select is-multiple" v-if="devices">
+              <select multiple size="3" v-model="selectedDevices">
+                <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.name }}</option>
+              </select>
+            </div>
+            <p class="help" v-if="devices">Выберите устройства, на которых вы использовали жидкость. Удерживайте Ctrl для выбора нескольких.</p>
+          </div>
+          <div class="control mt-2">
+              <button
+                class="button"
+                :class="{ 'is-loading': isLoading }"
+                :disabled="!new_user_review"
+                @click="addReview()"
+              >
+                Отправить
+              </button>
           </div>
         </div>
-        <div class="field">
-          <p class="subtitle">Устройства</p>
-          <div class="control select is-multiple">
-            <select multiple size="3" v-model="selectedDevices">
-              <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.name }}</option>
-            </select>
-          </div>
-          <p class="help">Выберите устройства, на которых вы использовали жидкость. Удерживайте Ctrl для выбора нескольких.</p>
-        </div>
-        <div class="control mt-2">
+        <div v-else>
+          <p><strong>Оценка: </strong>{{ user_score }}</p>
+          <p><strong>Отзыв: </strong><br />{{ user_review }}</p>
+          <div class="mt-5">
             <button
-              class="button"
-              :class="{ 'is-loading': isLoading }"
-              :disabled="!new_user_review"
-              @click="addReview()"
+              class="button is-info mr-2"
+              @click="
+                new_user_review = user_review;
+                user_review = '';
+              "
             >
-              Отправить
+              Редактировать
             </button>
+            <button class="button is-danger" @click="showDeleteConfirm = true">
+              Удалить
+            </button>
+          </div>
         </div>
       </div>
       <div v-else>
-        <p><strong>Оценка: </strong>{{ user_score }}</p>
-        <p><strong>Отзыв: </strong><br />{{ user_review }}</p>
-        <div class="mt-5">
-          <button
-            class="button is-info mr-2"
-            @click="
-              new_user_review = user_review;
-              user_review = '';
-            "
-          >
-            Редактировать
-          </button>
-          <button class="button is-danger" @click="showDeleteConfirm = true">
-            Удалить
-          </button>
-        </div>
+        <p class="title is-5"><a @click="$root.showLogIn=true">Войдите</a> чтобы оставить отзыв.</p>
       </div>
     </section>
 

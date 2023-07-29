@@ -30,10 +30,10 @@
           >
           <router-link class="navbar-item" :to="{ name: 'brands-list' }"
             >Бренды</router-link>
-          <router-link
+          <a
             class="navbar-item"
-            :to="{ name: 'add' }"
-            >Добавить</router-link
+            @click="toAdd()"
+            >Добавить</a
           >
           <router-link class="navbar-item" :to="{ name: 'contacts' }"
             >Контакты</router-link
@@ -300,9 +300,18 @@ export default {
       localStorage.removeItem("username");
       localStorage.removeItem("userid");
       localStorage.removeItem("isAdmin");
+      localStorage.removeItem("devices");
 
       this.$store.commit("removeToken");
       this.$router.push("/");
+    },
+
+    toAdd() {
+      if (this.$store.state.isAuthenticated) {
+        this.$router.push({name: 'add'});
+      } else {
+        this.showLogIn = true;
+      }
     },
 
     async resetPassword() {
