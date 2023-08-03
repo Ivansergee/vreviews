@@ -137,7 +137,7 @@ import axios from "axios";
 import moment from "moment";
 
 import UserInfoForm from "../components/UserInfoForm.vue";
-import Devices from "../components/Devices.vue";
+import Devices from "../components/Devices/Devices.vue";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 

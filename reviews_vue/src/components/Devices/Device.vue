@@ -10,13 +10,13 @@
                 <div class="level-item">
                     <button
                         class="button is-info is-small mr-3"
-                        @click="openModal('edit', device.id, device.name)"
+                        @click="$emit('showEdit', device.id, device.name)"
                     >
                         <i class="fa-solid fa-pen"></i>
                     </button>
                     <button
                         class="button is-danger is-small"
-                        @click="openModal('delete', device.id, device.name)"
+                        @click="$emit('showDelete', device.id, device.name)"
                     >
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -31,5 +31,6 @@
 <script>
 export default {
     props: ['device', 'openModal'],
+    emits: ['showEdit', 'showDelete']
 };
 </script>

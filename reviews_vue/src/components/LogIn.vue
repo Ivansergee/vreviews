@@ -91,7 +91,7 @@ export default {
     };
   },
   methods: {
-    async submitForm() {
+    submitForm() {
       this.errors = [];
       if (this.username === "") {
         this.errors.push("Заполните имя пользователя");
@@ -107,7 +107,7 @@ export default {
         };
 
         this.isLoading = true;
-        await axios
+        axios
         .post("token/login/", formData)
         .then((response) => {
           const token = response.data.auth_token;
@@ -119,7 +119,16 @@ export default {
 
           localStorage.setItem("token", token);
           localStorage.setItem("username", this.username);
-          location.reload();
+
+          if (localStorage.getItem('token')){
+            axios.get("users/me/")
+            .then((response) => {
+              this.$store.commit("setIsAdmin", response.data.is_staff);
+              localStorage.setItem("isAdmin", response.data.is_staff);
+              this.$store.commit("setDevices", response.data.devices);
+              localStorage.setItem("devices", JSON.stringify(this.$store.state.devices));
+            });
+          }
 
           this.close();
         })
@@ -140,17 +149,6 @@ export default {
             this.errors.push("Что-то пошло не так. Попробуйте ещё раз.");
           }
         }),(this.isLoading = false);
-
-        if (localStorage.getItem('token')){
-          await axios.get("users/me/")
-          .then((response) => {
-            this.$store.commit("setIsAdmin", response.data.is_staff);
-            localStorage.setItem("isAdmin", response.data.is_staff);
-            this.$store.commit("setDevices", response.data.devices);
-            localStorage.setItem("devices", JSON.stringify(this.$store.state.devices));
-          });
-        }
-
       }
     },
 

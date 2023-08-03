@@ -150,7 +150,7 @@
             <p class="help" v-if="devices">Выберите устройства, на которых вы использовали жидкость. Удерживайте Ctrl для выбора нескольких.</p>
           </div>
           <div class="control mt-2">
-              <button
+              <button v-if="user_score"
                 class="button"
                 :class="{ 'is-loading': isLoading }"
                 :disabled="!new_user_review"
@@ -540,6 +540,7 @@ export default {
         await axios
           .delete(`reviews/${this.user_review_id}/delete/`)
           .then(() => {
+            this.user_review_id = null;
             this.user_score = null;
             this.score = 0;
             this.user_review = "";
