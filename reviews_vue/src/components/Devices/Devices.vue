@@ -16,7 +16,6 @@
         </div>
       </div>
     </div>
-
     <div v-for="device in devices" :key="device.id">
       <Device
         :device="device"
@@ -30,19 +29,21 @@
       @close="showCreateModal = false"
       @added="getUserInfo(); showCreateModal = false"
     />
-    <EditDeviceModal 
+    <EditDeviceModal
+      v-if="deviceName" 
       :showModal="showEditModal"
       :name="deviceName"
       :id="deviceId"
-      @close="showEditModal = false"
-      @edited="getUserInfo(); showEditModal = false"
+      @close="showEditModal = false; deviceName = null; deviceId = null"
+      @edited="getUserInfo(); showEditModal = false; deviceName = null; deviceId = null"
     />
     <DeleteDeviceModal
+      v-if="deviceName"
       :showModal="showDeleteModal"
       :name="deviceName"
-      :deviceId="deviceId"
-      @close="showDeleteModal = false"
-      @deleted="getUserInfo(); showDeleteModal = false"
+      :id="deviceId"
+      @close="showDeleteModal = false; deviceName = null; deviceId = null"
+      @deleted="getUserInfo(); showDeleteModal = false; deviceName = null; deviceId = null"
     />
 
     </div>
@@ -75,14 +76,14 @@ export default {
   },
   methods: {
     showEdit(id, name) {
-      this.showEditModal = true;
       this.deviceName = name;
       this.deviceId = id;
+      this.showEditModal = true;
     },
     showDelete(id, name) {
-      this.showDeleteModal = true;
       this.deviceName = name;
       this.deviceId = id;
+      this.showDeleteModal = true;
     }
   }
 };

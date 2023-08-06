@@ -11,7 +11,7 @@
               <button class="delete is-medium" aria-label="close" @click="$emit('close')"></button>
             </div>
           </div>
-            <div class="field">
+            <div class="field" v-if="deviceName">
               <div class="control">
                 <input type="text" class="input" v-model="deviceName">
               </div>
@@ -23,7 +23,6 @@
                   @click="editDevice">Сохранить</button>
               </div>
             </div>
-
           </div>
         </div>
       </div>

@@ -138,7 +138,7 @@
             <p class="subtitle mb-2">Устройства</p>
             <p class="mb-2" v-if="!devices">Вы ещё не добавили ни одного устройства</p>
             <p class="subtitle">
-              <button class="button is-success is-small">
+              <button class="button is-success is-small" @click="showCreateModal = true">
                 <span>Добавить уcтройство</span>
               </button>
             </p>
@@ -208,6 +208,12 @@
         @deleted="removeReview"
       />
     </section>
+
+    <AddDeviceModal
+      :showModal="showCreateModal"
+      @close="showCreateModal = false"
+      @added="showCreateModal = false"
+    />
 
     <div class="modal" :class="{ 'is-active': showImage }">
       <div class="modal-background" @click="showImage = false"></div>
@@ -304,11 +310,14 @@ import { toast } from "bulma-toast";
 
 import Review from "../components/Review.vue";
 import EditLiquid from "../components/EditLiquid.vue";
+import AddDeviceModal from '../components/Devices/AddDeviceModal.vue';
+
 
 export default {
   components: {
     Review,
-    EditLiquid
+    EditLiquid,
+    AddDeviceModal
   },
   data() {
     return {
@@ -322,11 +331,12 @@ export default {
       user_review_id: null,
       commentingPostId: 0,
       activeModal: false,
-      isLoading: false,
       showDeleteConfirm: false,
-      isLoadingDelete: false,
       showImage: false,
-      showEdit: false
+      showEdit: false,
+      showCreateModal: false,
+      isLoading: false,
+      isLoadingDelete: false,
     };
   },
   mounted() {
