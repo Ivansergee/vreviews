@@ -25,17 +25,17 @@
         :class="{ 'is-active': showMobileMenu }"
       >
         <div class="navbar-start">
-          <router-link class="navbar-item" :to="{ name: 'liquids-list' }"
+          <router-link class="navbar-item" :to="{ name: 'liquids-list' }" @click="showMobileMenu = false"
             >Жидкости</router-link
           >
-          <router-link class="navbar-item" :to="{ name: 'brands-list' }"
+          <router-link class="navbar-item" :to="{ name: 'brands-list' }" @click="showMobileMenu = false"
             >Бренды</router-link>
           <a
             class="navbar-item"
-            @click="toAdd()"
+            @click="toAdd(); showMobileMenu = false"
             >Добавить</a
           >
-          <router-link class="navbar-item" :to="{ name: 'contacts' }"
+          <router-link class="navbar-item" :to="{ name: 'contacts' }" @click="showMobileMenu = false"
             >Контакты</router-link
           >
           <a
@@ -141,9 +141,9 @@
         <div class="modal-background" @click="showResetPassword = false"></div>
         <div class="modal-content">
           <div class="box">
-            <div class="level">
+            <div class="level is-mobile">
               <div class="level-left">
-                <h1 class="title">Сбросить пароль</h1>
+                <h1 class="title is-4">Сбросить пароль</h1>
               </div>
               <div class="level-right">
                 <button
@@ -183,9 +183,9 @@
         ></div>
         <div class="modal-content">
           <div class="box">
-            <div class="level">
+            <div class="level is-mobile">
               <div class="level-left">
-                <h1 class="title">Активация аккаунта</h1>
+                <h1 class="title is-4">Активация аккаунта</h1>
               </div>
               <div class="level-right">
                 <button

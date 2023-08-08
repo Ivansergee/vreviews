@@ -3,9 +3,9 @@
     <div class="modal-background" @click="$emit('close')"></div>
     <div class="modal-content">
       <div class="box">
-      <div class="level">
+      <div class="level is-mobile">
           <div class="level-left">
-              <h1 class="title">Изменение информации профиля</h1>
+              <p class="title is-4">Изменение информации профиля</p>
           </div>
           <div class="level-right">
               <button class="delete is-medium" aria-label="close" @click="$emit('close')"></button>
@@ -66,7 +66,7 @@
                     @click="showEditPassword = true"
                   >Изменить пароль</button>
                   <button
-                    class="button is-dark"
+                    class="button is-dark mt-2"
                     @click="showEditEmail = true"
                   >Изменить email</button>
               </div>

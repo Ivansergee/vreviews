@@ -60,8 +60,15 @@
       <div class="modal-background" @click="showEditAvatar = false"></div>
       <div class="modal-content">
         <div class="box">
+          <div class="level is-mobile">
+            <div class="level-left">
+              <p class="title is-4">Изменение фото профиля</p>
+            </div>
+            <div class="level-right">
+              <button class="delete is-medium" aria-label="close" @click="showEditAvatar = false"></button>
+            </div>
+          </div>
           <div class="field">
-            <label><span class="subtitle">Аватар</span></label>
             <div class="control" v-if="avatar">
               <cropper
                 class="cropper"
@@ -113,11 +120,6 @@
             </div>
           </div>
         </div>
-        <button
-          class="modal-close is-large"
-          aria-label="close"
-          @click="showEditAvatar = false"
-        ></button>
       </div>
     </div>
 

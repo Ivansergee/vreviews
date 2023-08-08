@@ -1,8 +1,8 @@
 <template>
   <div class="box">
-    <div class="level">
+    <div class="level is-mobile">
       <div class="level-left">
-        <h1 class="title">Регистрация</h1>
+        <h1 class="title is-4">Регистрация</h1>
       </div>
       <div class="level-right">
         <button

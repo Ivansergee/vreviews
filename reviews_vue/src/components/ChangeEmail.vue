@@ -3,9 +3,9 @@
     <div class="modal-background" @click="$emit('close')"></div>
     <div class="modal-content">
       <div class="box">
-        <div class="level">
+        <div class="level is-mobile">
           <div class="level-left">
-            <h1 class="title">Изменение почты</h1>
+            <p class="title is-4">Изменение почты</p>
           </div>
           <div class="level-right">
             <button

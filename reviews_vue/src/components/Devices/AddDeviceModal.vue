@@ -3,7 +3,7 @@
       <div class="modal-background" @click="$emit('close'); deviceName = null"></div>
       <div class="modal-content">
         <div class="box">
-          <div class="level">
+          <div class="level is-mobile">
             <div class="level-left">
               <p class="title is-4">Добавление устройства</p>
             </div>
