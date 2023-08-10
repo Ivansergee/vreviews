@@ -550,13 +550,13 @@ export default {
         await axios
           .delete(`reviews/${this.user_review_id}/delete/`)
           .then(() => {
+            this.removeReview(this.user_review_id);
             this.user_review_id = null;
             this.user_score = null;
             this.score = 0;
             this.user_review = "";
             this.new_user_review = "";
             this.showDeleteConfirm = false;
-            this.removeReview(this.user_review_id);
           })
           .catch((error) => {
             console.log(error.response.message);

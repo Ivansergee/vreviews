@@ -116,7 +116,7 @@ class ReviewListCreate(generics.ListCreateAPIView):
                 'product__name',
                 'product__slug',
                 'product__image') \
-            .order_by('id')
+            .order_by('-created_at')
 
     def perform_create(self, serializer):
         if self.request.user.is_staff and self.request.data['author']:

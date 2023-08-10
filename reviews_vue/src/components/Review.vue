@@ -10,7 +10,7 @@
         <div class="content">
             <strong><router-link :to="{ name: 'profile', params: {username: author} }">{{ author }}</router-link></strong> <small>{{ formatTime(created_at) }}</small>
             <br />
-            <span class="review-score" :class="getScoreColor()">
+            <span class="review-score my-3" :class="getScoreColor()">
               <b>{{ score }}</b><i class="fa-solid fa-star ml-2"></i>
             </span>
             <br />
@@ -112,6 +112,9 @@
 .confirm {
   text-align: center;
 }
+.tag {
+  box-shadow: 1px 1px 2px #aaa;
+}
 </style>
 
 <script>
@@ -149,6 +152,7 @@ export default {
     formatTime(time) {
       return moment(time).format('DD.MM.YYYY HH:mm')
     },
+
     getScoreColor(){
       if (this.score > 8){
         return 'tag is-success is-light is-medium';

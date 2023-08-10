@@ -13,7 +13,9 @@
             >{{ product }}</router-link></strong>
             <small>{{ formatTime(created_at) }}</small>
             <br />
-            <strong>Оценка:</strong> {{ score }}
+            <span class="review-score my-2" :class="getScoreColor()">
+              <b>{{ score }}</b><i class="fa-solid fa-star ml-2"></i>
+            </span>
             <br />
             {{ text }}
             <br />
@@ -57,6 +59,10 @@
 .fa-thumbs-down {
   color: red;
 }
+
+.tag {
+  box-shadow: 1px 1px 2px #aaa;
+}
 </style>
 
 <script>
@@ -88,7 +94,19 @@ export default {
   methods: {
     formatTime(time) {
       return moment(time).format('DD.MM.YYYY HH:mm')
-    }
+    },
+
+    getScoreColor(){
+      if (this.score > 8){
+        return 'tag is-success is-light is-medium';
+      } else if (this.score > 6) {
+        return 'tag is-success is-light is-medium';
+      } else if (this.score > 4) {
+        return 'tag is-warning is-light is-medium';
+      } else {
+        return 'tag is-danger is-light is-medium';
+      }
+    },
   }
 
 };
