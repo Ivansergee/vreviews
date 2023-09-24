@@ -3,6 +3,7 @@
       <div class="column">
         <h1 class="title is-4">Добавление новой жидкости</h1>
         <p><strong>Название: </strong>{{ name }}</p>
+        <p><strong>Тип никотина: </strong>{{ nic_type }}</p>
         <p><strong>Комментарий пользователя:</strong></p>
         <p>{{ comment }}</p>
         <br>
@@ -196,8 +197,12 @@ export default {
       default: []
     },
     name: {
-        type: String,
-        default: ''
+      type: String,
+      default: ''
+    },
+    nic_type: {
+      type: String,
+      default: ''
     },
     comment: {
         type: String,

@@ -137,16 +137,16 @@
           <div class="field" v-if="user_score">
             <p class="subtitle mb-2">Устройства</p>
             <p class="mb-2" v-if="!devices">Вы ещё не добавили ни одного устройства</p>
-            <p class="subtitle">
-              <button class="button is-success is-small" @click="showCreateModal = true">
-                <span>Добавить уcтройство</span>
-              </button>
-            </p>
             <div class="control select is-multiple" v-if="devices">
               <select multiple size="3" v-model="selectedDevices">
                 <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.name }}</option>
               </select>
             </div>
+            <p class="subtitle mt-2">
+              <button class="button is-success is-small" @click="showCreateModal = true">
+                <span>Добавить уcтройство</span>
+              </button>
+            </p>
             <p class="help" v-if="devices">Выберите устройства, на которых вы использовали жидкость. Удерживайте Ctrl для выбора нескольких.</p>
           </div>
           <div class="control mt-2">

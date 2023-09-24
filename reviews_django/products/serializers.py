@@ -490,18 +490,28 @@ class AdminProductSerializer(serializers.ModelSerializer):
 
 class SuggestionSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source='author.username', read_only=True)
+    device_id = serializers.PrimaryKeyRelatedField(
+        queryset=Device.objects.all(),
+        source='devices',
+        many=True,
+        required=False,
+        write_only=True
+    )
+    
 
     class Meta:
         model = Suggestion
         fields = [
             'id',
             'name',
+            'nic_type',
             'comment',
             'score',
             'text',
             'author',
             'author_name',
             'product_slug',
-            'processed'
+            'processed',
+            'device_id'
         ]
         read_only_fields = ['id', 'author']

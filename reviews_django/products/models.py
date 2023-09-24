@@ -275,6 +275,8 @@ class Suggestion(models.Model):
     author = models.ForeignKey(User, related_name='suggestion', on_delete=models.CASCADE)
     score = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     text = models.TextField(blank=True, null=True)
+    nic_type = models.CharField(max_length=10, blank=True, null=True)
+    devices = models.ManyToManyField(Device, related_name='suggestion', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     processed = models.BooleanField(default=False)
     product_slug = models.CharField(max_length=200, blank=True, null=True)

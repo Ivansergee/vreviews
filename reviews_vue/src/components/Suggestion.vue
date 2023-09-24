@@ -13,6 +13,7 @@
       <p class="title is-5">
         {{ name }}
       </p>
+      <p class="subtitle">{{ nic_type }}</p>
     </div>
 
     <div class="column">
@@ -52,6 +53,7 @@ export default {
   props: [
     "id",
     "name",
+    "nic_type",
     "text",
     "comment",
     "author",

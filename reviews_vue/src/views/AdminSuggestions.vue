@@ -6,6 +6,7 @@
         :key="suggestion.id"
         :id="suggestion.id"
         :name="suggestion.name"
+        :nic_type="suggestion.nic_type"
         :text="suggestion.text"
         :comment="suggestion.comment"
         :author="suggestion.author_name"

@@ -1,6 +1,32 @@
 <template>
     <div class="products container" v-if="products">
-      <p class="title">Топ жидкостей</p>
+      <div class="is-flex is-align-items-center mb-4">
+        <p class="title mb-0">Топ жидкостей</p>
+        <!-- <div class="dropdown is-active">
+          <div class="dropdown-trigger ml-2">
+            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3">
+              <span>Click me</span>
+              <span class="icon is-small">
+                <i class="fas fa-angle-down" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+            <div class="dropdown-content">
+              <a href="#" class="dropdown-item">
+                Overview
+              </a>
+              <a href="#" class="dropdown-item">
+                Modifiers
+              </a>
+              <a href="#" class="dropdown-item">
+                Grid
+              </a>
+            </div>
+          </div>
+        </div> -->
+      </div>
+
       <div class="columns is-vcentered is-hidden-mobile list-header">
         <div class="column">
           <p>Изображение</p>
