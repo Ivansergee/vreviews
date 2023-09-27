@@ -223,7 +223,11 @@ export default {
     suggestion_id: {
       type: Number,
       default: null
-    }
+    },
+    devices: {
+      type: Array,
+      default: []
+    },
   },
   emits: ['processed'],
   data() {

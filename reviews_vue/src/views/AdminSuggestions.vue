@@ -13,7 +13,7 @@
         :score="suggestion.score"
         :product_slug="suggestion.product_slug"
         :processed="suggestion.processed"
-        @process="showCreateLiquid(suggestion.name, suggestion.comment, suggestion.text, suggestion.author, suggestion.score, suggestion.id)"
+        @process="showCreateLiquid(suggestion.name, suggestion.comment, suggestion.text, suggestion.author, suggestion.score, suggestion.id, suggestion.nic_type)"
       />
 
       <div class="modal" :class="{ 'is-active': showCreate }" v-if="showCreate">
@@ -24,6 +24,7 @@
             :brands=options.brands
             :flavors=options.flavors
             :nic_content=options.nic_content
+            :nic_type="modalNicType"
             :volumes=options.volumes
             :name=modalName
             :comment=modalComment
@@ -31,6 +32,7 @@
             :authorId=modalAuthorId
             :score=modalScore
             :suggestion_id=modalSuggestionId
+            :devices="modalDevices"
             @processed="processSuggestion"
         />
         </div>
@@ -61,11 +63,14 @@ export default {
       showCreate: false,
       options: null,
       modalName: null,
+      modalNicType: null,
       modalComment: null,
+      modalDevices: null,
       modalReview: null,
       modalAuthorId: null,
       modalScore: null,
-      modalSuggestionId: null
+      modalSuggestionId: null,
+      modalDevices: null
     }
   },
   mounted() {
@@ -111,7 +116,7 @@ export default {
       })
     },
 
-    showCreateLiquid(name, comment, review, authorId, score, suggestion_id) {
+    showCreateLiquid(name, comment, review, authorId, score, suggestion_id, nic_type) {
       this.showCreate = true;
       this.modalName = name;
       this.modalComment = comment;
@@ -119,6 +124,8 @@ export default {
       this.modalAuthorId = authorId;
       this.modalScore = score;
       this.modalSuggestionId = suggestion_id;
+      this.modalNicType = nic_type;
+      this.modalDevices = devices;
     }
   }
 }

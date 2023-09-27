@@ -144,6 +144,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'volume_id',
             'nic_content',
             'nic_content_id',
+            'nic_type',
             'vg',
             'flavors',
             'flavor_id',
@@ -497,6 +498,7 @@ class SuggestionSerializer(serializers.ModelSerializer):
         required=False,
         write_only=True
     )
+    devices = DeviceSerializer(many=True, read_only=True)
     
 
     class Meta:
@@ -512,6 +514,7 @@ class SuggestionSerializer(serializers.ModelSerializer):
             'author_name',
             'product_slug',
             'processed',
-            'device_id'
+            'device_id',
+            'devices'
         ]
         read_only_fields = ['id', 'author']

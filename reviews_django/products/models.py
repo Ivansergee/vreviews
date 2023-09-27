@@ -146,6 +146,7 @@ class Product(models.Model):
     brand = models.ForeignKey(Brand, related_name='products', on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     description = models.TextField(blank=True, null=True)
+    nic_type = models.CharField(max_length=10, blank=True, null=True)
     nic_content = models.ManyToManyField(Nicotine, related_name='products')
     volume = models.ManyToManyField(Volume, related_name='products')
     vg = models.IntegerField()

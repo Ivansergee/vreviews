@@ -233,6 +233,7 @@
           :name="product.name"
           :description="product.description"
           :brand="{name: product.brand.name, id: product.brand.id}"
+          :nic-type="product.nic_type"
           :image="product.image_url"
           :flavors="product.flavors"
           :vg="product.vg"

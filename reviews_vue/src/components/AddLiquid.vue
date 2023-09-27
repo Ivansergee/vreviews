@@ -1,152 +1,132 @@
 <template>
-    <div class="columns add-liquid">
-      <div class="column is-6 is-offset-3">
-        <h1 class="title is-4">Добавление новой жидкости</h1>
-        <p>Помогите нам с наполнением сайта, предложив жидкость. После проверки мы добавим её на сайт.</p>
-        <br>
-        <form @submit.prevent="submitForm">
+  <div class="columns add-liquid">
+    <div class="column is-6 is-offset-3">
+      <h1 class="title is-4">Добавление новой жидкости</h1>
+      <p>Помогите нам с наполнением сайта, предложив жидкость. После проверки мы добавим её на сайт.</p>
+      <br>
+      <form @submit.prevent="submitForm">
 
-          <div class="field">
-            <label><span class="subtitle">Название</span></label>
-            <div class="control">
-              <input type="text" class="input" :class="{'is-danger': errors.name}" v-model="productData.name" />
-            </div>
-            <p class="help">Название жидкости без названия бренда</p>
-            <p class="help is-danger" v-if="errors.name">{{ errors.name[0] }}</p>
+        <div class="field">
+          <label><span class="subtitle">Название</span></label>
+          <div class="control">
+            <input type="text" class="input" :class="{ 'is-danger': errors.name }" v-model="productData.name" />
           </div>
+          <p class="help">Название жидкости без названия бренда</p>
+          <p class="help is-danger" v-if="errors.name">{{ errors.name[0] }}</p>
+        </div>
 
-          <div class="field">
-            <label><span class="subtitle">Бренд</span></label>
-            <div class="control">
-              <VueMultiselect
-                v-model="productData.brand"
-                :options="brands"
-                :multiple="false"
-                selectLabel="Выбрать"
-                selectedLabel="Выбрано"
-                deselectLabel="Удалить"
-                placeholder="Выберите бренд"
-                label="name"
-                track-by="id"
-                @select="getBrandData"
-              />
-            </div>
-            <p class="help">Выберите бренд. Для поиска начните набирать название</p>
-            <p class="help is-danger" v-if="errors.brand">{{ errors.brand[0] }}</p>
+        <div class="field">
+          <label><span class="subtitle">Бренд</span></label>
+          <div class="control">
+            <VueMultiselect v-model="productData.brand" :options="brands" :multiple="false" selectLabel="Выбрать"
+              selectedLabel="Выбрано" deselectLabel="Удалить" placeholder="Выберите бренд" label="name" track-by="id"
+              @select="getBrandData" />
           </div>
+          <p class="help">Выберите бренд. Для поиска начните набирать название</p>
+          <p class="help is-danger" v-if="errors.brand">{{ errors.brand[0] }}</p>
+        </div>
 
-          <div class="field">
-            <label><span class="subtitle">Описание</span></label>
-            <div class="control">
-              <textarea
-                class="textarea"
-                cols="100"
-                rows="5"
-                v-model="productData.description"
-              >
+        <div class="field">
+          <label><span class="subtitle">Описание</span></label>
+          <div class="control">
+            <textarea class="textarea" cols="100" rows="5" v-model="productData.description">
               </textarea>
-            </div>
-            <p class="help">Описание вкуса</p>
-            <p class="help is-danger" v-if="errors.description">{{ errors.description[0] }}</p>
           </div>
+          <p class="help">Описание вкуса</p>
+          <p class="help is-danger" v-if="errors.description">{{ errors.description[0] }}</p>
+        </div>
 
-          <div class="field">
-            <label><span class="subtitle">Вкусы</span></label>
-            <div class="control">
-              <VueMultiselect
-                v-model="productData.flavors"
-                :options="flavors"
-                :multiple="true"
-                selectLabel="Выбрать"
-                selectedLabel="Выбрано"
-                deselectLabel="Удалить"
-                placeholder="Выберите вкусы"
-                label="name"
-                track-by="id"
-              />
-            </div>
-            <p class="help">Для поиска начните набирать название</p>
-            <p class="help is-danger" v-if="errors.flavors">{{ errors.flavors[0] }}</p>
+        <div class="field">
+          <label><span class="subtitle">Вкусы</span></label>
+          <div class="control">
+            <VueMultiselect v-model="productData.flavors" :options="flavors" :multiple="true" selectLabel="Выбрать"
+              selectedLabel="Выбрано" deselectLabel="Удалить" placeholder="Выберите вкусы" label="name" track-by="id" />
           </div>
+          <p class="help">Для поиска начните набирать название</p>
+          <p class="help is-danger" v-if="errors.flavors">{{ errors.flavors[0] }}</p>
+        </div>
 
-          <div class="field">
-            <label><span class="subtitle">Содержание никотина</span></label>
-            <div class="control" v-for="amount in nic_content" :key="amount.id">
-              <label class="checkbox">
-                <input type="checkbox" :value="amount.id" v-model="productData.nic_content" />
-                {{ amount.amount }} мг
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <label><span class="subtitle">Объем</span></label>
-            <div class="control" v-for="vol in volumes" :key="vol.id">
-              <label class="checkbox">
-                <input type="checkbox" :value="vol.id" v-model="productData.volumes" />
-                {{ vol.volume }} мг
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <label><span class="subtitle">VG/PG</span></label>
-            <div class="control">
-              <input type="number" class="input vg" v-model="productData.vg" /><span>   /   </span><input type="number" class="input vg" :value="pg" readonly/>
-            </div>
-          </div>
-
-          <div class="field">
-            <label><span class="subtitle">Изображение</span></label>
-            <div class="control" v-if="image.src">
-              <cropper
-                class="cropper"
-                ref="cropper"
-                :src="image.src"
-                :stencil-props="{
-                  handlers: {},
-                  movable: false,
-                  scalable: false,
-                }"
-                :stencil-size="{
-                  width: 300,
-                  height: 300,
-                }"
-                image-restriction="none"
-                @change="change"
-              />
-            </div>
-            <p class="help">Добавьте фото жидкости и выберите участок, который будет использован для превью. Для зума используйте колесико мыши или стандартный жест на смартфоне.</p>
-          </div>
-
-          <div class="file has-name">
-            <label class="file-label">
-              <input
-                class="file-input"
-                type="file"
-                accept="image/png, image/jpeg"
-                @change="uploadImage($event)"
-                name="image"
-              />
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-upload"></i>
-                </span>
-                <span class="file-label"> Выберите файл </span>
-              </span>
-              <span class="file-name">{{ image.name }}</span>
+        <div class="field">
+          <label><span class="subtitle">Тип никотина</span></label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="nictype" value="salt" v-model="productData.nicType">
+              Солевой
+            </label>
+            <label class="radio">
+              <input type="radio" name="nictype" value="classic" v-model="productData.nicType">
+              Классический
             </label>
           </div>
+          <p class="help is-danger" v-if="errors.nicType">{{ errors.nicType[0] }}</p>
+        </div>
 
-          <div class="field mt-4">
-            <div class="control">
-              <button class="button is-dark">Отправить</button>
-            </div>
+        <div class="field">
+          <label><span class="subtitle">Содержание никотина</span></label>
+          <div class="control" v-for="amount in nic_content" :key="amount.id">
+            <label class="checkbox">
+              <input type="checkbox" :value="amount.id" v-model="productData.nic_content" />
+              {{ amount.amount }} мг
+            </label>
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
 
+        <div class="field">
+          <label><span class="subtitle">Объем</span></label>
+          <div class="control" v-for="vol in volumes" :key="vol.id">
+            <label class="checkbox">
+              <input type="checkbox" :value="vol.id" v-model="productData.volumes" />
+              {{ vol.volume }} мг
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label><span class="subtitle">VG/PG</span></label>
+          <div class="control">
+            <input type="number" class="input vg" v-model="productData.vg" /><span> / </span><input type="number"
+              class="input vg" :value="pg" readonly />
+          </div>
+        </div>
+
+        <div class="field">
+          <label><span class="subtitle">Изображение</span></label>
+          <div class="control" v-if="image.src">
+            <cropper class="cropper" ref="cropper" :src="image.src" :stencil-props="{
+              handlers: {},
+              movable: false,
+              scalable: false,
+            }" :stencil-size="{
+  width: 300,
+  height: 300,
+}" image-restriction="none" @change="change" />
+          </div>
+          <p class="help">Добавьте фото жидкости и выберите участок, который будет использован для превью. Для зума
+            используйте колесико мыши или стандартный жест на смартфоне.</p>
+        </div>
+
+        <div class="file has-name">
+          <label class="file-label">
+            <input class="file-input" type="file" accept="image/png, image/jpeg" @change="uploadImage($event)"
+              name="image" />
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label"> Выберите файл </span>
+            </span>
+            <span class="file-name">{{ image.name }}</span>
+          </label>
+        </div>
+
+        <div class="field mt-4">
+          <div class="control">
+            <button class="button is-dark">Отправить</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -155,9 +135,11 @@
   width: 400px;
   background: #ddd;
 }
+
 .cropper:hover {
   cursor: move;
 }
+
 .vg {
   width: 8ch;
 }
@@ -209,6 +191,7 @@ export default {
         description: "",
         flavors: [],
         nic_content: [],
+        nicType: null,
         vg: 50,
         volumes: [],
         brand: "",
@@ -230,7 +213,7 @@ export default {
       if (brandId) {
         for (const brand of this.brands) {
           if (brand.id == brandId) {
-            this.productData.brand = {id: brand.id, name: brand.name}
+            this.productData.brand = { id: brand.id, name: brand.name }
           }
         }
       }
@@ -245,29 +228,30 @@ export default {
     submitForm() {
       if (!this.$store.state.isAuthenticated) {
         toast({
-        message: "Для отправки формы необходимо выполнить вход в свой аккаунт!",
-        type: "is-danger",
-        dismissible: true,
-        duration: 10000,
-        pauseOnHover: true,
-        position: "top-center",
+          message: "Для отправки формы необходимо выполнить вход в свой аккаунт!",
+          type: "is-danger",
+          dismissible: true,
+          duration: 10000,
+          pauseOnHover: true,
+          position: "top-center",
         });
         return;
       }
-      
+
       const formData = new FormData();
 
       for (var i of this.productData.flavors) {
         formData.append("flavor_id", i.id);
       }
-      if (this.image.file){
+      if (this.image.file) {
         formData.append("image", this.image.file);
       }
-      if (this.image.thumbnail){
+      if (this.image.thumbnail) {
         formData.append("thumbnail", this.image.thumbnail, this.image.name);
       }
       formData.append("name", this.productData.name);
       formData.append("vg", this.productData.vg);
+      formData.append("nic_type", this.productData.nicType);
       for (var i of this.productData.nic_content) {
         formData.append("nic_content_id", i);
       }
@@ -287,6 +271,7 @@ export default {
             name: "",
             description: "",
             flavors: [],
+            nicType: null,
             nic_content: [],
             volumes: [],
             brand: "",
@@ -321,17 +306,17 @@ export default {
       }
     },
 
-    getBrandData(choice){
+    getBrandData(choice) {
       axios
         .get(`brand-choices/${choice.id}/`)
         .then((response) => {
           this.productData.vg = response.data.vg;
           this.productData.nic_content = [];
           this.productData.volumes = [];
-          for (var i of response.data.nic_content){
+          for (var i of response.data.nic_content) {
             this.productData.nic_content.push(i.id)
           }
-          for (var i of response.data.volume){
+          for (var i of response.data.volume) {
             this.productData.volumes.push(i.id)
           }
         })
