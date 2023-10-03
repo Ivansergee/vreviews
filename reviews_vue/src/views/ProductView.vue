@@ -72,6 +72,8 @@
               >{{ amount.amount }}</span
             >
           </p>
+          <p v-if="product.nic_type === 'salt'"><strong>Солевой никотин: </strong>Да</p>
+          <p v-if="product.nic_type === 'classic'"><strong>Солевой никотин: </strong>Нет</p>
           <p><strong>VG/PG: </strong>{{ product.vg }}/{{ 100 - product.vg }}</p>
           <p><strong>Объем: </strong></p>
           <p class="tags">

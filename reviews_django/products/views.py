@@ -33,7 +33,7 @@ class ProductListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
     filterset_class = ProductFilter
-    ordering_fields = ['avg_score', 'created_at', 'bookmarks__created_at']
+    ordering_fields = ['avg_score', 'score_count', 'created_at', 'bookmarks__created_at']
     search_fields = ['name']
     pagination_class = CustomPagination
 
